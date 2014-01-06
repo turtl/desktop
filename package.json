@@ -1,0 +1,11 @@
+{
+	"name": "Turtl",
+	"window": {
+		"width": 1024,
+		"height": 768,
+		"toolbar": true,
+		"icon": "data/app/favicon.png"
+	},
+	"main": "data/index.html"
+}
+
