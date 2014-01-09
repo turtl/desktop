@@ -383,7 +383,7 @@ _templates['modules/header_bar'] = '<div class="actions">\
 		<div class="apps clear"></div>\
 	<? } ?>\
 \
-	<? if(!window._in_ext) { ?>\
+	<? if(!window._in_ext && !window._in_desktop) { ?>\
 		<? if(user.id) { ?>\
 			<a class="menu" href="#menu"><img src="<?=img(\'/images/site/icons/menu_37x29.png\')?>" width="37" height="29" alt="Menu"></a>\
 			<ul class="menu">\
@@ -410,6 +410,7 @@ _templates['modules/header_bar'] = '<div class="actions">\
 				</li>\
 			</ul>\
 		<? } else { ?>\
+			<?/*\
 			<ul>\
 				<li>\
 					<a href="/users/login"><span>Login</span></a>\
@@ -418,6 +419,7 @@ _templates['modules/header_bar'] = '<div class="actions">\
 					<a href="/users/join"><span>Join</span></a>\
 				</li>\
 			</ul>\
+			*/?>\
 		<? } ?>\
 	<? } ?>\
 </div>\

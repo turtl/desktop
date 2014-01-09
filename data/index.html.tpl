@@ -21,6 +21,7 @@
 	<script src="app/config/auth.js"></script>
 	<script src="app/config/routes.js"></script>
 	<script src="../config.js"></script>
+	<script src="../comm.js"></script>
 	<script src="desktop.js"></script>
 {{genjs}}
 	<script src="templates.js"></script>
