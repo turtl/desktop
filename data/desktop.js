@@ -60,7 +60,7 @@ function attach_image_context_menu(body)
 		var filename	=	img.src.match(/#name=/) ? img.src.replace(/.*#name=/, '') : 'file';
 		var menu		=	new gui.Menu();
 		menu.append(new gui.MenuItem({
-			label: 'Download image',
+			label: 'Save image as...',
 			click: function() {
 				// i love this download hack =]
 				var a	=	document.createElement('a');
