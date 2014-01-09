@@ -3,7 +3,6 @@ var _desktop_tray	=	null;
 var comm			=	new Comm();
 var gui				=	require('nw.gui');
 
-
 /**
  * Make sure our tray menu is updated based on the user's login status.
  */
