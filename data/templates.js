@@ -441,6 +441,8 @@ var action = note.id ? \'Edit\' : \'Add\';\
 ?>\
 <h1><?=action?> note</h1>\
 <div class="note-edit clear">\
+	<div class="boards"></div>\
+\
 	<? if(show_tabs) { ?>\
 		<?\
 		var showtab = function(name)\

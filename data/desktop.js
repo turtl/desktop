@@ -21,8 +21,14 @@ function update_tray_menu()
 	{
 		menu.append(new gui.MenuItem({
 			label: lbl('Add note'),
-			click: function() {
-				console.log('add note');
+			click: function(e) {
+				console.log('menu click: ', e);
+				return;
+				new NoteEditController({
+					board: 'last',
+					show_boards: true,
+					track_last_board: true
+				});
 			}
 		}));
 		menu.append(new gui.MenuItem({ label: lbl('Logout'), click: function() { turtl.user.logout() } }));
