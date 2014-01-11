@@ -1,3 +1,14 @@
+/**
+ * This is the main desktop app init script. The philosophy here is to modify
+ * the core app as little as possible to support desktop and instead attach
+ * functionality to it via this script. So far so good.
+ *
+ * This file is responsible for the tray icon and menus, context menus (for
+ * downloading images, mainly), actual download of images (made possible
+ * thanks to <a download="file.jpg" /> links), and any other desktop-specific
+ * code that needs to be run.
+ */
+
 window._in_desktop	=	true;
 var _desktop_tray	=	null;
 var comm			=	new Comm();
@@ -22,15 +33,34 @@ function update_tray_menu()
 		menu.append(new gui.MenuItem({
 			label: lbl('Add note'),
 			click: function(e) {
-				console.log('menu click: ', e);
-				return;
 				new NoteEditController({
 					board: 'last',
 					show_boards: true,
 					track_last_board: true
 				});
+				win.show();
 			}
 		}));
+		menu.append(new gui.MenuItem({
+			label: lbl('Personas'),
+			click: function(e) {
+				new PersonasController();
+				win.show();
+			}
+		}));
+		var num_invites	=	turtl.messages.models().length;
+		var invite_lbl	=	'Invites';
+		if(num_invites > 0) invite_lbl += ' ('+ num_invites +')';
+		menu.append(new gui.MenuItem({
+			label: lbl(invite_lbl),
+			click: function(e) {
+				new InvitesListController({
+					edit_in_modal: true
+				});
+				win.show();
+			}
+		}));
+		menu.append(new gui.MenuItem({ type: 'separator' }));
 		menu.append(new gui.MenuItem({ label: lbl('Logout'), click: function() { turtl.user.logout() } }));
 		menu.append(new gui.MenuItem({ type: 'separator' }));
 	}
@@ -79,32 +109,36 @@ function attach_image_context_menu(body)
 }
 
 /**
+ * create a new tray icon. if we have an old one, remove it.
+ */
+function make_tray(options)
+{
+	options || (options = {});
+
+	var win	=	gui.Window.get();
+
+	if(_desktop_tray) _desktop_tray.remove();
+
+	var icon	=	'data/app/favicon.png';
+	if(options.notify) icon = 'data/app/favicon.notify.png';
+	var tray	=	new gui.Tray({ title: 'Turtl', icon: icon });;
+
+	tray.on('click', function() {
+		win.show();
+		win.focus();
+	});
+
+	_desktop_tray	=	tray;
+	update_tray_menu();
+
+	return tray;
+};
+
+/**
  * init our environment
  */
 (function() {
 	var win	=	gui.Window.get();
-
-	if(config && config.console)
-	{
-		win.showDevTools();	
-	}
-
-	var make_tray	=	function()
-	{
-		if(_desktop_tray) _desktop_tray.remove();
-
-		var tray	=	new gui.Tray({ title: 'Turtl', icon: 'data/app/favicon.png' });;
-
-		tray.on('click', function() {
-			win.show();
-			win.focus();
-		});
-
-		_desktop_tray	=	tray;
-		update_tray_menu();
-
-		return tray;
-	};
 
 	make_tray();
 	win.on('minimize', function() {
@@ -122,6 +156,11 @@ window.addEvent('domready', function() {
 	// when this is triggered, we already have a new user obj.
 	window.port.bind('logout', bind_login_to_menu);
 
+	// if we get new invites, update the tray icon and menu
+	window.port.bind('num-messages', function(num) {
+		make_tray({notify: num > 0});
+	});
+
 	// add context menus for downloading images
 	attach_image_context_menu(document.body);
 
@@ -137,6 +176,12 @@ window.addEvent('domready', function() {
 			// when the window is loaded, add our image context menus
 			attach_image_context_menu(win.window.document.body);
 		});
+	});
+
+	var keyboard	=	new Composer.Keyboard({meta_bind: true});
+	// Ctrl+Shift+k is open console (if enabled in config)
+	keyboard.bind('S-C-k', function() {
+		if(config.console) gui.Window.get().showDevTools();
 	});
 });
 

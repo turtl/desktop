@@ -784,8 +784,9 @@ if(color) color = [\'none\',\'blue\',\'red\',\'green\',\'purple\',\'pink\',\'bro
 	</ul>\
 </div>\
 <? if(has_file) { ?>\
-	<div class="note-file">\
-		<? if(note.file.blob_url && note.file.type && note.file.type.match(/^image/)) { ?>\
+	<? var is_image = note.file.blob_url && note.file.type && note.file.type.match(/^image/); ?>\
+	<div class="note-file <?=(is_image ? \'image\' : \'\')?>">\
+		<? if(is_image) { ?>\
 			<a href="<?=note.file.blob_url?>" target="_blank"><img src="<?=note.file.blob_url?>"></a>\
 		<? } else if(note.type != \'image\' && note.file.type && note.file.type.match(/^image/)) { ?>\
 			<?=note.file.name?> (generating preview)\
