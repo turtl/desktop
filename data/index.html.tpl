@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="app/css/template.css">
     <link rel="stylesheet" href="app/css/general.css">
 {{gencss}}
-    <link rel="shortcut icon" href="app/favicon.png" type="image/png">
+    <link rel="shortcut icon" href="app/images/favicon.png" type="image/png">
     <script src="app/library/mootools-core-1.4.5.js"></script>
     <script src="app/library/mootools-more-1.4.0.1.js"></script>
     <script src="app/library/composer/composer.js"></script>

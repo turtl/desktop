@@ -6,7 +6,7 @@
 		"width": 1024,
 		"height": 768,
 		"toolbar": false,
-		"icon": "data/app/favicon.png"
+		"icon": "data/app/images/favicon.png"
 	},
 
 	"single-instance": true,

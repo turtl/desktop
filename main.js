@@ -24,7 +24,7 @@ function update_tray_menu()
 	var win		=	gui.Window.get();
 	var menu	=	new gui.Menu();
 	var lbl		=	function(str) { return '  '+str; };
-	menu.append(new gui.MenuItem({ label: lbl('Open Turtl'), icon: 'data/app/favicon.png', click: function() { win.show(); } }));
+	menu.append(new gui.MenuItem({ label: lbl('Open Turtl'), icon: 'data/app/images/favicon.png', click: function() { win.show(); } }));
 	menu.append(new gui.MenuItem({ type: 'separator' }));
 
 	// login-specific menu items
@@ -119,8 +119,8 @@ function make_tray(options)
 
 	if(_desktop_tray) _desktop_tray.remove();
 
-	var icon	=	'data/app/favicon.png';
-	if(options.notify) icon = 'data/app/favicon.notify.png';
+	var icon	=	'data/app/images/favicon.png';
+	if(options.notify) icon = 'data/app/images/favicon.notify.png';
 	var tray	=	new gui.Tray({ title: 'Turtl', icon: icon });;
 
 	tray.on('click', function() {

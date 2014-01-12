@@ -527,8 +527,8 @@ var action = note.id ? \'Edit\' : \'Add\';\
 					<td>You can also make text <strong>bold</strong> or <em>italic</em>.</td>\
 				</tr>\
 				<tr>\
-					<td>Here\'s an image: ![Turtl logo](https://turtl.it/favicon.png)</td>\
-					<td>Here\'s an image: <img src="https://turtl.it/favicon.png" alt="Turtl logo"></td>\
+					<td>Here\'s an image: ![Turtl logo](https://turtl.it/images/favicon.png)</td>\
+					<td>Here\'s an image: <img src="https://turtl.it/images/favicon.png" alt="Turtl logo"></td>\
 				</tr>\
 				<tr>\
 					<td>&gt; Quote text with a caret</td>\
