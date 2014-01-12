@@ -39,7 +39,7 @@
       <div id="wrap">
         <div class="sidebar-bg"></div>
         <header class="clear">
-          <h1>Turtl<span>.</span></h1>
+          <h1><span>Turtl</span></h1>
           <div class="loading">
             <img src="app/images/site/icons/load_42x11.gif">
           </div>
