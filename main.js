@@ -21,6 +21,15 @@ function update_tray_menu()
 {
 	if(!_desktop_tray) return false;
 
+	if(window.turtl && window.turtl.user && window.turtl.user.logged_in)
+	{
+		_desktop_tray.icon	=	'data/app/images/favicon.png';
+	}
+	else
+	{
+		_desktop_tray.icon	=	'data/app/images/favicon.gray.png';
+	}
+
 	var win		=	gui.Window.get();
 	var menu	=	new gui.Menu();
 	var lbl		=	function(str) { return '  '+str; };
@@ -75,15 +84,6 @@ function update_tray_menu()
 }
 
 /**
- * make sure our tray menu is up to date
- */
-function bind_login_to_menu()
-{
-	update_tray_menu();
-	turtl.user.bind('login', update_tray_menu, 'desktop:user:update-menu');
-};
-
-/**
  * attach right-click context menu to images for downloading.
  */
 function attach_image_context_menu(body)
@@ -119,8 +119,15 @@ function make_tray(options)
 
 	if(_desktop_tray) _desktop_tray.remove();
 
-	var icon	=	'data/app/images/favicon.png';
-	if(options.notify) icon = 'data/app/images/favicon.notify.png';
+	var icon	=	'data/app/images/favicon.gray.png';
+	if(window.turtl && window.turtl.user && window.turtl.user.logged_in)
+	{
+		icon	=	'data/app/images/favicon.png';
+	}
+	if(options.notify)
+	{
+		icon	=	'data/app/images/favicon.notify.png';
+	}
 	var tray	=	new gui.Tray({ title: 'Turtl', icon: icon });;
 
 	tray.on('click', function() {
@@ -132,6 +139,15 @@ function make_tray(options)
 	update_tray_menu();
 
 	return tray;
+};
+
+/**
+ * make sure our tray menu is up to date
+ */
+function bind_login_to_menu()
+{
+	update_tray_menu();
+	turtl.user.bind('login', update_tray_menu, 'desktop:user:update-menu');
 };
 
 /**

@@ -1024,9 +1024,6 @@ _templates['users/join'] = '<div class="userform join">\
 			<p>\
 				<em>Make sure you keep your password in a safe place!</em>\
 			</p>\
-			<p>\
-				Read more about <a href="http://turtl.it/about">how Turtl works</a>.\
-			</p>\
 		</div>\
 		<input type="submit" value="Join" tabindex="4">\
 	</form>\
