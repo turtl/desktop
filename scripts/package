@@ -1,4 +1,49 @@
 #!/bin/bash
 
+# temp dir for packaging
+TMP=/tmp/turtl-package-desktop
+ZIP=release/package.nw
 
+nogen=$1
 
+if [ "$nogen" != "--skip-tpl" ]; then
+	# generate templates
+	echo -n "Regenerating templates so we have the freshest versions..."
+	./scripts/generate-templates
+	echo "done."
+fi
+
+rm -rf $TMP
+mkdir -p $TMP
+chmod 755 $TMP
+
+echo -n "Copying extension files to temp directory..."
+cp -R -L . $TMP/ 2>&1 | grep -v '.git'
+echo "done."
+
+EXTDIR=`realpath .`
+pushd $TMP/> /dev/null
+
+echo "Packaging extension."
+
+echo "Copying live config over local."
+mv config.live.js config.js
+
+echo -n "Zipping..."
+zip -qr -9 -X \
+	turtl.zip \
+	. \
+	-x *.git* \
+	-x release/*
+echo "done."
+
+mv turtl.zip $EXTDIR/$ZIP || {
+	echo "Problem moving $TMP/turtl.zip to $EXTDIR/$ZIP. Exiting."
+	exit 1
+}
+popd > /dev/null
+
+echo "Clearing tmp dir ($TMP/)"
+rm -rf $TMP
+
+echo "Complete. Created fully-packaged extension: $ZIP"
