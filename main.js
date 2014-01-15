@@ -84,6 +84,23 @@ function update_tray_menu()
 }
 
 /**
+ * abstraction function to insert text into an HTML element (generally an input
+ * field or textarea) such that the text is inserted into the current selection
+ * (replacing it) or if there's no selection, just inserted at the cursor
+ * position.
+ */
+function insert_text_at(element, text)
+{
+	var value	=	element.get('value');
+	var start	=	element.selectionStart;
+	var begin	=	value.substr(0, start);
+	var end		=	value.substr(element.selectionEnd);
+	element.set('value', begin + text + end);
+	element.selectionStart	=	start + text.length;
+	element.selectionEnd	=	element.selectionStart;
+}
+
+/**
  * attach right-click context menu to images for downloading.
  */
 function attach_image_context_menu(body)
@@ -104,6 +121,49 @@ function attach_image_context_menu(body)
 				fire_click(a);
 			}
 		}));
+		menu.popup(e.x, e.y);
+	});
+}
+
+/**
+ * attach copy/paste context menus
+ */
+function attach_copy_paste_context_menu(body)
+{
+	// copy
+	body.addEventListener('contextmenu', function(e) {
+		var selection	=	gui.Window.get().window.getSelection();
+		var string		=	selection ? selection.toString() : false;
+
+		var clipboard	=	gui.Clipboard.get();
+		var paste		=	clipboard.get('text');
+		var active		=	document.activeElement;
+
+		var menu		=	new gui.Menu();
+		var has_items	=	false;
+		if(string && string != '')
+		{
+			menu.append(new gui.MenuItem({
+				label: 'Copy',
+				click: function() {
+					var clipboard	=	gui.Clipboard.get();
+					clipboard.set(string, 'text');
+				}
+			}));
+			has_items	=	true;
+		}
+		if((active.get('tag') == 'input' && !['checkbox', 'radio'].contains(active.get('type'))) || active.get('tag') == 'textarea')
+		{
+			menu.append(new gui.MenuItem({
+				label: 'Paste',
+				click: function() {
+					insert_text_at(active, paste);
+				}
+			}));
+			has_items	=	true;
+		}
+
+		if(!has_items) return false;
 		menu.popup(e.x, e.y);
 	});
 }
@@ -179,6 +239,9 @@ window.addEvent('domready', function() {
 
 	// add context menus for downloading images
 	attach_image_context_menu(document.body);
+
+	// add copy/paste context menus
+	attach_copy_paste_context_menu(document.body);
 
 	// handle <a> tags properly. if it's a blob/file URL, we open an in-app
 	// window. if it's an external URL we open an OS browser window. otherwise
