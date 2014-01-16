@@ -179,12 +179,6 @@ _templates['boards/share'] = '<h1>\
 </div>\
 ';
 
-_templates['bookmark/index'] = '<div class="boards clear">\
-	<div class="board"></div>\
-</div>\
-<div class="edit"></div>\
-';
-
 _templates['categories/list'] = '<? if(categories.length > 0) { ?>\
 	<ul class="categories">\
 		<? categories.each(function(c) { ?>\
