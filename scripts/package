@@ -12,7 +12,7 @@ echo -n "Copying extension files to temp directory..."
 cp -R -L . $TMP/ 2>&1 | grep -v '.git'
 echo "done."
 
-EXTDIR=`realpath .`
+EXTDIR=`pwd -P`
 pushd $TMP/> /dev/null
 
 echo "Packaging extension."
