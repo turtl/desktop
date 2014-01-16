@@ -4,15 +4,6 @@
 TMP=/tmp/turtl-package-desktop
 ZIP=release/package.nw
 
-nogen=$1
-
-if [ "$nogen" != "--skip-tpl" ]; then
-	# generate templates
-	echo -n "Regenerating templates so we have the freshest versions..."
-	./scripts/generate-templates
-	echo "done."
-fi
-
 rm -rf $TMP
 mkdir -p $TMP
 chmod 755 $TMP
