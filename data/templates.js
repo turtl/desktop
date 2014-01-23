@@ -373,11 +373,7 @@ _templates['invites/list'] = '<h1>Invites</h1>\
 ';
 
 _templates['modules/header_bar'] = '<div class="actions">\
-	<? if(user.id) { ?>\
-		<div class="apps clear"></div>\
-	<? } ?>\
-\
-	<? if(user.id) { ?>\
+	<? if(user.id && !window._in_ext) { ?>\
 		<a class="menu" href="#menu" alt="Menu"><icon>&#9881;</icon></a>\
 		<ul class="menu">\
 			<li class="persona">\
