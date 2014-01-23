@@ -1,0 +1,47 @@
+#!/bin/bash
+
+PLATFORM=$1
+APP=`realpath .`
+RELEASE=$APP/release/node-webkit/$PLATFORM
+RELEASE_DIR=$APP/release
+TMP=`realpath $RELEASE/../tmp`
+
+if [ "$PLATFORM" == "" ]; then
+	echo "Usage:"
+	echo "  $0 [windows|linux32|linux64|macos]"
+	exit 1
+fi
+
+if [ ! -d $RELEASE ]; then
+	echo "Error: $RELEASE not present"
+	exit 1
+fi
+
+pushd $RELEASE > /dev/null || {
+	echo "Error entering directory $RELEASE."
+	exit 1
+}
+
+if [ "$PLATFORM" == "linux32" ] || [ "$PLATFORM" == "linux64" ]; then
+	RELNAME=turtl-${PLATFORM}
+	SUBDIR=$TMP/$RELNAME
+	mkdir -p $SUBDIR
+	cp -R * $SUBDIR
+	cp $RELEASE_DIR/package.nw $SUBDIR
+	pushd $TMP > /dev/null
+	tar -cjf $RELEASE_DIR/turtl-${PLATFORM}.tar.bz2 $RELNAME
+	popd > /dev/null
+elif [ "$PLATFORM" == "windows" ]; then
+	cp $RELEASE_DIR/package.nw .
+	zip -qr -9 -X \
+		$RELEASE_DIR/turtl-windows.zip .
+elif [ "$PLATFORM" == "macos" ]; then
+	cp $RELEASE_DIR/package.nw .
+	cp $APP/scripts/resources/favicon.128.icns node-webkit.app/Contents/Resources/nw.icns
+	zip -qr -9 -X \
+		$RELEASE_DIR/turtl-macos.zip .
+fi
+
+rm -rf $TMP
+
+popd > /dev/null

@@ -22,6 +22,8 @@
 	<script src="app/config/routes.js"></script>
 	<script src="../config.js"></script>
 	<script src="../comm.js"></script>
+	<script src="../invites.js"></script>
+	<script src="../dispatch.js"></script>
 	<script src="../main.js"></script>
 {{genjs}}
 	<script src="templates.js"></script>

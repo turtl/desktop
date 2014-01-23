@@ -1,0 +1,7 @@
+#!/bin/bash
+
+./scripts/do-release windows
+./scripts/do-release linux32
+./scripts/do-release linux64
+./scripts/do-release macos
+
