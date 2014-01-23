@@ -373,48 +373,28 @@ _templates['invites/list'] = '<h1>Invites</h1>\
 ';
 
 _templates['modules/header_bar'] = '<div class="actions">\
-	<? if(user.id) { ?>\
-		<div class="apps clear"></div>\
-	<? } ?>\
-\
-	<? if(!window._in_ext && !window._in_desktop) { ?>\
-		<? if(user.id) { ?>\
-			<a class="menu" href="#menu"><img src="<?=img(\'/images/site/icons/menu_37x29.png\')?>" width="37" height="29" alt="Menu"></a>\
-			<ul class="menu">\
-				<li class="persona">\
-					<a href="#personas" title="Manage your identity">\
-						<img src="<?=img(\'/images/site/icons/person_16x16.png\')?>" width="16" height="16" alt="Persona">\
-						<span>Personas</span>\
-					</a>\
-				</li>\
-				<?/*\
-				<li class="bookmarklet">\
-					<? var site_url = __site_url; ?>\
-					<a href="javascript:(function() { var u = encodeURIComponent(window.location.href); var t = encodeURIComponent(document.title); var m = document.getElementsByTagName(\'meta\'); var y = \'link\'; var d = \'\'; var i = false; for(var x in m) {if(m[x].name == \'description\') {d = m[x].content; break;}} for(var x in m) { if(m[x].getAttribute && m[x].getAttribute(\'property\') == \'og:image\') { i = m[x].content; break; } } if(i) d = \'![image](\'+i+\')  \\\\n\'+d; d = encodeURIComponent(d); var req = new XMLHttpRequest(); req.open(\'GET\', document.location, false); req.send(null); var headers = req.getAllResponseHeaders().toLowerCase(); var content = headers.match(new RegExp(\'content-type: image/([\\\\\\\\w]+)\')); if(content && content[1]) { y = \'image\'; t = \'\'; } f = \'<?=window.location.protocol?>//<?=window.location.host?>/bookmark?url=\'+ u +\'&title=\'+ t +\'&text=\'+ d +\'&type=\'+ y; t = function() { if(!window.open(f, \'turtl\', \'location=yes,links=no,scrollbars=no,toolbar=no,width=740,height=525\')) { location.href = f; } }; if(/Firefox/.test(navigator.userAgent)) setTimeout(t, 0); else t(); })()" title="Drag me to your bookmarks!">\
-						<img src="<?=img(\'/images/site/icons/link_16x16.png\')?>" width="16" height="16" alt="Bookmarklet">\
-						<span>Bookmarklet</span>\
-					</a>\
-				</li>\
-				*/?>\
-				<li class="logout">\
-					<a href="/users/logout" title="Sign out (shortcut `shift+L`)">\
-						<img src="<?=img(\'/images/site/icons/logout_16x16.png\')?>" width="16" height="16" alt="Logout">\
-						<span>Logout</span>\
-					</a>\
-				</li>\
-			</ul>\
-		<? } else { ?>\
-			<?/*\
-			<ul>\
-				<li>\
-					<a href="/users/login"><span>Login</span></a>\
-				</li>\
-				<li>\
-					<a href="/users/join"><span>Join</span></a>\
-				</li>\
-			</ul>\
-			*/?>\
-		<? } ?>\
+	<? if(user.id && !window._in_ext) { ?>\
+		<a class="menu" href="#menu" alt="Menu"><icon>&#9881;</icon></a>\
+		<ul class="menu">\
+			<li class="persona">\
+				<a href="#personas" title="Manage your identity">\
+					<icon>&#128100;</icon>\
+					<span>Personas</span>\
+				</a>\
+			</li>\
+			<li class="invites">\
+				<a href="#invites" title="See your invites">\
+					<icon>&#128319;</icon>\
+					<span>Invites</span>\
+				</a>\
+			</li>\
+			<li class="logout">\
+				<a href="/users/logout" title="Sign out (shortcut `shift+L`)">\
+					<icon>&#59201;</icon>\
+					<span>Logout</span>\
+				</a>\
+			</li>\
+		</ul>\
 	<? } ?>\
 </div>\
 ';
@@ -831,10 +811,12 @@ _templates['notes/view/text'] = '<? if(tags != \'\') { ?><?=tags?><? } ?>\
 <?=markdown.toHTML(note.text)?>\
 ';
 
-_templates['notifications/index'] = '<ul class="switch">\
-	<!--<li><a class="notes" href="/" title="Notes"><span>&nbsp;</span></a></li>-->\
+_templates['notifications/index'] = '<!--\
+<ul class="switch">\
+	<li><a class="notes" href="/" title="Notes"><span>&nbsp;</span></a></li>\
 	<li><a class="notifications <? if(is_open) { ?>sel<? } ?>" href="#notifications" title="Notifications"><span>&nbsp;</span></a></li>\
 </ul>\
+-->\
 <div class="notification-list <? if(is_open) { ?>sel<? } ?>">\
 	<div class="gutter">\
 		<? if(notifications.length > 0) { ?>\
