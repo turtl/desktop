@@ -30,7 +30,12 @@
 
 			this.server	=	http.createServer(function(req, res) {
 				this.dispatch(req, res);
-			}.bind(this)).listen(this.options.port);
+			}.bind(this));
+
+			this.server.listen(this.options.port).on('error', function(e) {
+				console.error('dispatch: error binding port ('+this.options.port+'): ', e);
+			}.bind(this));
+
 			if(options.timeout)
 			{
 				(function() {

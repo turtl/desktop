@@ -388,6 +388,12 @@ _templates['modules/header_bar'] = '<div class="actions">\
 					<span>Invites</span>\
 				</a>\
 			</li>\
+			<li class="wipe">\
+				<a href="#wipe-data" title="Wipe all local data and log out">\
+					<icon>&#128165;</icon>\
+					<span>Wipe local data</span>\
+				</a>\
+			</li>\
 			<li class="logout">\
 				<a href="/users/logout" title="Sign out (shortcut `shift+L`)">\
 					<icon>&#59201;</icon>\
