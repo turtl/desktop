@@ -28,15 +28,20 @@ if [ "$PLATFORM" == "linux32" ] || [ "$PLATFORM" == "linux64" ]; then
 	mkdir -p $SUBDIR
 	cp -R * $SUBDIR
 	cp $RELEASE_DIR/package.nw $SUBDIR
+	mv $SUBDIR/nw $SUBDIR/turtl
 	pushd $TMP > /dev/null
 	tar -cjf $RELEASE_DIR/turtl-${PLATFORM}.tar.bz2 $RELNAME
 	popd > /dev/null
 elif [ "$PLATFORM" == "windows" ]; then
 	cp $RELEASE_DIR/package.nw .
+	if [ -f nw.exe ]; then
+		mv nw.exe turtl.exe
+	fi
 	zip -qr -9 -X \
 		$RELEASE_DIR/turtl-windows.zip .
 elif [ "$PLATFORM" == "macos" ]; then
 	cp $RELEASE_DIR/package.nw .
+	sed -i 's/node-webkit/Turtl/gi' node-webkit.app/Contents/Info.plist
 	cp $APP/scripts/resources/favicon.128.icns node-webkit.app/Contents/Resources/nw.icns
 	zip -qr -9 -X \
 		$RELEASE_DIR/turtl-macos.zip .
