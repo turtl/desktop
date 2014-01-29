@@ -677,20 +677,11 @@ if(color) color = [\'none\',\'blue\',\'red\',\'green\',\'purple\',\'pink\',\'bro
 		<li><a href="#delete" class="delete" title="Delete note (shortcut `delete`)"><span>Delete note</span></a></li>\
 	</ul>\
 </div>\
-<? if(has_file) { ?>\
-	<div class="note-file">\
-		<? if(note.file.blob_url && note.file.type && note.file.type.match(/^image/)) { ?>\
-			<a href="<?=note.file.blob_url?>" class="image" target="_blank"><img src="<?=note.file.blob_url?>"></a>\
-		<? } else if(note.type != \'image\' && note.file.type && note.file.type.match(/^image/)) { ?>\
-			<?=note.file.name?> (generating preview)\
-		<? } else if(note.file && note.type != \'image\') { ?>\
-			<a href="#attachment" class="attachment" target="_blank">\
-				<img src="<?=img(\'/images/site/icons/files/\'+file_type+\'.png\')?>" width="16" height="16" alt="file">\
-				<?=note.file.name?>\
-			</a>\
-		<? } ?>\
-	</div>\
-<? } ?>\
+<?=Template.render(\'notes/note_file\', {\
+	has_file: has_file,\
+	file_type: file_type,\
+	note: note\
+})?>\
 <div class="gutter content">\
 	<?=Template.render(\'notes/list/\'+note.type, {\
 		note: note\
@@ -732,6 +723,23 @@ _templates['notes/move'] = '<h1>Move this note to another board</h1>\
 </select>\
 ';
 
+_templates['notes/note_file'] = '<? if(has_file) { ?>\
+	<? var is_image = note.file.blob_url && note.file.type && note.file.type.match(/^image/); ?>\
+	<div class="note-file <?=(is_image ? \'image\' : \'\')?>">\
+		<? if(is_image) { ?>\
+			<a href="<?=note.file.blob_url?>" target="_blank"><img src="<?=note.file.blob_url?>"></a>\
+		<? } else if(note.type != \'image\' && note.file.type && note.file.type.match(/^image/)) { ?>\
+			<?=note.file.name?> (generating preview)\
+		<? } else if(note.file && note.type != \'image\') { ?>\
+			<a href="#attachment" class="attachment" target="_blank">\
+				<img src="<?=img(\'/images/site/icons/files/\'+file_type+\'.png\')?>" width="16" height="16" alt="file">\
+				<?=note.file.name?>\
+			</a>\
+		<? } ?>\
+	</div>\
+<? } ?>\
+';
+
 _templates['notes/view/image'] = '<a class="img clear" href="<?=note.url?>" target="_blank">\
 	<img src="<?=note.url?>">\
 </a>\
@@ -763,21 +771,11 @@ if(color) color = [\'none\',\'blue\',\'red\',\'green\',\'purple\',\'pink\',\'bro
 		<li><a href="#delete" class="delete" title="Delete note (shortcut `delete`)"><span>Delete note</span></a></li>\
 	</ul>\
 </div>\
-<? if(has_file) { ?>\
-	<? var is_image = note.file.blob_url && note.file.type && note.file.type.match(/^image/); ?>\
-	<div class="note-file <?=(is_image ? \'image\' : \'\')?>">\
-		<? if(is_image) { ?>\
-			<a href="<?=note.file.blob_url?>" target="_blank"><img src="<?=note.file.blob_url?>"></a>\
-		<? } else if(note.type != \'image\' && note.file.type && note.file.type.match(/^image/)) { ?>\
-			<?=note.file.name?> (generating preview)\
-		<? } else if(note.file && note.type != \'image\') { ?>\
-			<a href="#attachment" class="attachment" target="_blank">\
-				<img src="<?=img(\'/images/site/icons/files/\'+file_type+\'.png\')?>" width="16" height="16" alt="file">\
-				<?=note.file.name?>\
-			</a>\
-		<? } ?>\
-	</div>\
-<? } ?>\
+<?=Template.render(\'notes/note_file\', {\
+	has_file: has_file,\
+	file_type: file_type,\
+	note: note\
+})?>\
 <? if(note.type != \'image\') { ?><div class="content clear"><? } ?>\
 	<? var tags = Template.render(\'notes/view/tags\', { tags: note.tags }); ?>\
 	<?=Template.render(\'notes/view/\'+note.type, {\
