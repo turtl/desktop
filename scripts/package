@@ -9,7 +9,7 @@ mkdir -p $TMP
 chmod 755 $TMP
 
 echo -n "Copying extension files to temp directory..."
-cp -R -L . $TMP/ 2>&1 | grep -v '.git'
+rsync -aL ./ $TMP 2>&1 --exclude='.git' --exclude='release/' | grep -v '.git'
 echo "done."
 
 EXTDIR=`pwd -P`
