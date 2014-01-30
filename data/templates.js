@@ -245,31 +245,6 @@ _templates['feedback/thanks'] = '<h1>Thanks for getting in touch</h1>\
 </div>\
 ';
 
-_templates['file'] = '<center>\
-	<br><br><br>\
-	<strong style="font-family: impact; font-size: 32px; font-weight: 100; color: #666; text-transform: uppercase;">\
-		Decrypting file, please wait <span class="spin" style="display: inline-block; width: 32px; text-align: center;">/</span>\
-	</strong>\
-	<%script%>\
-		var spinner	=	function()\
-		{\
-			var chars	=	[\'/\', \'-\', \'\\\\\', \'|\'];\
-			var idx		=	0;\
-			var spin	=	function()\
-			{\
-				var spinner	=	document.body.getElementsByTagName(\'span\')[0];\
-				if(!spinner) return;\
-				spinner.innerHTML	=	chars[idx];\
-				idx = (idx + 1) % chars.length;\
-				setTimeout(spin, 100);\
-			};\
-			spin();\
-		}\
-		spinner();\
-	</%script%>\
-</center>\
-';
-
 _templates['invites/board'] = '<div class="invite">\
 \
 	<form class="standard-form">\
@@ -724,12 +699,14 @@ _templates['notes/move'] = '<h1>Move this note to another board</h1>\
 ';
 
 _templates['notes/note_file'] = '<? if(has_file) { ?>\
-	<? var is_image = note.file.blob_url && note.file.type && note.file.type.match(/^image/); ?>\
+	<? var is_image = !note.file.encrypting && note.file.blob_url && note.file.type && note.file.type.match(/^image/); ?>\
 	<div class="note-file <?=(is_image ? \'image\' : \'\')?>">\
 		<? if(is_image) { ?>\
 			<a href="<?=note.file.blob_url?>" target="_blank"><img src="<?=note.file.blob_url?>"></a>\
+		<? } else if(note.file.encrypting) { ?>\
+			<div class="attachment"><?=note.file.name?> (encrypting)</div>\
 		<? } else if(note.type != \'image\' && note.file.type && note.file.type.match(/^image/)) { ?>\
-			<?=note.file.name?> (generating preview)\
+			<div class="attachment"><?=note.file.name?> (generating preview)</div>\
 		<? } else if(note.file && note.type != \'image\') { ?>\
 			<a href="#attachment" class="attachment" target="_blank">\
 				<img src="<?=img(\'/images/site/icons/files/\'+file_type+\'.png\')?>" width="16" height="16" alt="file">\
