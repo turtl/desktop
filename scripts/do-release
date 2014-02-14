@@ -41,10 +41,11 @@ elif [ "$PLATFORM" == "windows" ]; then
 		$RELEASE_DIR/turtl-windows.zip .
 elif [ "$PLATFORM" == "macos" ]; then
 	cp $RELEASE_DIR/package.nw .
-	sed -i 's/node-webkit/Turtl/gi' node-webkit.app/Contents/Info.plist
 	cp $APP/scripts/resources/favicon.128.icns node-webkit.app/Contents/Resources/nw.icns
-	zip -qr -9 -X \
-		$RELEASE_DIR/turtl-macos.zip .
+	mv node-webkit.app turtl.app
+	zip -qr -9 -X $RELEASE_DIR/turtl-macos.zip .
+	mv turtl.app node-webkit.app
+	rm -f package.nw
 fi
 
 rm -rf $TMP
