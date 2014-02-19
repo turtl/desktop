@@ -1,5 +1,9 @@
 var config = {
-	version: 'core-0.4',
+	// filled in by extension/app from its manifest
+	version: '',
+
+	// what client we're using
+	client: 'desktop',
 
 	// used to tell us where to store auth. this is only used when serving turtl
 	// as a webapp (big no no). the addons do their own auth.
