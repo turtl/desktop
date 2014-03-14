@@ -51,18 +51,6 @@ jsfiles="`find app/library -name '*.js' \
 	| sed 's| |___|g' `"
 for jsfile in $jsfiles; do print_js $jsfile; done
 
-print_js "app/library/cowcrypt/convert.js"
-print_js "app/library/cowcrypt/crypto_math.js"
-print_js "app/library/cowcrypt/biginteger.js"
-print_js "app/library/cowcrypt/block_cipher.js"
-print_js "app/library/cowcrypt/hasher.js"
-print_js "app/library/cowcrypt/sha.js"
-print_js "app/library/cowcrypt/hmac.js"
-print_js "app/library/cowcrypt/aes.js"
-print_js "app/library/cowcrypt/twofish.js"
-print_js "app/library/cowcrypt/rsa.js"
-print_js "app/library/cowcrypt/pbkdf2.js"
-
 print_js "app/turtl.js"
 path_to_js "app/turtl"
 path_to_js "app/handlers"

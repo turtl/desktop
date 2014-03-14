@@ -79,7 +79,7 @@ _templates['boards/manage'] = '<h1>Manage boards</h1>\
 	<ul class="mine">\
 		<? boards.each(function(b) { ?>\
 			<li class="clear board_<?=b.id?>">\
-				<span class="sort" title="Drag to sort boards"></span>\
+				<!--<span class="sort" title="Drag to sort boards"></span>-->\
 				<h3>\
 					<?=b.title?>\
 					<? if(b.shared) { ?><small>(shared)</small> <? } ?>\
@@ -242,6 +242,49 @@ _templates['feedback/thanks'] = '<h1>Thanks for getting in touch</h1>\
 		<? } ?>\
 	</p>\
 	<input type="button" name="close" value="Close">\
+</div>\
+';
+
+_templates['help/index'] = '<h1>Quick help</h1>\
+<div class="help content">\
+	<h2>Keyboard shortcuts</h2>\
+	<table class="shortcuts">\
+		<tr>\
+			<td><kbd>a</kbd></td>\
+			<td>Add a new note</td>\
+		</tr>\
+		<tr>\
+			<td><kbd>b</kbd></td>\
+			<td>Add a new board</td>\
+		</tr>\
+		<tr>\
+			<td><kbd>enter</kbd></td>\
+			<td>Open current note</td>\
+		</tr>\
+		<tr>\
+			<td><kbd>e</kbd></td>\
+			<td>Edit current note</td>\
+		</tr>\
+		<tr>\
+			<td><kbd>delete</kbd></td>\
+			<td>Delete current note</td>\
+		</tr>\
+		<tr>\
+			<td><kbd>/</kbd></td>\
+			<td>Search notes</td>\
+		</tr>\
+		<tr>\
+			<td><kbd>x</kbd></td>\
+			<td>Clear all current filters (show all notes in the board)</td>\
+		</tr>\
+		<tr>\
+			<td><kbd>?</kbd></td>\
+			<td>Show this help</td>\
+		</tr>\
+	</table>\
+	<p>\
+		If you are having trouble using Turtl, please email us at <code>info@turtl.it</code>.\
+	</p>\
 </div>\
 ';
 
@@ -827,7 +870,7 @@ var action = persona.id ? \'Edit\' : \'Add\';\
 	<!--<? if(was_join) { ?><em>Almost done: </em><? } ?>-->\
 	<?=action?> <? if(was_join) { ?>a <? } ?>persona\
 	<? if(was_join) { ?>\
-		<small>(personas let you to share with others)</small>\
+		<small>(personas let you share with others)</small>\
 	<? } else { ?>\
 		<small><a href="#personas">&laquo; Back to <? if(return_to_manage) { ?>board management<? } else { ?>your personas<? } ?></a></small>\
 	<? } ?>\
@@ -889,11 +932,9 @@ _templates['personas/list'] = '<? personas.each(function(p) { ?>\
 		<h3><?=p.email?></h3>\
 		<small><?=p.name?></small>\
 		<? if(p.has_key) { ?>\
-			<small class="success">(RSA 3072)</small>\
-		<? } else if(p.generating_key) { ?>\
-			<small>(generating RSA key)</small>\
+			<small class="success">(ECC384)</small>\
 		<? } else if(show_edit) { ?>\
-			<small><a href="#generate">Generate RSA key</a></small>\
+			<small><a href="#generate">Generate keypair</a></small>\
 		<? } ?>\
 		<? if(show_edit) { ?>\
 			<ul>\
