@@ -1,0 +1,10 @@
+body, html {margin: 0; padding: 0; overflow: hidden;}
+
+body {font-family: arial; font-size: 13px; cursor: pointer;}
+a#close {position: absolute; top: 3px; right: 4px; color: #666; text-decoration: none;}
+a#close:hover {color: #000;}
+header {width: 80px; height: 80px; float: left; overflow: hidden;}
+article {float: left; width: 256px; padding: 12px; line-height: 1.4em;}
+article h1 {margin: 0 0 6px 0; font-size: 18px;}
+article p {margin: 0 0 10px 0;}
+

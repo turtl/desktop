@@ -23,6 +23,7 @@
 	<script src="../config.js"></script>
 	<script src="../comm.js"></script>
 	<script src="../invites.js"></script>
+	<script src="../notifications.js"></script>
 	<script src="../dispatch.js"></script>
 	<script src="../main.js"></script>
 {{genjs}}

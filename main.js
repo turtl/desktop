@@ -103,6 +103,7 @@ function insert_text_at(element, text)
  */
 function attach_image_context_menu(body)
 {
+	if(!body) return false;
 	body.addEventListener('contextmenu', function(e) {
 		var img	=	e.target;
 		if(img.tagName.toLowerCase() != 'img' || e.button != 2) return;
@@ -129,6 +130,7 @@ function attach_image_context_menu(body)
 function attach_copy_paste_context_menu(body)
 {
 	// copy
+	if(!body) return false;
 	body.addEventListener('contextmenu', function(e) {
 		var selection	=	gui.Window.get().window.getSelection();
 		var string		=	selection ? selection.toString() : false;
@@ -258,7 +260,7 @@ window.addEvent('domready', function() {
 	// handle <a> tags properly. if it's a blob/file URL, we open an in-app
 	// window. if it's an external URL we open an OS browser window. otherwise
 	// just return business as usual (probably an in-app link)
-	document.body.addEvent('click:relay(a)', function(e) {
+	document.body && document.body.addEvent('click:relay(a)', function(e) {
 		var atag		=	next_tag_up('a', e.target);
 		var external	=	false;
 		if(!atag.href.match(/^(blob:|file:)/i) && atag.href.match(/^[a-z]+:/i))

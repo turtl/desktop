@@ -578,7 +578,6 @@ var action = note.id ? \'Edit\' : \'Add\';\
 ';
 
 _templates['notes/edit_file'] = 'Attach a file: <input type="file" name="file" placeholder="Attach a file">\
-<a href="#remove-attachment" class="remove">Remove attachment</a>\
 <div class="upload-preview">\
 	<? if(file.hash || file.name) { ?>\
 		<? if(file.type && file.type.match(/^image/)) { ?>\
@@ -592,6 +591,7 @@ _templates['notes/edit_file'] = 'Attach a file: <input type="file" name="file" p
 		<? } ?>\
 	<? } ?>\
 </div>\
+<a href="#remove-attachment" class="remove">Remove attachment</a>\
 ';
 
 _templates['notes/edit_tags'] = '<?\
@@ -701,9 +701,13 @@ if(color) color = [\'none\',\'blue\',\'red\',\'green\',\'purple\',\'pink\',\'bro
 	note: note\
 })?>\
 <div class="gutter content">\
-	<?=Template.render(\'notes/list/\'+note.type, {\
-		note: note\
-	})?>\
+	<? if(!has_file && empty(note.title) && empty(note.url) && empty(note.text) && empty(note.embed)) { ?>\
+		<p class="empty">(empty note)</p>\
+	<? } else { ?>\
+		<?=Template.render(\'notes/list/\'+note.type, {\
+			note: note\
+		})?>\
+	<? } ?>\
 </div>\
 ';
 
@@ -797,11 +801,15 @@ if(color) color = [\'none\',\'blue\',\'red\',\'green\',\'purple\',\'pink\',\'bro
 	note: note\
 })?>\
 <? if(note.type != \'image\') { ?><div class="content clear"><? } ?>\
-	<? var tags = Template.render(\'notes/view/tags\', { tags: note.tags }); ?>\
-	<?=Template.render(\'notes/view/\'+note.type, {\
-		note: note,\
-		tags: tags.clean()\
-	})?>\
+	<? if(!has_file && empty(note.title) && empty(note.url) && empty(note.text) && empty(note.embed)) { ?>\
+		<p class="empty">(empty note)</p>\
+	<? } else { ?>\
+		<? var tags = Template.render(\'notes/view/tags\', { tags: note.tags }); ?>\
+		<?=Template.render(\'notes/view/\'+note.type, {\
+			note: note,\
+			tags: tags.clean()\
+		})?>\
+	<? } ?>\
 <? if(note.type != \'image\') { ?></div><? } ?>\
 ';
 
