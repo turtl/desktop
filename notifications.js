@@ -38,7 +38,7 @@
 			Notifications.action	=	options.action || false;
 			(function() {
 				Notifications.close();
-			}).delay(8000);
+			}).delay(10000);
 		},
 
 		close: function()
@@ -50,8 +50,7 @@
 
 		click_action: function()
 		{
-			if(!Notifications.action) return;
-			Notifications.action();
+			if(Notifications.action) Notifications.action();
 			Notifications.close();
 		}
 	};

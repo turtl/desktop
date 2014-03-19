@@ -71,9 +71,6 @@ function update_tray_menu()
 		menu.append(new gui.MenuItem({ label: lbl('Logout'), click: function() { turtl.user.logout() } }));
 		menu.append(new gui.MenuItem({ type: 'separator' }));
 	}
-	else
-	{
-	}
 	menu.append(new gui.MenuItem({ label: lbl('Quit'), click: function() { gui.App.closeAllWindows(); } }));
 
 	// track our global tray object
@@ -249,6 +246,7 @@ window.addEvent('domready', function() {
 	// if we get new invites, update the tray icon and menu
 	window.port.bind('num-messages', function(num) {
 		make_tray({notify: num > 0});
+		invites.notify();
 	});
 
 	// add context menus for downloading images

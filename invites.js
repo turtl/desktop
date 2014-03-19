@@ -53,36 +53,36 @@ var invites	=	{
 					localStorage.invites	=	JSON.stringify(invites_obj);
 				}
 
-				if(turtl && turtl.user && turtl.user.logged_in)
-				{
-					invites.notify();
-					new InvitesListController({ edit_in_modal: true });
-					var win	=	gui.Window.get();
-					win.show();
-					win.focus();
-				}
+				invites.open();
 				if(options.success) options.success();
 			},
 			error: options.error
 		});
 	},
 
-	// TODO - can't do this until node-webkit gets real notifications.
+	open: function()
+	{
+		if(!turtl || !turtl.user || !turtl.user.logged_in) return false;
+
+		invites.notify();
+		new InvitesListController({ edit_in_modal: true });
+		var win	=	gui.Window.get();
+		win.show();
+		win.focus();
+	},
+
 	notify: function()
 	{
-		/*
-		comm.trigger('invites-change');
-		if(!ext.invites.have_pending() && !ext.messages.have_pending()) return false;
-		if(app.turtl.user.get('personas').models().length == 0) return false;
-
-		chrome.notifications.create('invites', {
-			type: 'image',
-			title: 'You have invites',
-			message: 'Open the `Invites` dialog in the Turtl menu to start sharing.',
-			iconUrl: chrome.extension.getURL('data/app/images/favicon.128.png'),
-			imageUrl: chrome.extension.getURL('data/invites-open.png')
-		}, function() {});
-		*/
+		window.port.send('invites-change');
+		if(turtl.invites.models().length == 0 && turtl.messages.models().length == 0) return false;
+		if(turtl.user.get('personas').models().length == 0) return false;
+		Notifications.open({
+			title: 'You have new invites',
+			body: 'Click to accept your invites and start sharing.',
+			action: function() {
+				invites.open();
+			}
+		});
 	}
 };
 
