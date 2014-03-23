@@ -434,10 +434,12 @@ _templates['modules/share'] = '<div class="select-persona">\
 </div>\
 ';
 
-_templates['notes/edit'] = '<?\
-var action = note.id ? \'Edit\' : \'Add\';\
-?>\
-<h1><?=action?> note</h1>\
+_templates['notes/edit'] = '<?  var action = note.id ? \'Edit\' : \'Add\'; ?>\
+<? if(title) { ?>\
+	<h1><?=title?></h1>\
+<? } else { ?>\
+	<h1><?=action?> note</h1>\
+<? } ?>\
 <div class="note-edit clear">\
 	<div class="boards"></div>\
 \
@@ -868,6 +870,24 @@ _templates['notifications/index'] = '<!--\
 			<p class="none">You have no notifications.</p>\
 		<? } ?>\
 	</div>\
+</div>\
+';
+
+_templates['pairing/index'] = '<h1>Pairing</h1>\
+<div class="content pairing">\
+	<p>\
+		Pairing is a one-time process to allow secure communication between the\
+		Turtl extension and the Turtl desktop app.\
+	</p>\
+	<p>\
+		Copy the pairing code below and paste it into the extension:\
+	</p>\
+\
+	<pre class="key"><?=public_key?></pre>\
+\
+	<p class="error">\
+		Note: Only pair with applications you trust!\
+	</p>\
 </div>\
 ';
 

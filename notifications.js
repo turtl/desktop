@@ -19,19 +19,17 @@
 				if(!options[key]) return false;
 				url	+=	key + '=' + escape(options[key]) + '&';
 			});
-			win	=	gui.Window.open(url, {
+			var xy	=	tools.get_popup_coords(dims[0], dims[1]);
+			var win	=	gui.Window.open(url, {
 				width: dims[0],
 				height: dims[1],
 				frame: false,
 				toolbar: false
 			});
+			win.moveTo(xy.x, xy.y);
 			win.on('loaded', function() {
 				win.window.set_parent(gui.Window.get().window);
 			});
-			win.moveTo(
-				res[0] - (dims[0] + 6),
-				res[1] - (dims[1])
-			);
 			win.setShowInTaskbar(false);
 			win.setAlwaysOnTop(true);
 			Notifications.win		=	win;

@@ -21,9 +21,12 @@
 	<script src="app/config/auth.js"></script>
 	<script src="app/config/routes.js"></script>
 	<script src="../config.js"></script>
+	<script src="../tools.js"></script>
 	<script src="../comm.js"></script>
 	<script src="../invites.js"></script>
+	<script src="../popup.js"></script>
 	<script src="../notifications.js"></script>
+	<script src="../pairing.js"></script>
 	<script src="../dispatch.js"></script>
 	<script src="../main.js"></script>
 {{genjs}}

@@ -71,7 +71,11 @@ function update_tray_menu()
 		menu.append(new gui.MenuItem({ label: lbl('Logout'), click: function() { turtl.user.logout() } }));
 		menu.append(new gui.MenuItem({ type: 'separator' }));
 	}
-	menu.append(new gui.MenuItem({ label: lbl('Quit'), click: function() { gui.App.closeAllWindows(); } }));
+	menu.append(new gui.MenuItem({ label: lbl('Quit'), click: function() {
+		Notifications.close();
+		Popup.close();
+		gui.App.closeAllWindows();
+	} }));
 
 	// track our global tray object
 	_desktop_tray.menu	=	menu;
@@ -93,76 +97,6 @@ function insert_text_at(element, text)
 	element.set('value', begin + text + end);
 	element.selectionStart	=	start + text.length;
 	element.selectionEnd	=	element.selectionStart;
-}
-
-/**
- * attach right-click context menu to images for downloading.
- */
-function attach_image_context_menu(body)
-{
-	if(!body) return false;
-	body.addEventListener('contextmenu', function(e) {
-		var img	=	e.target;
-		if(img.tagName.toLowerCase() != 'img' || e.button != 2) return;
-
-		var filename	=	img.src.match(/#name=/) ? img.src.replace(/.*#name=/, '') : 'file';
-		var menu		=	new gui.Menu();
-		menu.append(new gui.MenuItem({
-			label: 'Save image as...',
-			click: function() {
-				// i love this download hack =]
-				var a	=	document.createElement('a');
-				a.href	=	img.src;
-				a.setAttribute('download', filename);
-				fire_click(a);
-			}
-		}));
-		menu.popup(e.x, e.y);
-	});
-}
-
-/**
- * attach copy/paste context menus
- */
-function attach_copy_paste_context_menu(body)
-{
-	// copy
-	if(!body) return false;
-	body.addEventListener('contextmenu', function(e) {
-		var selection	=	gui.Window.get().window.getSelection();
-		var string		=	selection ? selection.toString() : false;
-
-		var clipboard	=	gui.Clipboard.get();
-		var paste		=	clipboard.get('text');
-		var active		=	document.activeElement;
-
-		var menu		=	new gui.Menu();
-		var has_items	=	false;
-		if(string && string != '')
-		{
-			menu.append(new gui.MenuItem({
-				label: 'Copy',
-				click: function() {
-					var clipboard	=	gui.Clipboard.get();
-					clipboard.set(string, 'text');
-				}
-			}));
-			has_items	=	true;
-		}
-		if((active.get('tag') == 'input' && !['checkbox', 'radio'].contains(active.get('type'))) || active.get('tag') == 'textarea')
-		{
-			menu.append(new gui.MenuItem({
-				label: 'Paste',
-				click: function() {
-					insert_text_at(active, paste);
-				}
-			}));
-			has_items	=	true;
-		}
-
-		if(!has_items) return false;
-		menu.popup(e.x, e.y);
-	});
 }
 
 /**
@@ -250,10 +184,10 @@ window.addEvent('domready', function() {
 	});
 
 	// add context menus for downloading images
-	attach_image_context_menu(document.body);
+	tools.attach_image_context_menu(window);
 
 	// add copy/paste context menus
-	attach_copy_paste_context_menu(document.body);
+	tools.attach_copy_paste_context_menu(window);
 
 	// handle <a> tags properly. if it's a blob/file URL, we open an in-app
 	// window. if it's an external URL we open an OS browser window. otherwise
