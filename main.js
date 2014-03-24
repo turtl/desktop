@@ -161,20 +161,6 @@ function bind_login_to_menu()
 window.addEvent('domready', function() {
 	window.port	=	new DesktopAddonPort({comm: comm});
 
-	/*
-	// kill the listener on login
-	var do_bind_kill_listener	=	function()
-	{
-		turtl.user.bind('login', function() {
-			dispatch.stop();
-		});
-	};
-	window.port.bind('loaded', function() {
-		do_bind_kill_listener();
-		turtl.user.bind('logout', do_bind_kill_listener);
-	});
-	*/
-
 	// when turtl loads, make sure we keep our tray menu up to date
 	window.port.bind('loaded', bind_login_to_menu);
 	// when this is triggered, we already have a new user obj.
