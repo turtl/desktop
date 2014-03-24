@@ -57,6 +57,15 @@ var popup	=	{
 				public_key: public_key
 			});
 			break;
+		case 'add-note':
+			app.Popup.load_controller(body, 'NoteEditController', {
+				inject: bg_inject,
+				edit_in_modal: false,
+				board: 'last',
+				show_boards: true,
+				track_last_board: true
+			});
+			break;
 		case 'bookmark':
 			var linkdata	=	options.linkdata;
 			app.Popup.load_controller(body, 'BookmarkController', {
