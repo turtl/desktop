@@ -118,7 +118,7 @@ _templates['boards/manage'] = '<h1>Manage boards</h1>\
 ';
 
 _templates['boards/share'] = '<h1>\
-	Sharing: <?=board.title?>\
+	Sharing: <?=title?>\
 	<small><a href="#back">&laquo; Back to board manager</a></small>\
 </h1>\
 <div class="board-share">\
@@ -126,57 +126,58 @@ _templates['boards/share'] = '<h1>\
 		<div class="select clear"></div>\
 	</div>\
 \
-	<div class="personas-list">\
-		<? if(personas.length > 0 || invites.length > 0) { ?>\
-			<ul>\
-				<? personas.each(function(p) { ?>\
-					<? if(!p || !p.privs || !p.privs.perms) { return; } ?>\
-					<li class="persona_<?=p.id?> clear">\
-						<h3>\
-							<?=p.email?>\
-							<? if(p.privs && p.privs.invite) { ?>\
-								<small>- invite pending</small>\
-							<? } ?>\
-						</h3>\
-						<small>\
-							(has <?=(p.privs.perms == 2 ? \'write\' : \'read\')?> permissions)\
-						</small>\
-						<ul>\
-							<li>\
-								<a href="#remove" title="Remove this user from sharing">\
-									<img src="<?=img(\'/images/site/icons/remove_16x16_black.png\')?>" width="16" height="16" alt="remove">\
-								</a>\
-							</li>\
-						</ul>\
-					</li>\
-				<? }); ?>\
-\
-				<? invites.each(function(i) { ?>\
-					<li class="invite_<?=i.id?> clear">\
-						<h3>\
-							<?=i.email?>\
-							<small>- invite pending</small>\
-						</h3>\
-						<small>\
-							(has <?=(i.perms == 2 ? \'write\' : \'read\')?> permissions)\
-						</small>\
-						<ul>\
-							<li>\
-								<a href="#cancel" title="Cancel this invite">\
-									<img src="<?=img(\'/images/site/icons/remove_16x16_black.png\')?>" width="16" height="16" alt="remove">\
-								</a>\
-							</li>\
-						</ul>\
-					</li>\
-				<? }); ?>\
-			</ul>\
-		<? } else { ?>\
-			<p class="note">\
-				The people you share this board with will show up here!\
-			</p>\
-		<? } ?>\
-	</div>\
+	<div class="personas-list"></div>\
 </div>\
+';
+
+_templates['boards/share_personas'] = '<? if(personas.length > 0 || invites.length > 0) { ?>\
+	<ul>\
+		<? personas.each(function(p) { ?>\
+			<? if(!p || !p.privs || !p.privs.perms) { return; } ?>\
+			<li class="persona_<?=p.id?> clear">\
+				<h3>\
+					<?=p.email?>\
+					<? if(p.privs && p.privs.invite) { ?>\
+						<small>- invite pending</small>\
+					<? } ?>\
+				</h3>\
+				<small>\
+					(has <?=(p.privs.perms == 2 ? \'write\' : \'read\')?> permissions)\
+				</small>\
+				<ul>\
+					<li>\
+						<a href="#remove" title="Remove this user from sharing">\
+							<img src="<?=img(\'/images/site/icons/remove_16x16_black.png\')?>" width="16" height="16" alt="remove">\
+						</a>\
+					</li>\
+				</ul>\
+			</li>\
+		<? }); ?>\
+\
+		<? invites.each(function(i) { ?>\
+			<li class="invite_<?=i.id?> clear">\
+				<h3>\
+					<?=i.email?>\
+					<small>- invite pending</small>\
+				</h3>\
+				<small>\
+					(has <?=(i.perms == 2 ? \'write\' : \'read\')?> permissions)\
+				</small>\
+				<ul>\
+					<li>\
+						<a href="#cancel" title="Cancel this invite">\
+							<img src="<?=img(\'/images/site/icons/remove_16x16_black.png\')?>" width="16" height="16" alt="remove">\
+						</a>\
+					</li>\
+				</ul>\
+			</li>\
+		<? }); ?>\
+	</ul>\
+<? } else { ?>\
+	<p class="note">\
+		The people you share this board with will show up here!\
+	</p>\
+<? } ?>\
 ';
 
 _templates['categories/list'] = '<? if(categories.length > 0) { ?>\
@@ -630,9 +631,11 @@ _templates['notes/index'] = '<div class="note-actions">\
 	<div class="button note add" title="Add a new note to the current board (shortcut `a`)">\
 		<span><icon>&oplus;</icon> Add note</span>\
 	</div>\
-	<div class="button muted note share" title="Share this board">\
-		<span><icon>&#59196;</icon> Share this board</span>\
-	</div>\
+	<? if(enable_share) { ?>\
+		<div class="button muted note share" title="Share this board">\
+			<span><icon>&#59196;</icon> Share this board</span>\
+		</div>\
+	<? } ?>\
 \
 	<div class="sort hidden">\
 		Sort notes by&nbsp;&nbsp;|&nbsp;\
