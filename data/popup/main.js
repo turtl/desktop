@@ -116,4 +116,8 @@ window.addEvent('domready', function() {
 		if(e) e.stop();
 		popup.toggle_minify();
 	});
+	document.body.addEvent('keydown', function(e) {
+		if(e.key != 'esc') return;
+		app.Popup.close();
+	});
 });
