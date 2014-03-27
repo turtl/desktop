@@ -21,18 +21,17 @@ var display	=	function()
 	document.body.addEventListener('click', function(e) {
 		e.stopPropagation();
 		e.preventDefault();
-		window.opener.Notifications.click_action();
+		mainwin.Notifications.click_action();
 	}, false);
 	document.getElementById('close').addEventListener('click', function(e) {
 		e.stopPropagation();
 		e.preventDefault();
-		window.opener.Notifications.close();
+		mainwin.Notifications.close();
 	});
 };
 
 var set_parent	=	function(obj)
 {
-	console.log('mainwin: ', obj);
 	mainwin	=	obj;
 };
 
