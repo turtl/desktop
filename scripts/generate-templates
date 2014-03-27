@@ -101,9 +101,9 @@ echo "$views" \
 ## -----------------------------------------------------------------------------
 ## generate popup.html
 ## -----------------------------------------------------------------------------
-popup="`cat popup/popup.html.tpl`"
+popup="`cat popup/index.html.tpl`"
 popup="`echo \"$popup\" | sed \"s|{{gencss}}|$(replace "$css")|g\" | sed \"s|app/|../app/|g\"`"
-echo -ne "$popup" > popup/popup.html
+echo -ne "$popup" > popup/index.html
 
 ## -----------------------------------------------------------------------------
 ## cleanup

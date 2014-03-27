@@ -5,7 +5,7 @@
 		<meta http-equiv="Content-Language" content="en">
 		<script src="app/library/mootools-core-1.4.5.js"></script>
 		<script src="app/library/mootools-more-1.4.0.1.js"></script>
-		<script src="popup.js"></script>
+		<script src="main.js"></script>
 		<link rel="stylesheet" href="app/css/reset.css">
 		<link rel="stylesheet" href="app/css/template.css">
 		<link rel="stylesheet" href="app/css/general.css">

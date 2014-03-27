@@ -28,7 +28,7 @@
 			}
 			Popup.close();
 
-			var win	=	gui.Window.open('app:///data/data/popup/popup.html', {
+			var win	=	gui.Window.open('app:///data/data/popup/index.html', {
 				width: width,
 				height: height,
 				frame: false,
