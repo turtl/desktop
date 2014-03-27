@@ -21,7 +21,14 @@ var tools	=	{
 			var img	=	e.target;
 			if(img.tagName.toLowerCase() != 'img' || e.button != 2) return;
 
-			var filename	=	img.src.match(/#name=/) ? img.src.replace(/.*#name=/, '') : 'file';
+			if(img.src.match(/^blob:/))
+			{
+				var filename	=	img.src.match(/#name=/) ? img.src.replace(/.*#name=/, '') : 'file';
+			}
+			else
+			{
+				var filename	=	img.src.replace(/^.*\//, '');
+			}
 			var menu		=	new gui.Menu();
 			menu.append(new gui.MenuItem({
 				label: 'Save image as...',
@@ -33,7 +40,7 @@ var tools	=	{
 					fire_click(a);
 				}
 			}));
-			menu.popup(e.x, e.y);
+			tools.popup_context_menu(e.x, e.y, win, menu);
 		});
 	},
 
@@ -65,7 +72,7 @@ var tools	=	{
 				}));
 				has_items	=	true;
 			}
-			if((active.get('tag') == 'input' && !['checkbox', 'radio'].contains(active.get('type'))) || active.get('tag') == 'textarea')
+			if((active.get('tag') == 'input' && !['checkbox', 'radio', 'button', 'submit'].contains(active.get('type'))) || active.get('tag') == 'textarea')
 			{
 				menu.append(new gui.MenuItem({
 					label: 'Paste',
@@ -77,15 +84,38 @@ var tools	=	{
 			}
 
 			if(!has_items) return false;
-			var x	=	e.x;
-			var y	=	e.y;
-
-			var curwin	=	gui.Window.get(win);
-			var mainwin	=	gui.Window.get();
-			x	=	x + (curwin.x - mainwin.x);
-			y	=	y + (curwin.y - mainwin.y);
-
-			menu.popup(x, y);
+			tools.popup_context_menu(e.x, e.y, win, menu);
 		});
+	},
+
+	attach_copy_url_context_menu: function(win)
+	{
+		if(!win || !win.document || !win.document.body) return false;
+		var body	=	win.document.body;
+		body.addEventListener('contextmenu', function(e) {
+			var a	=	e.target;
+			if(a.tagName.toLowerCase() != 'a' || e.button != 2) return;
+
+			var url		=	a.href;
+			var menu	=	new gui.Menu();
+			menu.append(new gui.MenuItem({
+				label: 'Copy URL',
+				click: function() {
+					var clipboard	=	gui.Clipboard.get();
+					clipboard.set(url, 'text');
+				}
+			}));
+			tools.popup_context_menu(e.x, e.y, win, menu);
+		});
+	},
+
+	popup_context_menu: function(x, y, win, menu)
+	{
+		var curwin	=	gui.Window.get(win);
+		var mainwin	=	gui.Window.get();
+		x	=	x + (curwin.x - mainwin.x);
+		y	=	y + (curwin.y - mainwin.y);
+
+		menu.popup(x, y);
 	}
 };
