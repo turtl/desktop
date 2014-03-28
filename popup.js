@@ -53,6 +53,7 @@
 				}
 				new_height	=	Math.min(new_height, max_height);
 				win.resizeTo(width, new_height);
+				(function () { win.resizeTo(width, new_height); }).delay(50, this);
 				var xy	=	tools.get_popup_coords(width, new_height);
 				win.moveTo(xy.x, xy.y);
 			}, 'popup:resize');
