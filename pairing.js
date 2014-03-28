@@ -25,6 +25,7 @@
 
 			Popup.open({
 				skip_login: true,
+				skip_focus: true,	// focus closes the FF panel...
 				dispatch: 'pair',
 				public_key: keys.public
 			});

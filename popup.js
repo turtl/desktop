@@ -57,7 +57,7 @@
 				win.moveTo(xy.x, xy.y);
 			}, 'popup:resize');
 			win.on('loaded', function() {
-				win.focus();
+				if(!options.skip_focus) win.focus();
 				win.window.set_parent(gui.Window.get().window, options);
 				tools.attach_copy_paste_context_menu(win.window);
 			});
