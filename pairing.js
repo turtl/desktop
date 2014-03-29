@@ -23,6 +23,9 @@
 				Pairing.start();
 			}
 
+			// skip popping up if the pairing popup is already open
+			if(Popup.last_dispatch == 'pair' && Popup.win) return false;
+
 			Popup.open({
 				skip_login: true,
 				dispatch: 'pair',
