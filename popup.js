@@ -73,6 +73,7 @@
 			comm.unbind_context('popup:resize');
 			Popup.release();
 			Popup.win.close();
+			Popup.win	=	null;
 		},
 
 		load_controller: function(container_el, controller, params, options)
