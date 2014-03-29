@@ -62,7 +62,7 @@
 				win.window.set_parent(gui.Window.get().window, options);
 				tools.attach_copy_paste_context_menu(win.window);
 			});
-			win.setShowInTaskbar(false);
+			if(win.setShowInTaskbar) win.setShowInTaskbar(false);
 			win.setAlwaysOnTop(true);
 			Popup.win	=	win;
 		},
