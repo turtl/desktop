@@ -206,7 +206,7 @@ window.addEvent('domready', function() {
 			var win		=	gui.Window.get(popup);
 			win.on('loaded', function() {
 				// when the window is loaded, add our image context menus
-				attach_image_context_menu(win.window.document.body);
+				tools.attach_image_context_menu(win.window.document.body);
 			});
 		}
 	});
