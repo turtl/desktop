@@ -7,7 +7,17 @@ var tools	=	{
 	 */
 	get_popup_coords: function(width, height)
 	{
-		return {x: tools.res[0] - (width + 6), y: tools.res[1] - (height + 6)};
+		if(process.platform.match(/darwin/i))
+		{
+			var x	=	tools.res[0] - (width + 6);
+			var y	=	24;
+		}
+		else
+		{
+			var x	=	tools.res[0] - (width + 6);
+			var y	=	tools.res[1] - (height + 6);
+		}
+		return {x: x, y: y};
 	},
 
 	/**
