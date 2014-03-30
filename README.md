@@ -1,11 +1,14 @@
 Turtl desktop
 =============
 
-Here it is, folks. Turtl sans the browser.
+This is the desktop app wrapper around the Turtl [core](https://github.com/turtl/js).
+It provides a native experience for Windows, Linux, and OSx allowing anyone to
+use Turtl without a browser.
 
 Setup
 -----
-To get the source working, download node-webkit for your system.
+To get the source working, download [node-webkit](https://github.com/rogerwang/node-webkit)
+for your system.
 
 Then create a symlink:
 
