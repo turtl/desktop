@@ -2,7 +2,7 @@
 	"name": "Turtl",
 	"description": "Securely track files, notes, and lists and collaborate with others.",
 	"main": "data/index.html",
-	"version": "0.4.2",
+	"version": "0.5.0",
 	"window": {
 		"width": 1024,
 		"height": 768,
