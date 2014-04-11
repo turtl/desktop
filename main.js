@@ -13,6 +13,17 @@ window._in_desktop	=	true;
 var _desktop_tray	=	null;
 var comm			=	new Comm();
 var gui				=	require('nw.gui');
+var min_to_tray		=	JSON.parse(localStorage['minimize_to_tray'] || 'false') || false;
+console.log('min: ', min_to_tray);
+
+/**
+ * Saves our minimize-to-tray value in storage
+ */
+function set_tray_min(bool)
+{
+	localStorage['minimize_to_tray']	=	JSON.encode(bool);
+	min_to_tray	=	bool;
+}
 
 /**
  * Make sure our tray menu is updated based on the user's login status.
@@ -34,6 +45,9 @@ function update_tray_menu()
 	var menu	=	new gui.Menu();
 	var lbl		=	function(str) { return '  '+str; };
 	menu.append(new gui.MenuItem({ label: lbl('Open Turtl'), icon: 'data/app/images/favicon.png', click: function() { win.show(); } }));
+	menu.append(new gui.MenuItem({ type: 'separator' }));
+	console.log('min2: ', min_to_tray);
+	menu.append(new gui.MenuItem({ type: 'checkbox', checked: min_to_tray, label: lbl('Minimize to tray'), click: function() { set_tray_min(this.checked); } }));
 	menu.append(new gui.MenuItem({ type: 'separator' }));
 
 	// login-specific menu items
@@ -152,6 +166,7 @@ function bind_login_to_menu()
 
 	make_tray();
 	win.on('minimize', function() {
+		if(!min_to_tray) return false;
 		win.hide();
 		// Window.hide() hides the tray menu, so we just remove it and re-add it
 		make_tray();
