@@ -119,6 +119,43 @@ var tools	=	{
 		});
 	},
 
+	/**
+	 * process any target="_blank" links and be smart about whether we open them
+	 * internally or spawn a browser window via the OS' default browser.
+	 */
+	hijack_external_links: function(win)
+	{
+		if(!win || !win.document || !win.document.body) return false;
+		var body	=	win.document.body;
+		body.addEvent('click:relay(a)', function(e) {
+			var atag		=	next_tag_up('a', e.target);
+			var external	=	false;
+			if(!atag.href.match(/^(blob:|file:)/i) && atag.href.match(/^[a-z]+:/i))
+			{
+				external	=	true;
+			}
+			if(!atag.href.match(/^blob:/) && atag.target != '_blank' && !external) return;
+			e.stop();
+
+			if(external)
+			{
+				// we're opening a link outside the app, open the OS' browser
+				gui.Shell.openExternal(atag.href)
+			}
+			else
+			{
+				// this is an in-app link.
+				var popup	=	window.open(atag.href);
+				var win		=	gui.Window.get(popup);
+				win.on('loaded', function() {
+					// when the window is loaded, add our image context menus
+					tools.attach_image_context_menu(win.window.document.body);
+				});
+			}
+		});
+
+	},
+
 	popup_context_menu: function(x, y, win, menu)
 	{
 		var curwin	=	gui.Window.get(win);

@@ -184,32 +184,7 @@ window.addEvent('domready', function() {
 	// handle <a> tags properly. if it's a blob/file URL, we open an in-app
 	// window. if it's an external URL we open an OS browser window. otherwise
 	// just return business as usual (probably an in-app link)
-	document.body && document.body.addEvent('click:relay(a)', function(e) {
-		var atag		=	next_tag_up('a', e.target);
-		var external	=	false;
-		if(!atag.href.match(/^(blob:|file:)/i) && atag.href.match(/^[a-z]+:/i))
-		{
-			external	=	true;
-		}
-		if(!atag.href.match(/^blob:/) && atag.target != '_blank' && !external) return;
-		e.stop();
-
-		if(external)
-		{
-			// we're opening a link outside the app, open the OS' browser
-			gui.Shell.openExternal(atag.href)
-		}
-		else
-		{
-			// this is an in-app link.
-			var popup	=	window.open(atag.href);
-			var win		=	gui.Window.get(popup);
-			win.on('loaded', function() {
-				// when the window is loaded, add our image context menus
-				tools.attach_image_context_menu(win.window.document.body);
-			});
-		}
-	});
+	tools.hijack_external_links(window);
 
 	var keyboard	=	new Composer.Keyboard({meta_bind: true});
 	// Ctrl+Shift+k is open console (if enabled in config)
