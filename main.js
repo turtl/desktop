@@ -14,7 +14,6 @@ var _desktop_tray	=	null;
 var comm			=	new Comm();
 var gui				=	require('nw.gui');
 var min_to_tray		=	JSON.parse(localStorage['minimize_to_tray'] || 'false') || false;
-console.log('min: ', min_to_tray);
 
 /**
  * Saves our minimize-to-tray value in storage
@@ -45,9 +44,6 @@ function update_tray_menu()
 	var menu	=	new gui.Menu();
 	var lbl		=	function(str) { return '  '+str; };
 	menu.append(new gui.MenuItem({ label: lbl('Open Turtl'), icon: 'data/app/images/favicon.png', click: function() { win.show(); } }));
-	menu.append(new gui.MenuItem({ type: 'separator' }));
-	console.log('min2: ', min_to_tray);
-	menu.append(new gui.MenuItem({ type: 'checkbox', checked: min_to_tray, label: lbl('Minimize to tray'), click: function() { set_tray_min(this.checked); } }));
 	menu.append(new gui.MenuItem({ type: 'separator' }));
 
 	// login-specific menu items
@@ -88,6 +84,8 @@ function update_tray_menu()
 		menu.append(new gui.MenuItem({ label: lbl('Logout'), click: function() { turtl.user.logout() } }));
 		menu.append(new gui.MenuItem({ type: 'separator' }));
 	}
+	menu.append(new gui.MenuItem({ type: 'checkbox', checked: min_to_tray, label: lbl('Minimize to tray'), click: function() { set_tray_min(this.checked); } }));
+	menu.append(new gui.MenuItem({ type: 'separator' }));
 	menu.append(new gui.MenuItem({ label: lbl('Quit'), click: function() {
 		Notifications.close();
 		Popup.close();
