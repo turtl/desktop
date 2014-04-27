@@ -10,7 +10,7 @@
 		"icon": "data/app/images/favicon.png"
 	},
 
-	"single-instance": false,
+	"single-instance": true,
 	"dom_storage_quota": 4096,
 	"js-flags": "--harmony_proxies --harmony_collections",
 
