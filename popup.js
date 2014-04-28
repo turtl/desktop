@@ -61,6 +61,7 @@
 				if(!options.skip_focus) win.focus();
 				win.window.set_parent(gui.Window.get().window, options);
 				tools.attach_copy_paste_context_menu(win.window);
+				tools.hijack_external_links(win.window);
 			});
 			if(win.setShowInTaskbar) win.setShowInTaskbar(false);
 			win.setAlwaysOnTop(true);

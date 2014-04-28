@@ -13,6 +13,16 @@ window._in_desktop	=	true;
 var _desktop_tray	=	null;
 var comm			=	new Comm();
 var gui				=	require('nw.gui');
+var min_to_tray		=	JSON.parse(localStorage['minimize_to_tray'] || 'false') || false;
+
+/**
+ * Saves our minimize-to-tray value in storage
+ */
+function set_tray_min(bool)
+{
+	localStorage['minimize_to_tray']	=	JSON.encode(bool);
+	min_to_tray	=	bool;
+}
 
 /**
  * Make sure our tray menu is updated based on the user's login status.
@@ -74,6 +84,8 @@ function update_tray_menu()
 		menu.append(new gui.MenuItem({ label: lbl('Logout'), click: function() { turtl.user.logout() } }));
 		menu.append(new gui.MenuItem({ type: 'separator' }));
 	}
+	menu.append(new gui.MenuItem({ type: 'checkbox', checked: min_to_tray, label: lbl('Minimize to tray'), click: function() { set_tray_min(this.checked); } }));
+	menu.append(new gui.MenuItem({ type: 'separator' }));
 	menu.append(new gui.MenuItem({ label: lbl('Quit'), click: function() {
 		Notifications.close();
 		Popup.close();
@@ -152,6 +164,7 @@ function bind_login_to_menu()
 
 	make_tray();
 	win.on('minimize', function() {
+		if(!min_to_tray) return false;
 		win.hide();
 		// Window.hide() hides the tray menu, so we just remove it and re-add it
 		make_tray();
@@ -184,32 +197,7 @@ window.addEvent('domready', function() {
 	// handle <a> tags properly. if it's a blob/file URL, we open an in-app
 	// window. if it's an external URL we open an OS browser window. otherwise
 	// just return business as usual (probably an in-app link)
-	document.body && document.body.addEvent('click:relay(a)', function(e) {
-		var atag		=	next_tag_up('a', e.target);
-		var external	=	false;
-		if(!atag.href.match(/^(blob:|file:)/i) && atag.href.match(/^[a-z]+:/i))
-		{
-			external	=	true;
-		}
-		if(!atag.href.match(/^blob:/) && atag.target != '_blank' && !external) return;
-		e.stop();
-
-		if(external)
-		{
-			// we're opening a link outside the app, open the OS' browser
-			gui.Shell.openExternal(atag.href)
-		}
-		else
-		{
-			// this is an in-app link.
-			var popup	=	window.open(atag.href);
-			var win		=	gui.Window.get(popup);
-			win.on('loaded', function() {
-				// when the window is loaded, add our image context menus
-				tools.attach_image_context_menu(win.window.document.body);
-			});
-		}
-	});
+	tools.hijack_external_links(window);
 
 	var keyboard	=	new Composer.Keyboard({meta_bind: true});
 	// Ctrl+Shift+k is open console (if enabled in config)
