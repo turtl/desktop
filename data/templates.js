@@ -10,61 +10,86 @@ var action	=	(board.id ? \'Edit\' : \'Add\');\
 		<? } else { ?>\
 			<?=action?> board\
 		<? } ?>\
-		<? if(return_to_manage) { ?>\
-			<small><a href="#manage">&laquo; Back to board manager</a></small>\
-		<? } ?>\
 	</h1>\
 <? } ?>\
 <div class="board-edit clear <? if(bare) { ?>bare<? } ?>">\
 	<form>\
 		<? if(bare) { ?>\
 			<input type="text" name="name" value="<?=board.title?>" placeholder="Board name">\
-			<a href="#submit"><img src="<?=img(\'/images/site/icons/check_16x16.png\')?>" width="16" height="16" alt="submit"></a>\
-			<a href="#cancel"><img src="<?=img(\'/images/site/icons/x_16x16.png\')?>" width="16" height="16" alt="cancel"></a>\
+			<div class="actions">\
+				<!--<a href="#submit"><icon>&#10003;</icon></a>-->\
+				<!--<a href="#cancel"><icon>&#10060;</icon></a>-->\
+				<input type="submit" class="add" value="<?=action?>">\
+				<a href="#cancel">Cancel</a>\
+			</div>\
 		<? } else { ?>\
 			<input type="submit" value="<?=action?> board">\
 			<input type="text" name="name" value="<?=board.title?>" placeholder="Board name">\
+			<? if(show_settings) { ?>\
+				<div class="settings">\
+					<a href="#delete">\
+						<icon>&#59177;</icon>\
+						Delete this board\
+					</a>\
+				</div>\
+			<? } ?>\
 		<? } ?>\
 	</form>\
 </div>\
 ';
 
-_templates['boards/list'] = '<div class="board-list">\
-	<? if(boards.length > 0) { ?>\
-		<select id="board_selector">\
-			<? boards.each(function(p) { ?>\
-				<option\
-					value="<?=p.id?>"\
-					<? if(current == p.id) { ?>selected<? } ?>>\
-					<?=p.title?>\
-				</option>\
-			<? }); ?>\
-		</select>\
-		<ul class="actions">\
-			<li>\
-				<a href="#" class="add" title="Add a new board (shortcut `b`)">\
-					<icon>&oplus;</icon>\
-				</a>\
-			</li>\
-			<li>\
-				<a href="#" class="manage" title="Manage your boards">\
-					<img src="<?=img(\'/images/site/icons/manage_16x16_black.png\')?>" alt="manage" width="16" height="16">\
-				</a>\
-			</li>\
-		</ul>\
-	<? } else { ?>\
-		<ul class="actions">\
-			<li>\
-				<a href="#" class="add first" title="Add a new board (shortcut `b`)">\
-					<icon>&oplus;</icon>\
-					Add your first board\
-				</a>\
-			</li>\
-		</ul>\
-	<? } ?>\
-	<?/* little trick i learned in nam */?>\
-	<span style="clear:left;display:block;"></span>\
-</div>\
+_templates['boards/index'] = '<? if(num_boards > 0) { ?>\
+	<div class="board-list <? if(is_open) { ?>open<? } ?>">\
+		<a class="main" href="#open">\
+			<icon>&#59228;</icon>\
+			<?=current.title?>\
+		</a>\
+		<div class="dropdown <? if(is_open) { ?>open<? } ?>">\
+			<div class="header">\
+				<div class="button add" title="Add a new board">\
+					<span><icon>&oplus;</icon> New board</span>\
+				</div>\
+				<h3>Your boards</h3>\
+			</div>\
+			<div class="add-board"></div>\
+			<div class="actions">\
+				<input type="text" name="filter" value="" placeholder="Search your boards">\
+			</div>\
+			<div class="boards-sub"></div>\
+		</div>\
+	</div>\
+<? } else { ?>\
+	<div class="button add">\
+		<span><icon>&oplus;</icon> Add your first board</span>\
+	</div>\
+<? } ?>\
+<?/* little trick i learned in nam */?>\
+<span style="clear:left;display:block;"></span>\
+';
+
+_templates['boards/list'] = '<ul>\
+	<? boards.each(function(b) { ?>\
+		<?\
+		var active_share	=	b.privs && Object.keys(b.privs).length > 0;\
+		?>\
+		<li>\
+			<? if(show_actions) { ?>\
+				<ul class="<?=b.id?>">\
+					<? if(b.shared) { ?>\
+						<li><a href="#leave" title="Leave this board"><icon>&#59201;</icon></a></li>\
+					<? } else { ?>\
+						<li <? if(active_share) { ?>class="active"<? } ?>><a href="#share" title="Share this board"><icon>&#59196;</icon></a></li>\
+						<li><a href="#edit" title="Board settings"><icon>&#9881;</icon></a></li>\
+						<!--<li><a href="#delete" title="Delete this board"><icon>&#59177;</icon></a></li>-->\
+					<? } ?>\
+				</ul>\
+			<? } ?>\
+			<a class="board <? if(current && current.id == b.id) { ?>current<? } ?>" href="#board-<?=b.id?>">\
+				<?=b.title?>\
+			</a>\
+		</li>\
+	<? }); ?>\
+</ul>\
 ';
 
 _templates['boards/manage'] = '<h1>Manage boards</h1>\
@@ -198,8 +223,8 @@ _templates['categories/list'] = '<? if(categories.length > 0) { ?>\
 
 _templates['dashboard/index'] = '<div class="dashboard clear">\
 	<div class="notes clear"></div>\
+	<div class="boards"></div>\
 	<div class="sidebar">\
-		<div class="boards"></div>\
 		<div class="menu">\
 			<div class="categories"></div>\
 			<div class="tags clear"></div>\
@@ -256,7 +281,7 @@ _templates['help/index'] = '<h1>Quick help</h1>\
 		</tr>\
 		<tr>\
 			<td><kbd>b</kbd></td>\
-			<td>Add a new board</td>\
+			<td>Open board dropdown</td>\
 		</tr>\
 		<tr>\
 			<td><kbd>enter</kbd></td>\
@@ -502,6 +527,10 @@ _templates['notes/edit'] = '<?  var action = note.id ? \'Edit\' : \'Add\'; ?>\
 		<span class="clearMe">&nbsp;</span>\
 \
 		<div class="markdown-tutorial note-view content">\
+			<p>\
+				Turtl notes use Markdown, a format that\'s easy to read and write\
+				and doesn\'t require a clunky editor.\
+			</p>\
 			<table>\
 				<tr>\
 					<td># One hash makes a large title</td>\
@@ -549,6 +578,33 @@ _templates['notes/edit'] = '<?  var action = note.id ? \'Edit\' : \'Add\'; ?>\
 \
 			<span class="markdown-link form-note">Read more about <a href="http://support.mashery.com/docs/customizing_your_portal/Markdown_Cheat_Sheet" target="_blank">markdown</a>.</span>\
 			<br><br>\
+\
+			<p>\
+				Turtl now also supports TeX math. Begin and end your equation(s)\
+				with <code>$$</code>:\
+			</p>\
+			<table>\
+				<tr>\
+					<td>$$ P(E)   = {n \\\\choose k} p^k (1-p)^{ n-k} $$</td>\
+					<td><pre class="math">P(E)   = {n \\\\choose k} p^k (1-p)^{ n-k}</pre></td>\
+				</tr>\
+				<tr>\
+					<td>\
+						$$<br>\
+						\\\\begin{aligned}<br>\
+						\\\\dot{x} &amp; = \\\\sigma(y-x) \\\\\\\\<br>\
+						\\\\dot{y} &amp; = \\\\rho x - y - xz \\\\\\\\<br>\
+						\\\\dot{z} &amp; = -\\\\beta z + xy<br>\
+						\\\\end{aligned}<br>\
+						$$\
+					</td>\
+					<td><pre class="math">\\\\begin{aligned}\
+\\\\dot{x} & = \\\\sigma(y-x) \\\\\\\\\
+\\\\dot{y} & = \\\\rho x - y - xz \\\\\\\\\
+\\\\dot{z} & = -\\\\beta z + xy\
+\\\\end{aligned}</pre></td>\
+				</tr>\
+			</table>\
 		</div>\
 \
 		<span class="clearMe"></span>\
@@ -629,13 +685,15 @@ var t = \'<li class="\'+view.tagetize(tagname, {escape: true})+\' \'+(selected ?
 
 _templates['notes/index'] = '<div class="note-actions">\
 	<div class="button note add" title="Add a new note to the current board (shortcut `a`)">\
-		<span><icon>&oplus;</icon> Add note</span>\
+		<span><icon>&#10002;</icon> Add note</span>\
 	</div>\
+	<?/*\
 	<? if(enable_share) { ?>\
 		<div class="button muted note share" title="Share this board">\
 			<span><icon>&#59196;</icon> Share this board</span>\
 		</div>\
 	<? } ?>\
+	*/?>\
 \
 	<div class="sort hidden">\
 		Sort notes by&nbsp;&nbsp;|&nbsp;\
@@ -689,16 +747,20 @@ if(color) color = [\'none\',\'blue\',\'red\',\'green\',\'purple\',\'pink\',\'bro
 <? if(color) { ?><span class="color <?=color?>"></span><? } ?>\
 \
 <div class="actions">\
-	<a class="sort" href="#sort" title="Drag to sort"><span></span></a>\
 	<a class="open" href="#open" title="Open note (shortcut `enter`)">\
 		<icon>&#59212;</icon>\
 	</a>\
+	<a href="#edit" class="edit" title="Edit note (shortcut `e`)"><icon>&#9998;</icon></a>\
+	<a href="#delete" class="delete" title="Delete note (shortcut `delete`)"><icon>&#59177;</icon></a>\
+\
+	<!--\
 	<a class="menu" href="#menu" title="Note menu"><span>Note menu</span></a>\
 	<ul class="dropdown">\
-		<li><a href="#edit" class="edit" title="Edit note (shortcut `e`)"><span>Edit note</span></a></li>\
-		<!--<li><a href="#move" class="move" title="Move note to another board (shortcut `m`)"><span>Move note to another board</span></a></li>-->\
-		<li><a href="#delete" class="delete" title="Delete note (shortcut `delete`)"><span>Delete note</span></a></li>\
+		<li></li>\
+		<li><a href="#move" class="move" title="Move note to another board (shortcut `m`)"><span>Move note to another board</span></a></li>\
+		<li></li>\
 	</ul>\
+	-->\
 </div>\
 <?=Template.render(\'notes/note_file\', {\
 	has_file: has_file,\
@@ -726,11 +788,11 @@ if(!title) title = note.url.replace(/^[\\w]+:\\/\\/(www\\.)?/i, \'\').replace(/(
 ?>\
 <h1><a href="<?=link?>" target="_blank"><?=title?></a></h1>\
 <? if(note.text && note.text != \'\') { ?>\
-	<?=markdown.toHTML(note.text)?>\
+	<?=view.note_body(note.text)?>\
 <? } ?>\
 ';
 
-_templates['notes/list/text'] = '<?=markdown.toHTML(note.text)?>\
+_templates['notes/list/text'] = '<?=view.note_body(note.text)?>\
 ';
 
 _templates['notes/move'] = '<h1>Move this note to another board</h1>\
@@ -780,7 +842,7 @@ _templates['notes/view/image'] = '<a class="img clear" href="<?=note.url?>" targ
 		<? } ?>\
 		<span class="clearMe"></span>\
 		<? if(note.text && note.text != \'\') { ?>\
-			<?=markdown.toHTML(note.text)?>\
+			<?=view.note_body(note.text)?>\
 		<? } ?>\
 	</div>\
 <? } ?>\
@@ -793,12 +855,16 @@ if(color) color = [\'none\',\'blue\',\'red\',\'green\',\'purple\',\'pink\',\'bro
 <? if(color) { ?><span class="color <?=color?>"></span><? } ?>\
 \
 <div class="actions">\
+	<a href="#edit" class="edit" title="Edit note (shortcut `e`)"><icon>&#9998;</icon></a>\
+	<a href="#delete" class="delete" title="Delete note (shortcut `delete`)"><icon>&#59177;</icon></a>\
+	<!--\
 	<a class="menu" href="#menu" title="Note menu"><span>Note menu</span></a>\
 	<ul class="dropdown">\
 		<li><a href="#edit" class="edit" title="Edit note (shortcut `e`)"><span>Edit note</span></a></li>\
-		<!--<li><a href="#move" class="move" title="Move note to another board (shortcut `m`)"><span>Move note to another board</span></a></li>-->\
+		<li><a href="#move" class="move" title="Move note to another board (shortcut `m`)"><span>Move note to another board</span></a></li>\
 		<li><a href="#delete" class="delete" title="Delete note (shortcut `delete`)"><span>Delete note</span></a></li>\
 	</ul>\
+	-->\
 </div>\
 <?=Template.render(\'notes/note_file\', {\
 	has_file: has_file,\
@@ -828,7 +894,7 @@ if(!title) title = note.url.replace(/^[\\w]+:\\/\\/(www\\.)?/i, \'\');\
 <h1><a href="<?=link?>" target="_blank"><?=title?></a></h1>\
 <? if(note.text && note.text != \'\') { ?>\
 	<span class="clearMe"></span>\
-	<?=markdown.toHTML(note.text)?>\
+	<?=view.note_body(note.text)?>\
 <? } ?>\
 ';
 
@@ -845,7 +911,7 @@ _templates['notes/view/tags'] = '<? if(tags.length > 0) { ?>\
 ';
 
 _templates['notes/view/text'] = '<? if(tags != \'\') { ?><?=tags?><? } ?>\
-<?=markdown.toHTML(note.text)?>\
+<?=view.note_body(note.text)?>\
 ';
 
 _templates['notifications/index'] = '<!--\
@@ -925,7 +991,7 @@ var action = persona.id ? \'Edit\' : \'Add\';\
 			By default, your Turtl account is private. Personas change this by\
 			giving your account a face: a name and an email people can use to\
 			find you on Turtl and securely share with you.\
-			<a href="http://turtl.it/security#personas" target="_blank">Read more &raquo;</a>\
+			<a href="http://turtl.it/docs/overview#personas-and-sharing" target="_blank">Read more &raquo;</a>\
 		</p>\
 	</div>\
 </div>\
@@ -1031,18 +1097,23 @@ _templates['tags/index'] = '<!--\
 _templates['tags/item'] = '<?=tag.name?>\
 ';
 
+_templates['users/index'] = '<div class="user-main clear">\
+	<div class="login-main">\
+	</div>\
+	<div class="join-main">\
+	</div>\
+</div>\
+';
+
 _templates['users/join'] = '<div class="userform join">\
-	<h1>\
-		Join Turtl\
-		<small><a href="/users/login" title="Log in">Already have an account?</a></small>\
-	</h1>\
+	<h1>Join Turtl</h1>\
 	<form action="/users/join">\
-		<input type="text" name="username" placeholder="Username" tabindex="1">\
-		<input type="password" name="password" placeholder="Password" tabindex="2">\
-		<input type="password" name="confirm" placeholder="Confirm password" tabindex="3">\
+		<input type="text" name="username" placeholder="Username" tabindex="4">\
+		<input type="password" name="password" placeholder="Password" tabindex="5">\
+		<input type="password" name="confirm" placeholder="Confirm password" tabindex="6">\
 		<div class="content">\
 			<p class="error">\
-				You <em>must</em> <strong>remember your password</strong>.\
+				You must <strong>remember your username/password</strong>.\
 			</p>\
 			<p>\
 				Your password is used not only to log you in, but to decrypt all\
@@ -1051,19 +1122,16 @@ _templates['users/join'] = '<div class="userform join">\
 				(it\'s encrypted with your password).\
 			</p>\
 			<p>\
-				<em>Make sure you keep your password in a safe place!</em>\
+				<em>Make sure you keep your username and password in a safe place!</em>\
 			</p>\
 		</div>\
-		<input type="submit" value="Join" tabindex="4">\
+		<input type="submit" value="Join" tabindex="7">\
 	</form>\
 </div>\
 ';
 
 _templates['users/login'] = '<div class="userform login">\
-	<h1>\
-		Login\
-		<small><a href="/users/join" title="Join Turtl">Don\'t have an account?</a></small>\
-	</h1>\
+	<h1>Login</h1>\
 	<form action="/users/login">\
 		<input type="text" name="username" placeholder="Username" tabindex="1">\
 		<input type="password" name="password" placeholder="Password" tabindex="2">\

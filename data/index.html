@@ -61,7 +61,7 @@
 <script src="app/library/hustle.js"></script>
 <script src="app/library/loglevel.js"></script>
 <script src="app/library/lunr.js"></script>
-<script src="app/library/Markdown.Converter.js"></script>
+<script src="app/library/marked.js"></script>
 <script src="app/library/modal.js"></script>
 <script src="app/library/mooMasonry.js"></script>
 <script src="app/library/sjcl.js"></script>
@@ -86,6 +86,7 @@
 <script src="app/controllers/_modules/track_controller.js"></script>
 <script src="app/controllers/boards/edit.js"></script>
 <script src="app/controllers/boards/index.js"></script>
+<script src="app/controllers/boards/list.js"></script>
 <script src="app/controllers/boards/manage.js"></script>
 <script src="app/controllers/boards/share.js"></script>
 <script src="app/controllers/bookmark.js"></script>
@@ -113,6 +114,7 @@
 <script src="app/controllers/sync/index.js"></script>
 <script src="app/controllers/tags/index.js"></script>
 <script src="app/controllers/tags/item.js"></script>
+<script src="app/controllers/users/index.js"></script>
 <script src="app/controllers/users/join.js"></script>
 <script src="app/controllers/users/login.js"></script>
 
@@ -132,6 +134,24 @@
 <script src="app/models/setting.js"></script>
 <script src="app/models/tag.js"></script>
 <script src="app/models/user.js"></script>
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+          imageFont: null,
+          extensions: ['tex2jax.js'],
+          jax: ['input/TeX','output/HTML-CSS'],
+          tex2jax: {
+            processEscapes: true
+          },
+          showMathMenu: false,
+          showMathMenuMSIE: false,
+          showProcessingMessages: false,
+          MathMenu: { showRenderer: false },
+          'HTML-CSS': {
+            showMathMenu: false
+          }
+        });
+    </script>
+	<script src="app/library/mathjax/MathJax.js"></script>
 	<script src="templates.js"></script>
   </head>
   <body class="initial">
@@ -152,7 +172,7 @@
             <img src="app/images/site/icons/load_42x11.gif">
           </div>
         </header>
-        <div id="main" class="maincontent"></div>
+        <div id="main" class="maincontent tex2jax_ignore"></div>
       </div>
     </div>
     <div id="footer">

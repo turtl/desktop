@@ -30,6 +30,24 @@
 	<script src="../dispatch.js"></script>
 	<script src="../main.js"></script>
 {{genjs}}
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+          imageFont: null,
+          extensions: ['tex2jax.js'],
+          jax: ['input/TeX','output/HTML-CSS'],
+          tex2jax: {
+            processEscapes: true
+          },
+          showMathMenu: false,
+          showMathMenuMSIE: false,
+          showProcessingMessages: false,
+          MathMenu: { showRenderer: false },
+          'HTML-CSS': {
+            showMathMenu: false
+          }
+        });
+    </script>
+	<script src="app/library/mathjax/MathJax.js"></script>
 	<script src="templates.js"></script>
   </head>
   <body class="initial">
@@ -50,7 +68,7 @@
             <img src="app/images/site/icons/load_42x11.gif">
           </div>
         </header>
-        <div id="main" class="maincontent"></div>
+        <div id="main" class="maincontent tex2jax_ignore"></div>
       </div>
     </div>
     <div id="footer">
