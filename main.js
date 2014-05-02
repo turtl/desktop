@@ -52,15 +52,19 @@ function update_tray_menu()
 		menu.append(new gui.MenuItem({
 			label: lbl('Add note'),
 			click: function(e) {
-				Popup.open({dispatch: 'add-note'});
-				/*
-				new NoteEditController({
-					board: 'last',
-					show_boards: true,
-					track_last_board: true
-				});
-				win.show();
-				*/
+				if(turtl.profile.get('boards').models().length > 0)
+				{
+					Popup.open({dispatch: 'add-note'});
+				}
+				else
+				{
+					new BoardEditController({
+						profile: turtl.profile,
+						edit_in_modal: true,
+						title: 'Add your first board to start adding notes'
+					});
+					win.show();
+				}
 			}
 		}));
 		menu.append(new gui.MenuItem({
