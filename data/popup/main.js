@@ -1,11 +1,15 @@
 var app		=	null;
 var barfr	=	null;
 
+// placeholder for the wrap-modal element
+var _popup_modal_wrap	=	null;
+
 function set_parent(win, options)
 {
 	app				=	win;
 	window.log		=	app.log;
 	window.console	=	app.console;
+	win._popup_modal_wrap	=	_popup_modal_wrap;
 	ready(options);
 }
 
@@ -107,6 +111,7 @@ var ready	=	function(options)
 };
 
 window.addEvent('domready', function() {
+	_popup_modal_wrap	=	document.getElement('#wrap-modal');
 	document.body.addEvent('click:relay(#background_content > a.closelink)', function(e) {
 		if(e) e.stop();
 		if(!app) return false;
