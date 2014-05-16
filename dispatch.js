@@ -11,6 +11,9 @@
 	var fs		=	require('fs');
 	var url		=	require('url');
 
+	// actions that do not need pairing to work
+	var public_actions	=	['invite', 'invitecode', 'pair'];
+
 	global.Dispatch	=	new Class({
 		Implements: [Options],
 
@@ -103,7 +106,7 @@
 			// check if we need pairing. if so, the needs_pairing fn will let
 			// the client know, and we just return here.
 			var data	=	null;
-			if(['invite', 'pair'].indexOf(cmd) < 0)
+			if(public_actions.indexOf(cmd) < 0)
 			{
 				if(needs_pairing()) return false;
 
@@ -140,6 +143,14 @@
 						error('bad invite');
 					}
 				});
+				break;
+
+			case 'invitecode':
+				var invite_code	=	qs.code;
+				if(!invite_code || invite_code == '') return error('bad invite code');
+				// store for later (we'll send this over when the user joins)
+				localStorage['invited_by']	=	invite_code;
+				success(true);
 				break;
 
 			case 'pair':
