@@ -307,6 +307,10 @@ _templates['help/index'] = '<h1>Quick help</h1>\
 			<td><kbd>?</kbd></td>\
 			<td>Show this help</td>\
 		</tr>\
+		<tr>\
+			<td><kbd>shift + L</kbd></td>\
+			<td>Log out</td>\
+		</tr>\
 	</table>\
 	<p>\
 		If you are having trouble using Turtl, please email us at <code>info@turtl.it</code>.\
@@ -567,11 +571,15 @@ _templates['notes/edit'] = '<?  var action = note.id ? \'Edit\' : \'Add\'; ?>\
 				<tr>\
 					<td>\
 						&nbsp;&nbsp;&nbsp;&nbsp;indent_code_4_spaces() {}<br><br>\
-						or use backticks for `inline_code()`\
+						```<br>\
+						or_surround(code.by(\'three backticks\'));<br>\
+						```<br><br>\
+						You can use backticks for `inline_code()`<br><br>\
 					</td>\
 					<td>\
 						<pre><code>indent_code_4_spaces() {}</code></pre>\
-						or use backticks for <code>inline_code()</code>\
+						<pre><code>or_surround(code.by(\'three backticks\'));</code></pre>\
+						You can use backticks for <code>inline_code()</code>\
 					</td>\
 				</tr>\
 			</table>\
