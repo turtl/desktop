@@ -1,5 +1,106 @@
 var _templates = {};
 
+_templates['account/export'] = 'Export\
+';
+
+_templates['account/index'] = '<h1>Manage your account</h1>\
+<div class="account clear">\
+	<?\
+	var showtab = function(name)\
+	{\
+		var slug = name.toLowerCase().replace(/[^0-9a-z]/g, \'-\').replace(/-+/g, \'-\');\
+		var t = \'<li class="\'+slug;\
+		if(curtab == slug) t += \' sel\';\
+		t += \'">\'+ name +\'</li>\';\
+		return t;\
+	};\
+	?>\
+	<!--\
+	<ul class="type clear">\
+		<?=showtab(\'Profile\')?>\
+		<?=showtab(\'Password\')?>\
+		<?=showtab(\'Export/Import\')?>\
+	</ul>\
+	-->\
+\
+	<div class="account-content"></div>\
+</div>\
+';
+
+_templates['account/password'] = 'Change password\
+';
+
+_templates['account/profile'] = '<?\
+var pretty_size	=	function(size, div)\
+{\
+	var precision	=	2;\
+	var rounder		=	Math.pow(10, precision);\
+	return Math.round((size / div) * rounder) / rounder;\
+};\
+?>\
+<div class="account-profile content">\
+	<div class="size" title="<?=profile_size?> bytes used out of <?=storage?>">\
+		<div class="bar" style="width: <?=Math.min(Math.max((profile_size / storage) * 100, .5), 100)?>%;">\
+			<? if(loading_profile_size) { ?>\
+				&nbsp; (loading)\
+			<? } else { ?>\
+				&nbsp; Storage used: <?=pretty_size(profile_size, 1024 * 1024)?> / <?=pretty_size(storage, 1024 * 1024)?>mb\
+			<? } ?>\
+		</div>\
+	</div>\
+\
+	<div class="promo clear">\
+		<div class="finvite">\
+			<a href="#invite">\
+				<icon>&#59136;</icon>\
+				Invite friends, get more storage\
+			</a>\
+		</div>\
+\
+		<div class="upgrade">\
+			<a href="#upgrade">\
+				<icon>&#58543;</icon>\
+				Upgrade your account\
+			</a>\
+		</div>\
+	</div>\
+	<div class="inviter clear">\
+		<p>\
+			For every person that signs up for Turtl using your invite link,\
+			you get an <strong>extra 25mb of storage</strong>.\
+		</p>\
+		<div class="social">\
+			<? var share_encoded	=	encodeURIComponent(share_link); ?>\
+			<ul>\
+				<li><a href="https://twitter.com/home?status=<?=encodeURIComponent(share_text)?>" target="_blank" class="tw" title="Share Turtl on Twitter"><icon>&#62218;</icon></a></li>\
+				<li><a href="https://www.facebook.com/sharer/sharer.php?u=<?=share_encoded?>" target="_blank" class="fb" title="Share Turtl on Facebook"><icon>&#62221;</icon></a></li>\
+				<li><a href="https://plus.google.com/share?url=<?=share_encoded?>" target="_blank" class="gp" title="Share Turtl on Google+"><icon>&#62224;</icon></a></li>\
+				<li><a href="http://www.tumblr.com/share?v=3&u=<?=share_encoded?>&t=<?=encodeURIComponent(\'Turtl\')?>" target="_blank" class="tb" title="Share Turtl on Tumblr"><icon>&#62230;</icon></a></li>\
+				<li><a href="https://www.linkedin.com/shareArticle?mini=true&url=<?=share_encoded?>&title=<?=encodeURIComponent(\'Turtl\')?>" target="_blank" class="li" title="Share Turtl on LinkedIn"><icon>&#62233;</icon></a></li>\
+			</ul>\
+		</div>\
+		<div class="link">\
+			<p>Invite directly by emailing or sharing this link:</p>\
+			<p><a href="mailto:?subject=<?=encodeURIComponent(\'Check out Turtl\')?>&body=<?=share_encoded?>" target="_blank"><strong><?=share_link?></strong></a></p>\
+		</div>\
+	</div>\
+\
+	<h2>Account info</h2>\
+	<ul class="info">\
+		<li>\
+			You own <?=num_boards?> boards, containing <?=num_notes?> notes in total.\
+		</li>\
+		<li>\
+			You are sharing <?=num_shared_boards?> board<?=(num_shared_boards == 1 ? \'\' : \'s\')?>, and\
+			<?=num_boards_shared?> board<?=(num_boards_shared == 1 ? \' is\' : \'s are\')?> shared with you.\
+		</li>\
+		<li>\
+			You have been a member since <?=member_since?> (<?=Math.ceil(member_days)?> days).\
+		</li>\
+	</ul>\
+</div>\
+';
+
 _templates['boards/edit'] = '<?\
 var action	=	(board.id ? \'Edit\' : \'Add\');\
 ?>\
@@ -424,9 +525,15 @@ _templates['modules/header_bar'] = '<div class="actions">\
 	<? if(user.id && !window._in_ext) { ?>\
 		<a class="menu" href="#menu" alt="Menu"><icon>&#9881;</icon></a>\
 		<ul class="menu">\
+			<li class="account">\
+				<a href="#account" title="Manage your Turtl account">\
+					<icon>&#8962;</icon>\
+					<span>Manage account</span>\
+				</a>\
+			</li>\
 			<li class="persona">\
 				<a href="#personas" title="Manage your identity">\
-					<icon>&#128100;</icon>\
+					<icon>&#128101;</icon>\
 					<span>Personas</span>\
 				</a>\
 			</li>\
@@ -444,7 +551,7 @@ _templates['modules/header_bar'] = '<div class="actions">\
 			</li>\
 			<li class="logout">\
 				<a href="/users/logout" title="Sign out (shortcut `shift+L`)">\
-					<icon>&#59201;</icon>\
+					<icon>&#128274;</icon>\
 					<span>Logout</span>\
 				</a>\
 			</li>\
@@ -1119,6 +1226,14 @@ _templates['users/join'] = '<div class="userform join">\
 		<input type="text" name="username" placeholder="Username" tabindex="4">\
 		<input type="password" name="password" placeholder="Password" tabindex="5">\
 		<input type="password" name="confirm" placeholder="Confirm password" tabindex="6">\
+		<? if(enable_promo) { ?>\
+			<? if(!promo) { ?>\
+				<a class="open-promo" href="#open-promo">Have a promo code?</a>\
+			<? } ?>\
+			<div class="promo <? if(promo) { ?>open<? } ?>">\
+				Promo code: <input type="text" name="promo" value="<?=promo?>" placeholder="Promo code" tabindex="7">\
+			</div>\
+		<? } ?>\
 		<div class="content">\
 			<p class="error">\
 				You must <strong>remember your username/password</strong>.\
@@ -1133,7 +1248,7 @@ _templates['users/join'] = '<div class="userform join">\
 				<em>Make sure you keep your username and password in a safe place!</em>\
 			</p>\
 		</div>\
-		<input type="submit" value="Join" tabindex="7">\
+		<input type="submit" value="Join" tabindex="8">\
 	</form>\
 </div>\
 ';
