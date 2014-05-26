@@ -1084,7 +1084,7 @@ var action = persona.id ? \'Edit\' : \'Add\';\
 	<? if(was_join) { ?>\
 		<small>(personas let you share with others)</small>\
 	<? } else { ?>\
-		<small><a href="#personas">&laquo; Back to <? if(return_to_manage) { ?>board management<? } else { ?>your personas<? } ?></a></small>\
+		<small><a href="#personas">&laquo; Back to your personas</a></small>\
 	<? } ?>\
 </h1>\
 <div class="persona-edit clear">\
