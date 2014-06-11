@@ -130,13 +130,19 @@ var tools	=	{
 		body.addEvent('click:relay(a)', function(e) {
 			var atag		=	next_tag_up('a', e.target);
 			var external	=	false;
-			if(!atag.href.match(/^(blob:|file:)/i) && atag.href.match(/^[a-z]+:/i))
+			if(atag.href.match(/^http:\/\/blob:/))
+			{
+				atag.href = atag.href.replace(/^http:\/\//, '');
+			}
+			if(!atag.href.match(/^(?blob:|file:)/i) && atag.href.match(/^[a-z]+:/i))
 			{
 				external	=	true;
 			}
-			if(atag.href.match(/^blob:/)) return;
+			if(atag.hasClass('attachment')) return;
 			if(atag.target != '_blank' && !external) return;
 			e.stop();
+
+			console.log('atag: ', atag.href, external);
 
 			if(external)
 			{
