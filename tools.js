@@ -134,7 +134,8 @@ var tools	=	{
 			{
 				external	=	true;
 			}
-			if(!atag.href.match(/^blob:/) && atag.target != '_blank' && !external) return;
+			if(atag.href.match(/^blob:/)) return;
+			if(atag.target != '_blank' && !external) return;
 			e.stop();
 
 			if(external)
