@@ -30,60 +30,46 @@ _templates['account/index'] = '<h1>Manage your account</h1>\
 _templates['account/password'] = 'Change password\
 ';
 
-_templates['account/profile'] = '<?\
-var pretty_size	=	function(size, div)\
-{\
-	var precision	=	2;\
-	var rounder		=	Math.pow(10, precision);\
-	return Math.round((size / div) * rounder) / rounder;\
-};\
-?>\
-<div class="account-profile content">\
-	<div class="size" title="<?=profile_size?> bytes used out of <?=storage?>">\
-		<div class="bar" style="width: <?=Math.min(Math.max((profile_size / storage) * 100, .5), 100)?>%;">\
-			<? if(loading_profile_size) { ?>\
-				&nbsp; (loading)\
-			<? } else { ?>\
-				&nbsp; Storage used: <?=pretty_size(profile_size, 1024 * 1024)?> / <?=pretty_size(storage, 1024 * 1024)?>mb\
-			<? } ?>\
-		</div>\
-	</div>\
+_templates['account/profile'] = '<div class="account-profile content">\
+	<div class="size-container"></div>\
 \
-	<div class="promo clear">\
-		<div class="finvite">\
-			<a href="#invite">\
-				<icon>&#59136;</icon>\
-				Invite friends, get more storage\
-			</a>\
-		</div>\
+	<? if(config.enable_promo) { ?>\
+		<div class="promo clear">\
+			<div class="finvite">\
+				<a href="#invite">\
+					<icon>&#59136;</icon>\
+					Invite friends, get more storage\
+				</a>\
+			</div>\
 \
-		<div class="upgrade">\
-			<a href="#upgrade">\
-				<icon>&#58543;</icon>\
-				Upgrade your account\
-			</a>\
+			<div class="upgrade">\
+				<a href="#upgrade">\
+					<icon>&#58543;</icon>\
+					Upgrade your account\
+				</a>\
+			</div>\
 		</div>\
-	</div>\
-	<div class="inviter clear">\
-		<p>\
-			For every person that signs up for Turtl using your invite link,\
-			you get an <strong>extra 25mb of storage</strong>.\
-		</p>\
-		<div class="social">\
-			<? var share_encoded	=	encodeURIComponent(share_link); ?>\
-			<ul>\
-				<li><a href="https://twitter.com/home?status=<?=encodeURIComponent(share_text)?>" target="_blank" class="tw" title="Share Turtl on Twitter"><icon>&#62218;</icon></a></li>\
-				<li><a href="https://www.facebook.com/sharer/sharer.php?u=<?=share_encoded?>" target="_blank" class="fb" title="Share Turtl on Facebook"><icon>&#62221;</icon></a></li>\
-				<li><a href="https://plus.google.com/share?url=<?=share_encoded?>" target="_blank" class="gp" title="Share Turtl on Google+"><icon>&#62224;</icon></a></li>\
-				<li><a href="http://www.tumblr.com/share?v=3&u=<?=share_encoded?>&t=<?=encodeURIComponent(\'Turtl\')?>" target="_blank" class="tb" title="Share Turtl on Tumblr"><icon>&#62230;</icon></a></li>\
-				<li><a href="https://www.linkedin.com/shareArticle?mini=true&url=<?=share_encoded?>&title=<?=encodeURIComponent(\'Turtl\')?>" target="_blank" class="li" title="Share Turtl on LinkedIn"><icon>&#62233;</icon></a></li>\
-			</ul>\
+		<div class="inviter clear">\
+			<p>\
+				For every person that signs up for Turtl using your invite link,\
+				you get an <strong>extra 25mb of storage</strong>.\
+			</p>\
+			<div class="social">\
+				<? var share_encoded	=	encodeURIComponent(share_link); ?>\
+				<ul>\
+					<li><a href="https://twitter.com/home?status=<?=encodeURIComponent(share_text)?>" target="_blank" class="tw" title="Share Turtl on Twitter"><icon>&#62218;</icon></a></li>\
+					<li><a href="https://www.facebook.com/sharer/sharer.php?u=<?=share_encoded?>" target="_blank" class="fb" title="Share Turtl on Facebook"><icon>&#62221;</icon></a></li>\
+					<li><a href="https://plus.google.com/share?url=<?=share_encoded?>" target="_blank" class="gp" title="Share Turtl on Google+"><icon>&#62224;</icon></a></li>\
+					<li><a href="http://www.tumblr.com/share?v=3&u=<?=share_encoded?>&t=<?=encodeURIComponent(\'Turtl\')?>" target="_blank" class="tb" title="Share Turtl on Tumblr"><icon>&#62230;</icon></a></li>\
+					<li><a href="https://www.linkedin.com/shareArticle?mini=true&url=<?=share_encoded?>&title=<?=encodeURIComponent(\'Turtl\')?>" target="_blank" class="li" title="Share Turtl on LinkedIn"><icon>&#62233;</icon></a></li>\
+				</ul>\
+			</div>\
+			<div class="link">\
+				<p>Invite directly by emailing or sharing this link:</p>\
+				<p><a href="mailto:?subject=<?=encodeURIComponent(\'Check out Turtl\')?>&body=<?=share_encoded?>" target="_blank"><strong><?=share_link?></strong></a></p>\
+			</div>\
 		</div>\
-		<div class="link">\
-			<p>Invite directly by emailing or sharing this link:</p>\
-			<p><a href="mailto:?subject=<?=encodeURIComponent(\'Check out Turtl\')?>&body=<?=share_encoded?>" target="_blank"><strong><?=share_link?></strong></a></p>\
-		</div>\
-	</div>\
+	<? } ?>\
 \
 	<h2>Account info</h2>\
 	<ul class="info">\
@@ -98,6 +84,25 @@ var pretty_size	=	function(size, div)\
 			You have been a member since <?=member_since?> (<?=Math.ceil(member_days)?> days).\
 		</li>\
 	</ul>\
+</div>\
+';
+
+_templates['account/size'] = '<?\
+var pretty_size	=	function(size, div)\
+{\
+	var precision	=	2;\
+	var rounder		=	Math.pow(10, precision);\
+	return Math.round((size / div) * rounder) / rounder;\
+};\
+?>\
+<div class="profile-size" title="<?=profile_size?> bytes used out of <?=storage?>">\
+	<div class="bar" style="width: <?=Math.min(Math.max((profile_size / storage) * 100, 1), 100)?>%;">\
+		<? if(loading_profile_size) { ?>\
+			&nbsp; (loading)\
+		<? } else { ?>\
+			&nbsp; Storage used: <?=pretty_size(profile_size, 1024 * 1024)?> / <?=pretty_size(storage, 1024 * 1024)?>mb\
+		<? } ?>\
+	</div>\
 </div>\
 ';
 
@@ -524,38 +529,46 @@ _templates['invites/list'] = '<h1>Invites</h1>\
 _templates['modules/header_bar'] = '<div class="actions">\
 	<? if(user.id && !window._in_ext) { ?>\
 		<a class="menu" href="#menu" alt="Menu"><icon>&#9881;</icon></a>\
-		<ul class="menu">\
-			<li class="account">\
-				<a href="#account" title="Manage your Turtl account">\
-					<icon>&#8962;</icon>\
-					<span>Manage account</span>\
-				</a>\
-			</li>\
-			<li class="persona">\
-				<a href="#personas" title="Manage your identity">\
-					<icon>&#128101;</icon>\
-					<span>Personas</span>\
-				</a>\
-			</li>\
-			<li class="invites">\
-				<a href="#invites" title="See your invites">\
-					<icon>&#128319;</icon>\
-					<span>Invites</span>\
-				</a>\
-			</li>\
-			<li class="wipe">\
-				<a href="#wipe-data" title="Wipe all local data and log out">\
-					<icon>&#128165;</icon>\
-					<span>Wipe local data</span>\
-				</a>\
-			</li>\
-			<li class="logout">\
-				<a href="/users/logout" title="Sign out (shortcut `shift+L`)">\
-					<icon>&#128274;</icon>\
-					<span>Logout</span>\
-				</a>\
-			</li>\
-		</ul>\
+		<div class="menu">\
+			<div class="top">\
+				<div class="size-container"></div>\
+				<? if(config.enable_promo) { ?>\
+					<a href="#invite" class="invite">Invite friends to get more storage</a>\
+				<? } ?>\
+			</div>\
+			<ul>\
+				<li class="account">\
+					<a href="#account" title="Manage your Turtl account">\
+						<icon>&#8962;</icon>\
+						<span>Account</span>\
+					</a>\
+				</li>\
+				<li class="persona">\
+					<a href="#personas" title="Manage your identity">\
+						<icon>&#128101;</icon>\
+						<span>Personas</span>\
+					</a>\
+				</li>\
+				<li class="invites">\
+					<a href="#invites" title="See your invites">\
+						<icon>&#128319;</icon>\
+						<span>Invites</span>\
+					</a>\
+				</li>\
+				<li class="wipe">\
+					<a href="#wipe-data" title="Wipe all local data and log out">\
+						<icon>&#128165;</icon>\
+						<span>Wipe local data</span>\
+					</a>\
+				</li>\
+				<li class="logout">\
+					<a href="/users/logout" title="Sign out (shortcut `shift+L`)">\
+						<icon>&#128274;</icon>\
+						<span>Logout</span>\
+					</a>\
+				</li>\
+			</ul>\
+		</div>\
 	<? } ?>\
 </div>\
 ';

@@ -4,6 +4,7 @@
   <head>
     <meta http-equiv="Content-Type" content="test/html; charset=utf-8">
     <meta http-equiv="Content-Language" content="en">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Turtl
     </title>
     <link rel="stylesheet" href="app/css/reset.css">
