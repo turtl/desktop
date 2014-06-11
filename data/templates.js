@@ -942,7 +942,6 @@ _templates['notes/move'] = '<h1>Move this note to another board</h1>\
 
 _templates['notes/note_file'] = '<? if(has_file) { ?>\
 	<? var is_image = !note.file.encrypting && note.file.blob_url && note.file.type && note.file.type.match(/^image/); ?>\
-	<? console.log(\'note file: \', note.file.blob_url); ?>\
 	<div class="note-file <?=(is_image ? \'image\' : \'\')?>">\
 		<? if(is_image) { ?>\
 			<a href="<?=note.file.blob_url?>" target="_blank"><img src="<?=note.file.blob_url?>"></a>\
