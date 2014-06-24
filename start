@@ -1,0 +1,6 @@
+#!/bin/bash
+
+export PATH=core:$PATH
+export NODE_PATH=./core/:$NODE_PATH
+c:/dev/node-webkit/nw .
+

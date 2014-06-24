@@ -1,6 +1,7 @@
-Cache/
+core
+data/app
+tmp/
 cookies
 cookies-journal
-tmp/
-data/app
+nw.log
 
