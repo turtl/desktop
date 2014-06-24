@@ -15,11 +15,43 @@
 // in a normal browser, and anything that falls under such a category will
 // eventually put into the core native app.
 process.on('uncaughtException', function(e) { });
+var gui = require('nw.gui');
 
+// -----------------------------------------------------------------------------
+// load turtl-core
+// -----------------------------------------------------------------------------
+var turtl_remote = require('../core/TurtlEvent');
+var turtl_core = {
+	// our main js -> lisp event dispatcher
+	event: new turtl_remote.Event(),
+
+	// remote interface to lisp
+	remote: new turtl_remote.Remote(),
+
+	test: function(ev, res)
+	{
+		ev || (ev = {ev: 'ping'});
+		turtl_core.remote.send(ev, res);
+	}
+};
+turtl_core.event.bind('turtl-loaded', function() {
+	turtl_core.remote.send({ev: 'set-data-directory', data: gui.App.dataPath});
+});
+
+// forward remote events to turtl_core.event
+turtl_core.remote.bind(function(ev) {
+	log.debug('turtl-core: remote: ', ev);
+	turtl_core.event.trigger.apply(turtl_core.event, arguments);
+});
+// start turtl
+turtl_remote.start();
+
+// -----------------------------------------------------------------------------
+// load the main desktop logic
+// -----------------------------------------------------------------------------
 window._in_desktop	=	true;
 var _desktop_tray	=	null;
 var comm			=	new Comm();
-var gui				=	require('nw.gui');
 var min_to_tray		=	JSON.parse(localStorage['minimize_to_tray'] || 'false') || false;
 
 /**

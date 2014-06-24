@@ -18,6 +18,7 @@
     <script src="app/library/composer/composer.relational.js"></script>
     <script src="app/library/composer/composer.filtercollection.js"></script>
     <script src="app/library/composer/composer.keyboard.js"></script>
+    <script src="app/library/loglevel.js"></script>
 	<!--<script src="app/config/config.js"></script>-->
 	<script src="../config.app.js"></script>
 	<script src="app/config/auth.js"></script>
