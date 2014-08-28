@@ -47,6 +47,7 @@
           MathMenu: { showRenderer: false },
           'HTML-CSS': {
             showMathMenu: false,
+			preferredFont: 'TeX',
             scale: 115
           }
         });
