@@ -9,6 +9,13 @@
  * code that needs to be run.
  */
 
+// first things first, set up a global error handler so node shuts its mouth
+// when bad things happen. yes, i know, it messes up the stack, blah blah.
+// it doesn't matter though, because turtl doesn't do anything that doesn't run
+// in a normal browser, and anything that falls under such a category will
+// eventually put into the core native app.
+process.on('uncaughtException', function(e) { });
+
 window._in_desktop	=	true;
 var _desktop_tray	=	null;
 var comm			=	new Comm();

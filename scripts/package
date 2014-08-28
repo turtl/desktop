@@ -19,7 +19,6 @@ echo "Packaging extension."
 
 echo "Copying live config over local."
 mv config.live.js config.js
-mv config.app.js data/app/config/config.js
 
 echo -n "Zipping..."
 zip -qr -9 -X \

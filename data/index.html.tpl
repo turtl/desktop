@@ -4,6 +4,7 @@
   <head>
     <meta http-equiv="Content-Type" content="test/html; charset=utf-8">
     <meta http-equiv="Content-Language" content="en">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Turtl
     </title>
     <link rel="stylesheet" href="app/css/reset.css">
@@ -17,7 +18,8 @@
     <script src="app/library/composer/composer.relational.js"></script>
     <script src="app/library/composer/composer.filtercollection.js"></script>
     <script src="app/library/composer/composer.keyboard.js"></script>
-	<script src="app/config/config.js"></script>
+	<!--<script src="app/config/config.js"></script>-->
+	<script src="../config.app.js"></script>
 	<script src="app/config/auth.js"></script>
 	<script src="app/config/routes.js"></script>
 	<script src="../config.js"></script>

@@ -12,7 +12,7 @@
 	var url		=	require('url');
 
 	// actions that do not need pairing to work
-	var public_actions	=	['invite', 'invitecode', 'pair'];
+	var public_actions	=	['invite', 'invitecode', 'promo', 'pair'];
 
 	global.Dispatch	=	new Class({
 		Implements: [Options],
@@ -150,6 +150,14 @@
 				if(!invite_code || invite_code == '') return error('bad invite code');
 				// store for later (we'll send this over when the user joins)
 				localStorage['invited_by']	=	invite_code;
+				success(true);
+				break;
+
+			case 'promo':
+				var promo_code	=	qs.code;
+				if(!promo_code || promo_code == '') return error('bad promo code');
+				// store for later (we'll send this over when the user joins)
+				localStorage['promo']	=	promo_code;
 				success(true);
 				break;
 

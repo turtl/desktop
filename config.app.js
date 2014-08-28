@@ -14,5 +14,8 @@ var config = {
 	sync_cutoff: (60 * 60 * 24 * 30),
 
 	// if true, any uncaught errors will be logged to the API for processing
-	catch_global_errors: true
+	catch_global_errors: true,
+
+	// whether or not to enable the promo code system
+	enable_promo: true
 }
