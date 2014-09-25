@@ -14,19 +14,27 @@
 // it doesn't matter though, because turtl doesn't do anything that doesn't run
 // in a normal browser, and anything that falls under such a category will
 // eventually put into the core native app.
-process.on('uncaughtException', function(e) { });
+//process.on('uncaughtException', function(e) { });
 var gui = require('nw.gui');
+
+// for debugging turtl-core mainly
+gui.Window.get().showDevTools()
 
 // -----------------------------------------------------------------------------
 // load turtl-core
 // -----------------------------------------------------------------------------
-var turtl_remote = require('../core/TurtlEvent');
+var turtl_remote = require('../TurtlEvent');	// TODO: node is lame and won't load a symlink...
 var turtl_core = {
 	// our main js -> lisp event dispatcher
 	event: new turtl_remote.Event(),
 
 	// remote interface to lisp
 	remote: new turtl_remote.Remote(),
+
+	reload: function()
+	{
+		turtl_core.test({ev: 'cmd', data: {name: 'reload'}});
+	},
 
 	test: function(ev, res)
 	{
@@ -35,7 +43,7 @@ var turtl_core = {
 	}
 };
 turtl_core.event.bind('turtl-loaded', function() {
-	turtl_core.remote.send({ev: 'set-data-directory', data: gui.App.dataPath});
+	turtl_core.remote.send({ev: 'cmd', data: {name: 'set-data-directory', path: gui.App.dataPath}});
 });
 
 // forward remote events to turtl_core.event
