@@ -69,7 +69,7 @@
         <header class="clear">
           <h1><span>Turtl</span></h1>
           <div class="loading">
-            <img src="app/images/site/icons/load_42x11.gif">
+            <img src="app/images/site/icons/load.svg">
           </div>
         </header>
         <div id="main" class="maincontent tex2jax_ignore"></div>
