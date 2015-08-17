@@ -28,7 +28,9 @@ if [ "$PLATFORM" == "linux32" ] || [ "$PLATFORM" == "linux64" ]; then
 	mkdir -p $SUBDIR
 	cp -R * $SUBDIR
 	cp $RELEASE_DIR/package.nw $SUBDIR
-	mv $SUBDIR/nw $SUBDIR/turtl
+	mv $SUBDIR/nw $SUBDIR/turtl-bin
+	cp $APP/scripts/resources/turtl-linux-init.sh $SUBDIR/turtl
+	chmod 755 $SUBDIR/turtl
 	pushd $TMP > /dev/null
 	tar -cjf $RELEASE_DIR/turtl-${PLATFORM}.tar.bz2 $RELNAME
 	popd > /dev/null
