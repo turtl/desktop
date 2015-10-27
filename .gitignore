@@ -4,4 +4,5 @@ cookies-journal
 tmp/
 data/app
 data/index.html
+data/popup/index.html
 

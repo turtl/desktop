@@ -49,3 +49,11 @@ index="$(do_replace "$index" '{{genjs}}' "$js")"
 # send our generated data into their restecpive files
 echo -ne "$index" > $pwd/../data/index.html
 
+# gen popup/index.html
+index="$(cat $pwd/../data/popup/index.html.tpl)"
+index="$(do_replace "$index" '{{extra}}' "$extra")"
+index="$(do_replace "$index" '{{gencss}}' "$css")"
+index="$(do_replace "$index" '{{genjs}}' "$js")"
+
+# send our generated data into their restecpive files
+echo -ne "$index" > $pwd/../data/popup/index.html

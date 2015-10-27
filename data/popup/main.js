@@ -1,19 +1,20 @@
-var app		=	null;
-var barfr	=	null;
+alert('FARRRt');
+var app = null;
+var barfr = null;
 
 // placeholder for the wrap-modal element
-var _popup_modal_wrap	=	null;
+var _popup_modal_wrap = null;
 
 function set_parent(win, options)
 {
-	app				=	win;
-	window.log		=	app.log;
-	window.console	=	app.console;
-	win._popup_modal_wrap	=	_popup_modal_wrap;
+	app = win;
+	window.log = app.log;
+	window.console = app.console;
+	win._popup_modal_wrap = _popup_modal_wrap;
 	ready(options);
 }
 
-var popup	=	{
+var popup = {
 	toggle_minify: function()
 	{
 		if(document.body.hasClass('minified'))
@@ -49,13 +50,13 @@ var popup	=	{
 
 	dispatch: function(url, options)
 	{
-		var bg_inject	=	$('background_content');
-		var body		=	document.body;
+		var bg_inject = $('background_content');
+		var body = document.body;
 		popup.show_panel();
 		switch(url)
 		{
 		case 'pair':
-			var public_key	=	options.public_key;
+			var public_key = options.public_key;
 			app.Popup.load_controller(body, 'PairingController', {
 				inject: bg_inject,
 				public_key: public_key
@@ -71,7 +72,7 @@ var popup	=	{
 			});
 			break;
 		case 'bookmark':
-			var linkdata	=	options.linkdata;
+			var linkdata = options.linkdata;
 			app.Popup.load_controller(body, 'BookmarkController', {
 				inject: bg_inject,
 				linkdata: linkdata
@@ -92,12 +93,12 @@ var popup	=	{
 	}
 };
 
-var ready	=	function(options)
+var ready = function(options)
 {
 	options || (options = {});
 
 	// give ourselves a working barfr
-	barfr	=	new app.Barfr('barfr', {});
+	barfr = new app.Barfr('barfr', {});
 
 	// resize the panel when a main page controller is released
 	app.turtl.controllers.pages.bind('release-current', function() {
@@ -111,7 +112,7 @@ var ready	=	function(options)
 };
 
 window.addEvent('domready', function() {
-	_popup_modal_wrap	=	document.getElement('#wrap-modal');
+	_popup_modal_wrap = document.getElement('#wrap-modal');
 	document.body.addEvent('click:relay(#background_content > a.closelink)', function(e) {
 		if(e) e.stop();
 		if(!app) return false;

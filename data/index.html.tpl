@@ -12,9 +12,9 @@
 
 		<title>Turtl</title>
 
+{{extra}}
 		<link rel="shortcut icon" href="images/favicon.png" type="image/png">
 
-{{extra}}
 {{gencss}}
 {{genjs}}
 		<script src="../../config.js"></script>

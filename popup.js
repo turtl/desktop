@@ -28,10 +28,10 @@
 			}
 			Popup.close();
 
-			var win = gui.Window.open('app:///data/data/popup/index.html', {
+			var win = gui.Window.open('app://turtl/data/popup/index.html', {
 				width: width,
 				height: height,
-				frame: false,
+				frame: true,
 				toolbar: false
 			});
 			win.moveTo(xy.x, xy.y);
@@ -59,6 +59,7 @@
 			}, 'popup:resize');
 			win.on('loaded', function() {
 				if(!options.skip_focus) win.focus();
+				console.log('win: ', win, win.window);
 				win.window.set_parent(gui.Window.get().window, options);
 				tools.attach_copy_paste_context_menu(win.window);
 				tools.hijack_external_links(win.window);

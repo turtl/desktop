@@ -3,14 +3,15 @@
 	<head>
 		<meta http-equiv="Content-Type" content="test/html; charset=utf-8">
 		<meta http-equiv="Content-Language" content="en">
-		<script src="app/library/mootools-core-1.4.5.js"></script>
-		<script src="app/library/mootools-more-1.4.0.1.js"></script>
-		<script src="main.js"></script>
-		<link rel="stylesheet" href="app/css/reset.css">
-		<link rel="stylesheet" href="app/css/template.css">
-		<link rel="stylesheet" href="app/css/general.css">
+{{extra}}
+		<script src="app://turtl/data/app/library/mootools-core-1.5.1.js"></script>
+		<script src="app://turtl/data/app/library/mootools-more-1.5.1.js"></script>
+		<script src="app://turtl/data/popup/main.js"></script>
+		<link rel="stylesheet" href="css/reset.css">
+		<link rel="stylesheet" href="css/template.css">
+		<link rel="stylesheet" href="css/general.css">
 {{gencss}}
-		<link rel="stylesheet" href="../background.css">
+		<link rel="stylesheet" href="app://turtl/data/background.css">
 	</head>
 	<body class="bare">
 		<div id="wrap-modal">

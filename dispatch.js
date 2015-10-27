@@ -79,14 +79,14 @@
 			var success = function(ret)
 			{
 				res.writeHead(200, {'Content-Type': 'text/javascript'});
-				send_response(JSON.encode(ret));
+				send_response(JSON.stringify(ret));
 			};
 			var error = function(ret, options)
 			{
 				options || (options = {});
 				var code = options.code ? options.code : 500;
 				res.writeHead(200, {'Content-Type': 'text/javascript'});
-				send_response(JSON.encode({code: code, error: ret}));
+				send_response(JSON.stringify({code: code, error: ret}));
 			};
 
 			var needs_pairing = function()

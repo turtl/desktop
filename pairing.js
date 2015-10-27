@@ -5,7 +5,7 @@
 			var keys = localStorage['pairing_keys'];
 			if(!keys)
 			{
-				var keys = tcrypt.asym.generate_ecc_keys();
+				var keys = tcrypt.asym_old.generate_ecc_keys();
 				var keys = JSON.stringify({
 					public: tcrypt.key_to_string(keys.public),
 					private: tcrypt.key_to_string(keys.private)

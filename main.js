@@ -78,24 +78,6 @@ function update_tray_menu()
 				}
 			}
 		}));
-		menu.append(new gui.MenuItem({
-			label: lbl('Personas'),
-			click: function(e) {
-				new PersonasController();
-				win.show();
-			}
-		}));
-		var num_invites = turtl.messages.models().length;
-		var invite_lbl = 'Invites';
-		if(num_invites > 0) invite_lbl += ' ('+ num_invites +')';
-		menu.append(new gui.MenuItem({
-			label: lbl(invite_lbl),
-			click: function(e) {
-				new InvitesListController({ edit_in_modal: true });
-				win.show();
-			}
-		}));
-		menu.append(new gui.MenuItem({ type: 'separator' }));
 		menu.append(new gui.MenuItem({ label: lbl('Logout'), click: function() { turtl.user.logout() } }));
 		menu.append(new gui.MenuItem({ type: 'separator' }));
 	}
