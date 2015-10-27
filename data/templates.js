@@ -106,6 +106,35 @@ var pretty_size	=	function(size, div)\
 </div>\
 ';
 
+_templates['boards/dropdown'] = '<? if(num_boards > 0) { ?>\
+	<div class="board-list <? if(is_open) { ?>open<? } ?>">\
+		<a class="main" href="#open">\
+			<icon>&#59228;</icon>\
+			<?=current.title?>\
+		</a>\
+		<div class="dropdown <? if(is_open) { ?>open<? } ?>">\
+			<div class="header">\
+				<div class="button add" title="Add a new board">\
+					<span><icon>&oplus;</icon> New board</span>\
+				</div>\
+				<h3>Your boards</h3>\
+			</div>\
+			<div class="add-board"></div>\
+			<div class="actions">\
+				<input type="text" name="filter" value="" placeholder="Search your boards">\
+			</div>\
+			<div class="boards-sub"></div>\
+		</div>\
+	</div>\
+<? } else { ?>\
+	<div class="button add">\
+		<span><icon>&oplus;</icon> Add your first board</span>\
+	</div>\
+<? } ?>\
+<?/* little trick i learned in nam */?>\
+<span style="clear:left;display:block;"></span>\
+';
+
 _templates['boards/edit'] = '<?\
 var action	=	(board.id ? \'Edit\' : \'Add\');\
 ?>\
@@ -142,35 +171,6 @@ var action	=	(board.id ? \'Edit\' : \'Add\');\
 		<? } ?>\
 	</form>\
 </div>\
-';
-
-_templates['boards/index'] = '<? if(num_boards > 0) { ?>\
-	<div class="board-list <? if(is_open) { ?>open<? } ?>">\
-		<a class="main" href="#open">\
-			<icon>&#59228;</icon>\
-			<?=current.title?>\
-		</a>\
-		<div class="dropdown <? if(is_open) { ?>open<? } ?>">\
-			<div class="header">\
-				<div class="button add" title="Add a new board">\
-					<span><icon>&oplus;</icon> New board</span>\
-				</div>\
-				<h3>Your boards</h3>\
-			</div>\
-			<div class="add-board"></div>\
-			<div class="actions">\
-				<input type="text" name="filter" value="" placeholder="Search your boards">\
-			</div>\
-			<div class="boards-sub"></div>\
-		</div>\
-	</div>\
-<? } else { ?>\
-	<div class="button add">\
-		<span><icon>&oplus;</icon> Add your first board</span>\
-	</div>\
-<? } ?>\
-<?/* little trick i learned in nam */?>\
-<span style="clear:left;display:block;"></span>\
 ';
 
 _templates['boards/list'] = '<ul>\
@@ -524,6 +524,80 @@ _templates['invites/list'] = '<h1>Invites</h1>\
 		<p>You have no pending invites.<p>\
 	<? } ?>\
 </div>\
+';
+
+_templates['layouts/default'] = '<!DOCTYPE html>\
+<html>\
+	<head>\
+		<meta http-equiv="Content-Type" content="test/html; charset=utf-8">\
+		<meta http-equiv="Content-Language" content="en">\
+\
+		<meta name="viewport" content="width=device-width, initial-scale=1">\
+\
+		<title>Turtl</title>\
+\
+		<link rel="stylesheet" href="/css/reset.css">\
+		<link rel="stylesheet" href="/css/template.css">\
+		<link rel="stylesheet" href="/css/general.css">\
+\
+		{{gencss}}\
+\
+		<link rel="shortcut icon" href="/images/favicon.png" type="image/png">\
+\
+		<%script% src="/library/mootools-core-1.4.5.js"></%script%>\
+		<%script% src="/library/mootools-more-1.4.0.1.js"></%script%>\
+		<%script% src="/library/composer/composer.js"></%script%>\
+		<%script% src="/library/composer/composer.keyboard.js"></%script%>\
+		<%script% src="/library/bluebird.js"></%script%>\
+\
+		<%script% src="/config/config.js"></%script%>\
+		<%script% src="/config/auth.js"></%script%>\
+		<%script% src="/config/routes.js"></%script%>\
+\
+		{{genjs}}\
+\
+		<%script% type="text/x-mathjax-config">\
+			MathJax.Hub.Config({\
+				imageFont: null,\
+				extensions: [\'tex2jax.js\'],\
+				jax: [\'input/TeX\',\'output/HTML-CSS\'],\
+				tex2jax: {\
+					processEscapes: true\
+				},\
+				showMathMenu: false,\
+				showMathMenuMSIE: false,\
+				showProcessingMessages: false,\
+				MathMenu: { showRenderer: false },\
+				\'HTML-CSS\': {\
+					showMathMenu: false,\
+					scale: 115\
+				}\
+			});\
+		</%script%>\
+		<%script% src="/library/mathjax/MathJax.js"></%script%>\
+		<%script% src="/library/templates.js"></%script%>\
+	</head>\
+	<body class="initial">\
+		<div id="loading-overlay">\
+			<div><span>Initializing</span></div>\
+		</div>\
+		<div id="wrap-modal">\
+			<div id="wrap">\
+				<div class="sidebar-bg"></div>\
+				<header class="clear">\
+					<h1><a href="/"><span>Turtl</span></a></h1>\
+					<div class="loading">\
+						<img src="/images/site/icons/load_42x11.gif">\
+					</div>\
+				</header>\
+				<div id="main" class="maincontent tex2jax_ignore"></div>\
+			</div>\
+		</div>\
+		<div id="footer">\
+			<footer></footer>\
+		</div>\
+	</body>\
+</html>\
 ';
 
 _templates['modules/header_bar'] = '<div class="actions">\

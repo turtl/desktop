@@ -16,19 +16,23 @@
 // eventually put into the core native app.
 process.on('uncaughtException', function(e) { });
 
-window._in_desktop	=	true;
-var _desktop_tray	=	null;
-var comm			=	new Comm();
-var gui				=	require('nw.gui');
-var min_to_tray		=	JSON.parse(localStorage['minimize_to_tray'] || 'false') || false;
+var gui = require('nw.gui');
+
+// node finds it necessary to cache DNS FOREVER. wow. say goodbye to switching
+// servers, i guess. but not anymore!
+gui.App.clearCache();
+
+var _desktop_tray = null;
+var comm = new Comm();
+var min_to_tray = JSON.parse(localStorage['minimize_to_tray'] || 'false') || false;
 
 /**
  * Saves our minimize-to-tray value in storage
  */
 function set_tray_min(bool)
 {
-	localStorage['minimize_to_tray']	=	JSON.encode(bool);
-	min_to_tray	=	bool;
+	localStorage['minimize_to_tray'] = JSON.encode(bool);
+	min_to_tray = bool;
 }
 
 /**
@@ -40,16 +44,16 @@ function update_tray_menu()
 
 	if(window.turtl && window.turtl.user && window.turtl.user.logged_in)
 	{
-		_desktop_tray.icon	=	'data/app/images/favicon.png';
+		_desktop_tray.icon = 'data/app/images/favicon.png';
 	}
 	else
 	{
-		_desktop_tray.icon	=	'data/app/images/favicon.gray.png';
+		_desktop_tray.icon = 'data/app/images/favicon.gray.png';
 	}
 
-	var win		=	gui.Window.get();
-	var menu	=	new gui.Menu();
-	var lbl		=	function(str) { return '  '+str; };
+	var win = gui.Window.get();
+	var menu = new gui.Menu();
+	var lbl = function(str) { return '  '+str; };
 	menu.append(new gui.MenuItem({ label: lbl('Open Turtl'), icon: 'data/app/images/favicon.png', click: function() { win.show(); } }));
 	menu.append(new gui.MenuItem({ type: 'separator' }));
 
@@ -81,8 +85,8 @@ function update_tray_menu()
 				win.show();
 			}
 		}));
-		var num_invites	=	turtl.messages.models().length;
-		var invite_lbl	=	'Invites';
+		var num_invites = turtl.messages.models().length;
+		var invite_lbl = 'Invites';
 		if(num_invites > 0) invite_lbl += ' ('+ num_invites +')';
 		menu.append(new gui.MenuItem({
 			label: lbl(invite_lbl),
@@ -104,7 +108,7 @@ function update_tray_menu()
 	} }));
 
 	// track our global tray object
-	_desktop_tray.menu	=	menu;
+	_desktop_tray.menu = menu;
 	return menu;
 }
 
@@ -116,13 +120,13 @@ function update_tray_menu()
  */
 function insert_text_at(element, text)
 {
-	var value	=	element.get('value');
-	var start	=	element.selectionStart;
-	var begin	=	value.substr(0, start);
-	var end		=	value.substr(element.selectionEnd);
+	var value = element.get('value');
+	var start = element.selectionStart;
+	var begin = value.substr(0, start);
+	var end = value.substr(element.selectionEnd);
 	element.set('value', begin + text + end);
-	element.selectionStart	=	start + text.length;
-	element.selectionEnd	=	element.selectionStart;
+	element.selectionStart = start + text.length;
+	element.selectionEnd = element.selectionStart;
 }
 
 /**
@@ -132,27 +136,27 @@ function make_tray(options)
 {
 	options || (options = {});
 
-	var win	=	gui.Window.get();
+	var win = gui.Window.get();
 
 	if(_desktop_tray) _desktop_tray.remove();
 
-	var icon	=	'data/app/images/favicon.gray.png';
+	var icon = 'data/app/images/favicon.gray.png';
 	if(window.turtl && window.turtl.user && window.turtl.user.logged_in)
 	{
-		icon	=	'data/app/images/favicon.png';
+		icon = 'data/app/images/favicon.png';
 	}
 	if(options.notify)
 	{
-		icon	=	'data/app/images/favicon.notify.png';
+		icon = 'data/app/images/favicon.notify.png';
 	}
-	var tray	=	new gui.Tray({ title: 'Turtl', icon: icon });;
+	var tray = new gui.Tray({ title: 'Turtl', icon: icon });;
 
 	tray.on('click', function() {
 		win.show();
 		win.focus();
 	});
 
-	_desktop_tray	=	tray;
+	_desktop_tray = tray;
 	update_tray_menu();
 
 	return tray;
@@ -171,7 +175,7 @@ function bind_login_to_menu()
  * init our environment
  */
 (function() {
-	var win	=	gui.Window.get();
+	var win = gui.Window.get();
 
 	make_tray();
 	win.on('minimize', function() {
@@ -183,7 +187,7 @@ function bind_login_to_menu()
 })();
 
 window.addEvent('domready', function() {
-	window.port	=	new DesktopAddonPort({comm: comm});
+	window.port = new DesktopAddonPort({comm: comm});
 
 	// when turtl loads, make sure we keep our tray menu up to date
 	window.port.bind('loaded', bind_login_to_menu);
@@ -210,15 +214,15 @@ window.addEvent('domready', function() {
 	// just return business as usual (probably an in-app link)
 	tools.hijack_external_links(window);
 
-	var keyboard	=	new Composer.Keyboard({meta_bind: true});
+	var keyboard = new TurtlKeyboard();
 	// Ctrl+Shift+k is open console (if enabled in config)
-	keyboard.bind('S-C-k', function() {
+	keyboard.bind('control+shift+k', function() {
 		if(config.console) gui.Window.get().showDevTools();
 	});
 });
 
-invites.init();
+gui.Window.get().showDevTools();
 
-var dispatch	=	new Dispatch();
+var dispatch = new Dispatch();
 dispatch.start();
 

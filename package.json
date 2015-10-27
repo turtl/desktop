@@ -1,10 +1,10 @@
 {
 	"name": "Turtl",
-	"description": "Securely track files, notes, and lists and collaborate with others.",
+	"description": "The safe way to remember things.",
 	"main": "data/index.html",
-	"version": "0.5.2.1",
+	"version": "0.6.0",
 	"window": {
-		"width": 1024,
+		"width": 1023,
 		"height": 768,
 		"toolbar": false,
 		"icon": "data/app/images/favicon.png"

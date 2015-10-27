@@ -1,21 +1,21 @@
 (function(window) {
-	var Pairing	=	{
+	var Pairing = {
 		start: function()
 		{
-			var keys	=	localStorage['pairing_keys'];
+			var keys = localStorage['pairing_keys'];
 			if(!keys)
 			{
-				var keys	=	tcrypt.asym.generate_ecc_keys();
-				var keys	=	JSON.stringify({
+				var keys = tcrypt.asym.generate_ecc_keys();
+				var keys = JSON.stringify({
 					public: tcrypt.key_to_string(keys.public),
 					private: tcrypt.key_to_string(keys.private)
 				});
-				localStorage['pairing_keys']	=	keys;
+				localStorage['pairing_keys'] = keys;
 			}
 
 			try
 			{
-				keys	=	JSON.parse(keys);
+				keys = JSON.parse(keys);
 			}
 			catch(e)
 			{
@@ -36,12 +36,12 @@
 		get_keys: function(options)
 		{
 			options || (options = {});
-			var keys	=	localStorage['pairing_keys'];
+			var keys = localStorage['pairing_keys'];
 			if(options.binary)
 			{
-				keys			=	JSON.parse(keys);
-				keys.public		=	tcrypt.key_to_bin(keys.public);
-				keys.private	=	tcrypt.key_to_bin(keys.private);
+				keys = JSON.parse(keys);
+				keys.public = tcrypt.key_to_bin(keys.public);
+				keys.private = tcrypt.key_to_bin(keys.private);
 			}
 			return keys;
 		},
@@ -52,5 +52,5 @@
 		}
 	};
 
-	window.Pairing	=	Pairing;
+	window.Pairing = Pairing;
 })(window);

@@ -9,7 +9,13 @@ mkdir -p $TMP
 chmod 755 $TMP
 
 echo -n "Copying extension files to temp directory..."
-rsync -aL ./ $TMP 2>&1 --exclude='.git' --exclude='release/' | grep -v '.git'
+rsync \
+	-aL \
+	./ $TMP 2>&1 \
+	--exclude='.git' \
+	--exclude='release/' \
+	--exclude='node_modules/' \
+	| grep -v '.git'
 echo "done."
 
 EXTDIR=`pwd -P`
@@ -25,7 +31,8 @@ zip -qr -9 -X \
 	turtl.zip \
 	. \
 	-x *.git* \
-	-x release/*
+	-x release/* \
+	-x node_modules
 echo "done."
 
 mv turtl.zip $EXTDIR/$ZIP || {

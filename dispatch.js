@@ -7,14 +7,14 @@
  */
 
 (function(global) {
-	var http	=	require('http');
-	var fs		=	require('fs');
-	var url		=	require('url');
+	var http = require('http');
+	var fs = require('fs');
+	var url = require('url');
 
 	// actions that do not need pairing to work
-	var public_actions	=	['invite', 'invitecode', 'promo', 'pair'];
+	var public_actions = ['invite', 'invitecode', 'promo', 'pair'];
 
-	global.Dispatch	=	new Class({
+	global.Dispatch = new Class({
 		Implements: [Options],
 
 		options: {
@@ -32,7 +32,7 @@
 		{
 			options || (options = {});
 
-			this.server	=	http.createServer(function(req, res) {
+			this.server = http.createServer(function(req, res) {
 				this.dispatch(req, res);
 			}.bind(this));
 
@@ -52,15 +52,15 @@
 		{
 			if(!this.server) return;
 			this.server.close();
-			this.server	=	null;
+			this.server = null;
 		},
 
 		dispatch: function(req, res)
 		{
-			var parsed	=	url.parse(req.url, true);
-			var qs		=	parsed.query;
-			var sent	=	false;
-			var send_response	=	function(ret)
+			var parsed = url.parse(req.url, true);
+			var qs = parsed.query;
+			var sent = false;
+			var send_response = function(ret)
 			{
 				if(sent) return false;
 
@@ -73,23 +73,23 @@
 				{
 					res.end(ret);
 				}
-				sent	=	true;
+				sent = true;
 			};
 
-			var success	=	function(ret)
+			var success = function(ret)
 			{
 				res.writeHead(200, {'Content-Type': 'text/javascript'});
 				send_response(JSON.encode(ret));
 			};
-			var error	=	function(ret, options)
+			var error = function(ret, options)
 			{
 				options || (options = {});
-				var code	=	options.code ? options.code : 500;
+				var code = options.code ? options.code : 500;
 				res.writeHead(200, {'Content-Type': 'text/javascript'});
 				send_response(JSON.encode({code: code, error: ret}));
 			};
 
-			var needs_pairing	=	function()
+			var needs_pairing = function()
 			{
 				// check if we have a pairing key already
 				if(Pairing.have_keys()) return false;
@@ -101,24 +101,24 @@
 				if(!sent) error('Timeout.');
 			}).delay(5000, this);
 
-			var cmd	=	parsed.pathname.replace(/^\/|\/$/, '');
+			var cmd = parsed.pathname.replace(/^\/|\/$/, '');
 
 			// check if we need pairing. if so, the needs_pairing fn will let
 			// the client know, and we just return here.
-			var data	=	null;
+			var data = null;
 			if(public_actions.indexOf(cmd) < 0)
 			{
 				if(needs_pairing()) return false;
 
 				// we're not pairing/inviting and we don't need to pair, so
 				// decrypt our main data
-				var data	=	qs.data;
-				var keys	=	Pairing.get_keys({binary: true});
-				var deckey	=	keys.private;
+				var data = qs.data;
+				var keys = Pairing.get_keys({binary: true});
+				var deckey = keys.private;
 				try
 				{
-					data	=	tcrypt.from_base64(data);
-					data	=	JSON.parse(tcrypt.asym.decrypt(deckey, data));
+					data = tcrypt.from_base64(data);
+					data = JSON.parse(tcrypt.asym.decrypt(deckey, data));
 				}
 				catch(e)
 				{
@@ -133,7 +133,7 @@
 			{
 			// receive an invite from the turtl website
 			case 'invite':
-				var invite	=	JSON.parse(qs.invite);
+				var invite = JSON.parse(qs.invite);
 				if(!invite) return error('bad invite');
 				invites.process_invite(invite.code, invite.id, invite.key, {
 					success: function() {
@@ -146,18 +146,18 @@
 				break;
 
 			case 'invitecode':
-				var invite_code	=	qs.code;
+				var invite_code = qs.code;
 				if(!invite_code || invite_code == '') return error('bad invite code');
 				// store for later (we'll send this over when the user joins)
-				localStorage['invited_by']	=	invite_code;
+				localStorage['invited_by'] = invite_code;
 				success(true);
 				break;
 
 			case 'promo':
-				var promo_code	=	qs.code;
+				var promo_code = qs.code;
 				if(!promo_code || promo_code == '') return error('bad promo code');
 				// store for later (we'll send this over when the user joins)
-				localStorage['promo']	=	promo_code;
+				localStorage['promo'] = promo_code;
 				success(true);
 				break;
 

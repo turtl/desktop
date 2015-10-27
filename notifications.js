@@ -1,9 +1,9 @@
 (function(global) {
-	var gui			=	require('nw.gui');
-	var res			=	[window.screen.width, window.screen.availHeight];
-	var dims		=	[360, 80];
-	var base_url	=	'app:///data/data/notification/index.html';
-	var Notifications	=	{
+	var gui = require('nw.gui');
+	var res = [window.screen.width, window.screen.availHeight];
+	var dims = [360, 80];
+	var base_url = 'app:///data/data/notification/index.html';
+	var Notifications = {
 		enabled: true,
 		win: null,
 		action: false,
@@ -14,13 +14,13 @@
 
 			Notifications.close();
 
-			var url	=	base_url+'?';
+			var url = base_url+'?';
 			['title', 'body'].each(function(key) {
 				if(!options[key]) return false;
 				url	+=	key + '=' + escape(options[key]) + '&';
 			});
-			var xy	=	tools.get_popup_coords(dims[0], dims[1]);
-			var win	=	gui.Window.open(url, {
+			var xy = tools.get_popup_coords(dims[0], dims[1]);
+			var win = gui.Window.open(url, {
 				width: dims[0],
 				height: dims[1],
 				frame: false,
@@ -32,8 +32,8 @@
 			});
 			win.setShowInTaskbar(false);
 			win.setAlwaysOnTop(true);
-			Notifications.win		=	win;
-			Notifications.action	=	options.action || false;
+			Notifications.win = win;
+			Notifications.action = options.action || false;
 			(function() {
 				Notifications.close();
 			}).delay(10000);
@@ -43,7 +43,7 @@
 		{
 			if(!Notifications.win) return;
 			Notifications.win.close();
-			Notifications.action	=	false;
+			Notifications.action = false;
 		},
 
 		click_action: function()
@@ -52,6 +52,6 @@
 			Notifications.close();
 		}
 	};
-	global.Notifications	=	Notifications;
+	global.Notifications = Notifications;
 })(window);
 
