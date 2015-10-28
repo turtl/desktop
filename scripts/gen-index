@@ -6,7 +6,7 @@
 pwd=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 cd $pwd/../data/app
 
-ASSET_ROOT=""
+ASSET_ROOT="app://turtl/data/app/"
 SEARCH_PATH=""
 source "$pwd/../data/app/scripts/include.sh"
 
@@ -29,6 +29,11 @@ done
 js=""
 for x in $(all_js); do
 	js="${js}$(print_js $x)"
+done
+
+for x in $(find $pwd/../data/controllers -name "*.js"); do
+	x=$(basename $x)
+	js="${js}$(print_js "../controllers/$x")"
 done
 
 ## -----------------------------------------------------------------------------
