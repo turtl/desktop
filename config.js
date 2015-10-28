@@ -8,6 +8,6 @@ Object.merge(config, {
 	client: 'desktop',
 	cookie_login: false,
 	base_url: window.location.toString().replace(/^(.*)\/.*?$/, '$1/app'),
-	route_base: ''
+	console: true
 });
 
