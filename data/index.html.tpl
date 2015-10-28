@@ -13,18 +13,18 @@
 		<title>Turtl</title>
 
 {{extra}}
-		<link rel="shortcut icon" href="images/favicon.png" type="image/png">
+		<link rel="shortcut icon" href="app://turtl/data/app/images/favicon.png" type="image/png">
 
 {{gencss}}
 {{genjs}}
-		<script src="../../config.js"></script>
-		<script src="../../tools.js"></script>
-		<script src="../../comm.js"></script>
-		<script src="../../popup.js"></script>
-		<script src="../../notifications.js"></script>
-		<script src="../../pairing.js"></script>
-		<script src="../../dispatch.js"></script>
-		<script src="../../main.js"></script>
+		<script src="app://turtl/config.js"></script>
+		<script src="app://turtl/tools.js"></script>
+		<script src="app://turtl/comm.js"></script>
+		<script src="app://turtl/popup.js"></script>
+		<script src="app://turtl/notifications.js"></script>
+		<script src="app://turtl/pairing.js"></script>
+		<script src="app://turtl/dispatch.js"></script>
+		<script src="app://turtl/main.js"></script>
 	</head>
 	<body class="initial">
 		<div id="wrap">
