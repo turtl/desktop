@@ -7,6 +7,7 @@
 		"width": 1023,
 		"height": 768,
 		"toolbar": false,
+		"show": false,
 		"icon": "data/app/images/favicon.png"
 	},
 

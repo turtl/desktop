@@ -21,10 +21,17 @@ var gui = require('nw.gui');
 // node finds it necessary to cache DNS FOREVER. wow. say goodbye to switching
 // servers, i guess. but not anymore!
 gui.App.clearCache();
+gui.App.setCrashDumpDir('/tmp');
 
 var _desktop_tray = null;
 var comm = new Comm();
 var min_to_tray = JSON.parse(localStorage['minimize_to_tray'] || 'false') || false;
+
+(function() {
+	var win = gui.Window.get();
+	win.moveTo(10, 10);
+	win.show();
+})();
 
 /**
  * Saves our minimize-to-tray value in storage
@@ -63,19 +70,7 @@ function update_tray_menu()
 		menu.append(new gui.MenuItem({
 			label: lbl('Add note'),
 			click: function(e) {
-				if(turtl.profile.get('boards').models().length > 0)
-				{
-					Popup.open({dispatch: 'add-note'});
-				}
-				else
-				{
-					new BoardEditController({
-						profile: turtl.profile,
-						edit_in_modal: true,
-						title: 'Add your first board to start adding notes'
-					});
-					win.show();
-				}
+				Popup.open({dispatch: 'add-note'});
 			}
 		}));
 		menu.append(new gui.MenuItem({ label: lbl('Logout'), click: function() { turtl.user.logout() } }));
@@ -176,12 +171,6 @@ window.addEvent('domready', function() {
 	// when this is triggered, we already have a new user obj.
 	window.port.bind('logout', bind_login_to_menu);
 
-	// if we get new invites, update the tray icon and menu
-	window.port.bind('num-messages', function(num) {
-		make_tray({notify: num > 0});
-		invites.notify();
-	});
-
 	// add context menus for downloading images
 	tools.attach_image_context_menu(window);
 
@@ -196,14 +185,12 @@ window.addEvent('domready', function() {
 	// just return business as usual (probably an in-app link)
 	tools.hijack_external_links(window);
 
-	var keyboard = new TurtlKeyboard();
+	var keyboard = new TurtlKeyboard().attach();
 	// Ctrl+Shift+k is open console (if enabled in config)
 	keyboard.bind('control+shift+k', function() {
 		if(config.console) gui.Window.get().showDevTools();
 	});
 });
-
-gui.Window.get().showDevTools();
 
 var dispatch = new Dispatch();
 dispatch.start();

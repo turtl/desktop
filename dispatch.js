@@ -118,7 +118,8 @@
 				try
 				{
 					data = tcrypt.from_base64(data);
-					data = JSON.parse(tcrypt.asym.decrypt(deckey, data));
+					data = tcrypt.asym_old.decrypt(deckey, data);
+					data = JSON.parse(data);
 				}
 				catch(e)
 				{

@@ -12,9 +12,9 @@
 		{
 			options || (options = {});
 
-			var width = 750;
-			var height = 100;
-			var max_height = 500;
+			var width = 600;
+			var height = 200;
+			var max_height = 600;
 			var xy = tools.get_popup_coords(width, height);
 
 			Popup.last_dispatch = options.dispatch;
@@ -32,9 +32,39 @@
 				width: width,
 				height: height,
 				frame: true,
-				toolbar: false
+				toolbar: false,
+				show: false
 			});
 			win.moveTo(xy.x, xy.y);
+
+			var frame = {};
+			var get_content_coords = function(container)
+			{
+				container || (container = '#main');
+				return win.window.document.body.getElement(container).getCoordinates();
+			};
+			win.on('loaded', function() {
+				win.show();
+				win.window.in_popup = true;
+				if(!options.skip_focus) win.focus();
+				win.window.set_parent(gui.Window.get().window, options);
+				tools.attach_copy_paste_context_menu(win.window);
+				tools.hijack_external_links(win.window);
+				var coords = get_content_coords('#wrap');
+				frame.width = win.width - coords.width;
+				frame.height = win.height - coords.height;
+			});
+			win.on('close', function() {
+				win.close(true);
+				Popup.close();
+			});
+			win.on('minimize', function() {
+				win.setShowInTaskbar(true);
+			});
+			win.on('restore', function() {
+				win.setShowInTaskbar(false);
+			});
+
 			// resize the popup per the wishes of the inner window, HOWEVER cap
 			// it at max_height
 			comm.bind('resize', function() {
@@ -44,7 +74,8 @@
 				// max height.
 				try
 				{
-					var new_height = win.window.document.body.getElement('#wrap-modal').getCoordinates().height + 2
+					var new_height = get_content_coords().height;
+					new_height += frame.height;
 				}
 				catch(e)
 				{
@@ -53,18 +84,12 @@
 				}
 				new_height = Math.min(new_height, max_height);
 				win.resizeTo(width, new_height);
-				(function () { win.resizeTo(width, new_height); }).delay(50, this);
+				(function () { win.resizeTo(width, new_height); }).delay(10, this);
 				var xy = tools.get_popup_coords(width, new_height);
 				win.moveTo(xy.x, xy.y);
 			}, 'popup:resize');
-			win.on('loaded', function() {
-				if(!options.skip_focus) win.focus();
-				console.log('win: ', win, win.window);
-				win.window.set_parent(gui.Window.get().window, options);
-				tools.attach_copy_paste_context_menu(win.window);
-				tools.hijack_external_links(win.window);
-			});
-			if(win.setShowInTaskbar) win.setShowInTaskbar(false);
+
+			win.setShowInTaskbar(false);
 			win.setAlwaysOnTop(true);
 			Popup.win = win;
 		},

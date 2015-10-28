@@ -1,16 +1,11 @@
-alert('FARRRt');
 var app = null;
 var barfr = null;
-
-// placeholder for the wrap-modal element
-var _popup_modal_wrap = null;
 
 function set_parent(win, options)
 {
 	app = win;
 	window.log = app.log;
 	window.console = app.console;
-	win._popup_modal_wrap = _popup_modal_wrap;
 	ready(options);
 }
 
@@ -63,7 +58,7 @@ var popup = {
 			});
 			break;
 		case 'add-note':
-			app.Popup.load_controller(body, 'NoteEditController', {
+			app.Popup.load_controller(body, 'NotesEditController', {
 				inject: bg_inject,
 				edit_in_modal: false,
 				board: 'last',
@@ -77,12 +72,6 @@ var popup = {
 				inject: bg_inject,
 				linkdata: linkdata
 			});
-			break;
-		case 'add-note':
-			app.Popup.load_controller(body, 'NoteEditController', {
-				inject: bg_inject,
-				edit_in_modal: false
-			}, {width: 750});
 			break;
 		}
 	},
@@ -112,18 +101,16 @@ var ready = function(options)
 };
 
 window.addEvent('domready', function() {
-	_popup_modal_wrap = document.getElement('#wrap-modal');
-	document.body.addEvent('click:relay(#background_content > a.closelink)', function(e) {
-		if(e) e.stop();
-		if(!app) return false;
-		app.Popup.close();
+	var gui = require('nw.gui');
+	var keyboard = new TurtlKeyboard().attach();
+	keyboard.bind('control+shift+k', function() {
+		gui.Window.get().showDevTools();
 	});
-	document.body.addEvent('click:relay(#background_content > a.min)', function(e) {
-		if(e) e.stop();
-		popup.toggle_minify();
-	});
+
+	/*
 	document.body.addEvent('keydown', function(e) {
 		if(e.key != 'esc') return;
 		app.Popup.close();
 	});
+	*/
 });
