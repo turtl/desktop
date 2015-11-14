@@ -154,6 +154,11 @@ function bind_login_to_menu()
 (function() {
 	var win = gui.Window.get();
 
+	// handle <a> tags properly. if it's a blob/file URL, we open an in-app
+	// window. if it's an external URL we open an OS browser window. otherwise
+	// just return business as usual (probably an in-app link)
+	tools.hijack_external_links(win);
+
 	make_tray();
 	win.on('minimize', function() {
 		if(!min_to_tray) return false;
@@ -179,11 +184,6 @@ window.addEvent('domready', function() {
 
 	// add copy url context menu to links
 	tools.attach_copy_url_context_menu(window);
-
-	// handle <a> tags properly. if it's a blob/file URL, we open an in-app
-	// window. if it's an external URL we open an OS browser window. otherwise
-	// just return business as usual (probably an in-app link)
-	tools.hijack_external_links(window);
 
 	var keyboard = new TurtlKeyboard().attach();
 	// Ctrl+Shift+k is open console (if enabled in config)

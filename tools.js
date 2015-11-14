@@ -126,36 +126,10 @@ var tools = {
 	 */
 	hijack_external_links: function(win)
 	{
-		if(!win || !win.document || !win.document.body) return false;
-		var body = win.document.body;
-		body.addEvent('click:relay(a)', function(e) {
-			var atag = next_tag_up('a', e.target);
-			var external = false;
-			if(!atag.href.match(/^(blob:|file:)/i) && atag.href.match(/^[a-z]+:/i))
-			{
-				external = true;
-			}
-			if(atag.hasClass('attachment')) return;
-			if(atag.target != '_blank' && !external) return;
-			e.stop();
-
-			if(external)
-			{
-				// we're opening a link outside the app, open the OS' browser
-				gui.Shell.openExternal(atag.href)
-			}
-			else
-			{
-				// this is an in-app link.
-				var popup = window.open(atag.href);
-				var win = gui.Window.get(popup);
-				win.on('loaded', function() {
-					// when the window is loaded, add our image context menus
-					tools.attach_image_context_menu(win.window.document.body);
-				});
-			}
+		win.on('new-win-policy', function(_, url, policy) {
+			gui.Shell.openExternal(url)
+			policy.ignore();
 		});
-
 	},
 
 	popup_context_menu: function(x, y, win, menu)
