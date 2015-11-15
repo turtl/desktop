@@ -3,6 +3,12 @@
 ### This script generates index.html, which loads all needed javascript and
 ### css for the app.
 
+TEMPLATE=$1
+
+if [ "$TEMPLATE" == "" ]; then
+	TEMPLATE="main"
+fi
+
 pwd=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 cd $pwd/../data/app
 
@@ -13,7 +19,7 @@ source "$pwd/../data/app/scripts/include.sh"
 ## -----------------------------------------------------------------------------
 ## generate extra
 ## -----------------------------------------------------------------------------
-extra='<base href="app/">'
+extra=""
 extra="${extra}\n<link rel=\"shortcut icon\" href=\"app://turtl/data/app/images/favicon.png\" type=\"image/png\">"
 
 ## -----------------------------------------------------------------------------
@@ -34,6 +40,12 @@ js="$(
 		| sed 's|^|<script src="|' \
 		| sed 's|$|"></script>|'
 )"
+vendorjs="$(
+	echo "$(vendor_js)" \
+		| sed 's|___| |g' \
+		| sed 's|^|<script src="app://turtl/data/app/|' \
+		| sed 's|$|"></script>|'
+)"
 
 for x in $(find $pwd/../data/controllers -name "*.js"); do
 	x=$(basename $x)
@@ -52,19 +64,26 @@ js="${js}\n<script src=\"app://turtl/main.js\"></script>"
 ## -----------------------------------------------------------------------------
 ## put it all together
 ## -----------------------------------------------------------------------------
-index="$(cat $pwd/../data/app/views/layouts/default.html)"
-index="$(do_replace "$index" '{{extra}}' "$extra")"
-index="$(do_replace "$index" '{{gencss}}' "$css")"
-index="$(do_replace "$index" '{{genjs}}' "$js")"
+if [ "$TEMPLATE" == "main" ]; then
+	extra="${extra}\n<base href=\"app/\">"
+	index="$(cat $pwd/../data/app/views/layouts/default.html)"
+	index="$(do_replace "$index" '{{extra}}' "$extra")"
+	index="$(do_replace "$index" '{{gencss}}' "$css")"
+	index="$(do_replace "$index" '{{genjs}}' "$js")"
 
-# send our generated data into their restecpive files
-echo -ne "$index" > $pwd/../data/index.html
+	# send our generated data into their restecpive files
+	echo -ne "$index" > $pwd/../data/index.html
+fi
 
-# gen popup/index.html
-index="$(cat $pwd/../data/popup/index.html.tpl)"
-index="$(do_replace "$index" '{{extra}}' "$extra")"
-index="$(do_replace "$index" '{{gencss}}' "$css")"
-index="$(do_replace "$index" '{{genjs}}' "$js")"
+if [ "$TEMPLATE" == "popup" ]; then
+	extra="${extra}\n<base href=\"../app/\">"
+	index="$(cat $pwd/../data/popup/index.html.tpl)"
+	index="$(do_replace "$index" '{{extra}}' "$extra")"
+	index="$(do_replace "$index" '{{gencss}}' "$css")"
+	index="$(do_replace "$index" '{{genjs}}' "$js")"
+	index="$(do_replace "$index" '{{vendorjs}}' "$vendorjs")"
 
-# send our generated data into their restecpive files
-echo -ne "$index" > $pwd/../data/popup/index.html
+	# send our generated data into their restecpive files
+	echo -ne "$index" > $pwd/../data/popup/index.html
+fi
+

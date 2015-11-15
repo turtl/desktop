@@ -45,6 +45,7 @@
 			};
 			win.on('loaded', function() {
 				win.show();
+				//win.showDevTools();
 				win.window.in_popup = true;
 				if(!options.skip_focus) win.focus();
 				win.window.set_parent(gui.Window.get().window, options);

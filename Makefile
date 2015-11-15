@@ -8,10 +8,10 @@ alljs = $(shell echo "../js/main.js" \
 			&& find ../js/{config,controllers,handlers,library,models} -name "*.js" \
 			| grep -v '(ignore|\.thread\.)')
 
-all: .build/make-js data/index.html
+all: .build/make-js data/index.html data/popup/index.html
 
 run: all
-	@$(NW) .
+	$(NW) .
 
 data/app/index.html: $(alljs) $(allcss) ../js/index.html
 	@echo "- rsync project: " $?
@@ -36,7 +36,12 @@ data/index.html: data/app/index.html ./scripts/gen-index
 	@echo "- index.html: " $?
 	@./scripts/gen-index
 
+data/popup/index.html: data/popup/index.html.tpl ./scripts/gen-index
+	@echo "- popup/index.html: " $?
+	@./scripts/gen-index popup
+
 clean:
 	rm -rf data/app
 	rm data/index.html
+	rm data/popup/index.html
 
