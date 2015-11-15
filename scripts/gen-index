@@ -14,39 +14,45 @@ source "$pwd/../data/app/scripts/include.sh"
 ## generate extra
 ## -----------------------------------------------------------------------------
 extra='<base href="app/">'
+extra="${extra}\n<link rel=\"shortcut icon\" href=\"app://turtl/data/app/images/favicon.png\" type=\"image/png\">"
 
 ## -----------------------------------------------------------------------------
 ## generate CSS links
 ## -----------------------------------------------------------------------------
-css=""
-for x in $(all_css); do
-	css="${css}$(print_css $x)"
-done
+css="$(
+	echo "$(all_css)" \
+		| sed 's|^|<link rel=\"stylesheet\" href=\"|' \
+		| sed 's|$|">|'
+)"
 
 ## -----------------------------------------------------------------------------
 ## generate JS includes
 ## -----------------------------------------------------------------------------
-js=""
-for x in $(all_js); do
-	js="${js}$(print_js $x)"
-done
+js="$(
+	echo "$(all_js)" \
+		| sed 's|___| |g' \
+		| sed 's|^|<script src="|' \
+		| sed 's|$|"></script>|'
+)"
 
 for x in $(find $pwd/../data/controllers -name "*.js"); do
 	x=$(basename $x)
 	js="${js}$(print_js "../controllers/$x")"
 done
+js="${js}\n<script src=\"app://turtl/config.js\"></script>"
+js="${js}\n<script src=\"app://turtl/tools.js\"></script>"
+js="${js}\n<script src=\"app://turtl/comm.js\"></script>"
+js="${js}\n<script src=\"app://turtl/popup.js\"></script>"
+js="${js}\n<script src=\"app://turtl/notifications.js\"></script>"
+js="${js}\n<script src=\"app://turtl/pairing.js\"></script>"
+js="${js}\n<script src=\"app://turtl/dispatch.js\"></script>"
+js="${js}\n<script src=\"app://turtl/main.js\"></script>"
 
-## -----------------------------------------------------------------------------
-## generate inline JS
-## -----------------------------------------------------------------------------
-for x in $(inline_js); do
-	js="${js}$(print_inline_js $x)"
-done
 
 ## -----------------------------------------------------------------------------
 ## put it all together
 ## -----------------------------------------------------------------------------
-index="$(cat $pwd/../data/index.html.tpl)"
+index="$(cat $pwd/../data/app/views/layouts/default.html)"
 index="$(do_replace "$index" '{{extra}}' "$extra")"
 index="$(do_replace "$index" '{{gencss}}' "$css")"
 index="$(do_replace "$index" '{{genjs}}' "$js")"
