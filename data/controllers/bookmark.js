@@ -82,7 +82,6 @@ var BookmarkController = Composer.Controller.extend({
 	{
 		this.html('<div class="bookmarker"></div>');
 
-		console.log('note: ', this.note.toJSON());
 		this.track_subcontroller('editor', function() {
 			var edit_container = this.edit_container;
 			var con = new NotesEditController({
