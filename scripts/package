@@ -8,7 +8,7 @@ rm -rf $TMP
 mkdir -p $TMP
 chmod 755 $TMP
 
-echo -n "Copying extension files to temp directory..."
+echo -n "Copying app files to temp directory..."
 rsync \
 	-aL \
 	./ $TMP 2>&1 \
@@ -21,7 +21,7 @@ echo "done."
 EXTDIR=`pwd -P`
 pushd $TMP/> /dev/null
 
-echo "Packaging extension."
+echo "Packaging app."
 
 echo "Copying live config over local."
 mv config.live.js config.js
@@ -44,4 +44,4 @@ popd > /dev/null
 echo "Clearing tmp dir ($TMP/)"
 rm -rf $TMP
 
-echo "Complete. Created fully-packaged extension: $ZIP"
+echo "Complete. Created fully-packaged app: $ZIP"
