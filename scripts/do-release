@@ -2,7 +2,7 @@
 
 PLATFORM=$1
 APP=`realpath .`
-RELEASE=$APP/release/node-webkit/$PLATFORM
+RELEASE=$APP/release/nwjs/$PLATFORM
 RELEASE_DIR=$APP/release
 TMP=`realpath $RELEASE/../tmp`
 
@@ -43,10 +43,10 @@ elif [ "$PLATFORM" == "windows" ]; then
 		$RELEASE_DIR/turtl-windows.zip .
 elif [ "$PLATFORM" == "macos" ]; then
 	cp $RELEASE_DIR/package.nw .
-	cp $APP/scripts/resources/favicon.128.icns node-webkit.app/Contents/Resources/nw.icns
-	mv node-webkit.app turtl.app
+	cp $APP/scripts/resources/favicon.128.icns nwjs.app/Contents/Resources/nw.icns
+	mv nwjs.app turtl.app
 	zip -qr -9 -X $RELEASE_DIR/turtl-macos.zip .
-	mv turtl.app node-webkit.app
+	mv turtl.app nwjs.app
 	rm -f package.nw
 fi
 

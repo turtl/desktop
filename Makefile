@@ -1,4 +1,4 @@
-.PHONY: all clean run release
+.PHONY: all clean package release run
 
 NW := $(shell which nw)
 
@@ -9,6 +9,12 @@ alljs = $(shell echo "../js/main.js" \
 			| grep -v '(ignore|\.thread\.)')
 
 all: .build/make-js data/index.html data/popup/index.html
+
+package: all
+	./scripts/package
+
+release: package
+	./scripts/release
 
 run: all
 	$(NW) .
