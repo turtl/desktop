@@ -186,9 +186,12 @@ window.addEvent('domready', function() {
 	tools.attach_copy_url_context_menu(window);
 
 	var keyboard = new TurtlKeyboard().attach();
-	// Ctrl+Shift+k is open console (if enabled in config)
-	keyboard.bind('control+shift+k', function() {
-		if(config.console) gui.Window.get().showDevTools();
+	// Ctrl+Shift+k is open console (if enabled in config). note we use 'raw'
+	// here instead of ctrl+shift+k because we want this to work even if
+	// TRIGGERED from an input field
+	keyboard.bind('raw', function(obj) {
+		if(!(obj.key == 'k' && obj.control && obj.shift && !obj.meta && !obj.alt)) return;
+		gui.Window.get().showDevTools();
 	});
 });
 
