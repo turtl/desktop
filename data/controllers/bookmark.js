@@ -105,8 +105,15 @@ var BookmarkController = Composer.Controller.extend({
 
 			// save the note in case bookmarker is clooooseeed
 			this.with_bind(con.clone, 'change', this.track_note_changes.bind(this))
+			this.with_bind(con.clone.get('tags'), 'change', this.track_note_changes.bind(this))
 
+			var check = setInterval(this.track_note_changes.bind(this), 500);
 			this.with_bind(con, 'release', function() {
+				if(check)
+				{
+					clearInterval(check);
+					check = null;
+				}
 				this.release();
 			});
 			this.with_bind(con, 'saved', function() {
@@ -130,19 +137,17 @@ var BookmarkController = Composer.Controller.extend({
 		var editor = this.get_subcontroller('editor');
 		var note = editor && editor.clone;
 		if(!note) return false;
-		var data = {
+		var data = note.toJSON();
+		data = Object.merge(data, editor.grab_form_data());
+
+		var save = {
 			url: this.linkdata.url,
-			note: note.toJSON()
-		}
+			note: data
+		};
 
 		// store it in the cache
-		turtl.bookmark_data = data;
+		turtl.bookmark_data = save;
 	},
-
-	/*get_height: function()
-	{
-		return ($('main').getCoordinates().height + 10);
-	},*/
 
 	resize: function(delay)
 	{
