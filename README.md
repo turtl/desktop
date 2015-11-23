@@ -15,6 +15,8 @@ mkdir turtl
 cd turtl/
 git clone https://github.com/turtl/js.git
 git clone https://github.com/turtl/desktop.git
+cd desktop/
+npm install
 ```
 
 So we grab our Turtl js project's source and the mobile source as siblings (with
