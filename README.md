@@ -15,7 +15,9 @@ mkdir turtl
 cd turtl/
 git clone https://github.com/turtl/js.git
 git clone https://github.com/turtl/desktop.git
-cd desktop/
+cd js/
+npm install
+cd ../desktop/
 npm install
 ```
 
