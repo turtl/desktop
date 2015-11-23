@@ -95,6 +95,7 @@ var BookmarkController = Composer.Controller.extend({
 							inject: edit_container,
 							skip_overlay: true,
 							skip_close_on_pageload: true,
+							skip_body_class: true,
 							// only set show_back:false once (on first modal)
 							show_back: ran
 						};
