@@ -126,8 +126,25 @@ var tools = {
 	 */
 	hijack_external_links: function(win)
 	{
-		win.on('new-win-policy', function(_, url, policy) {
+		var open = function(url)
+		{
 			gui.Shell.openExternal(url)
+		};
+
+		win.window.addEventListener('click', function(e) {
+			var a = e.target;
+			if(!Composer.match(e.target, 'a, a *')) return;
+			var is_href = a.href.match(/^http/);
+			var is_blank = ['_blank', '_top'].indexOf(a.getAttribute('target')) >= 0;
+
+			if(!(is_href || is_blank)) return;
+
+			e.preventDefault();
+			e.stopPropagation();
+			open(e.target.href);
+		});
+		win.on('new-win-policy', function(_, url, policy) {
+			open(url);
 			policy.ignore();
 		});
 	},
