@@ -3,10 +3,14 @@
 //
 
 if(typeof(config) == 'undefined') config = {};
-Object.merge(config, {
-	api_url: 'http://turtl.dev:8181',
-	client: 'desktop',
-	cookie_login: false,
-	base_url: window.location.toString().replace(/^(.*)\/.*?$/, '$1/app')
-});
+(function() {
+	var gui = require('nw.gui');
+	Object.merge(config, {
+		api_url: 'https://turtl.dev:8181',
+		client: 'desktop',
+		version: gui.App.manifest.version,
+		cookie_login: false,
+		base_url: window.location.toString().replace(/^(.*)\/.*?$/, '$1/app')
+	});
+})();
 
