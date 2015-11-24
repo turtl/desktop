@@ -47,7 +47,7 @@ vendorjs="$(
 		| sed 's|$|"></script>|'
 )"
 
-for x in $(find $pwd/../data/controllers -name "*.js"); do
+for x in $(find $pwd/../data/controllers -name "*.js" | sort); do
 	x=$(basename $x)
 	js="${js}$(print_js "../controllers/$x")"
 done

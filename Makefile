@@ -7,6 +7,7 @@ allcss = $(shell find ../js/css/ -name "*.css" \
 alljs = $(shell echo "../js/main.js" \
 			&& find ../js/{config,controllers,handlers,library,models,turtl} -name "*.js" \
 			| grep -v '(ignore|\.thread\.)')
+allcontrollers = $(shell find data/controllers/ -name "*.js")
 
 all: .build/make-js data/index.html data/popup/index.html
 
@@ -38,11 +39,11 @@ data/app/index.html: $(alljs) $(allcss) ../js/index.html
 	@touch .build/make-js
 
 # if the app's index changed, we know to change this one
-data/index.html: data/app/index.html ./scripts/gen-index
+data/index.html: data/app/index.html $(allcontrollers) ./scripts/gen-index
 	@echo "- index.html: " $?
 	@./scripts/gen-index
 
-data/popup/index.html: data/popup/index.html.tpl ./scripts/gen-index
+data/popup/index.html: data/popup/index.html.tpl $(allcontrollers) ./scripts/gen-index
 	@echo "- popup/index.html: " $?
 	@./scripts/gen-index popup
 
