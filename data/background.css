@@ -12,7 +12,8 @@ body.minified #main #background_content.modalcontent > a.min {background-image: 
 
 .content {width: auto;}
 
-.bookmarker {min-height: 500px;}
+.bookmarker,
+.note-edit-container {min-height: 500px;}
 .turtl-modal:first-child {-webkit-transition: none; transition: none;}
 
 

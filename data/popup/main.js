@@ -58,12 +58,8 @@ var popup = {
 			});
 			break;
 		case 'add-note':
-			app.Popup.load_controller(body, 'NotesEditController', {
-				inject: bg_inject,
-				edit_in_modal: false,
-				board: 'last',
-				show_boards: true,
-				track_last_board: true
+			app.Popup.load_controller(body, 'AddNoteController', {
+				inject: bg_inject
 			});
 			break;
 		case 'bookmark':

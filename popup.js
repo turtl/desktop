@@ -131,6 +131,8 @@
 				comm.unbind_context('panel_close');
 				Popup.close();
 			}, 'panel:close');
+
+			setTimeout(comm.trigger.bind(comm, 'resize'), 100);
 		},
 
 		release: function()
