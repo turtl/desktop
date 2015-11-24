@@ -5,7 +5,7 @@ NW := $(shell which nw)
 allcss = $(shell find ../js/css/ -name "*.css" \
 			| grep -v 'reset.css')
 alljs = $(shell echo "../js/main.js" \
-			&& find ../js/{config,controllers,handlers,library,models} -name "*.js" \
+			&& find ../js/{config,controllers,handlers,library,models,turtl} -name "*.js" \
 			| grep -v '(ignore|\.thread\.)')
 
 all: .build/make-js data/index.html data/popup/index.html
