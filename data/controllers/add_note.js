@@ -4,7 +4,7 @@ var AddNoteController = OpenNoteController.extend({
 
 	init: function()
 	{
-		this.parent()
+		this.parent();
 		this.render();
 	},
 

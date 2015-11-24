@@ -25,7 +25,7 @@ var BookmarkController = OpenNoteController.extend({
 
 	init: function()
 	{
-		parent.init();
+		this.parent();
 
 		if(window.port) window.port.bind('bookmark-open', function(data) {
 			// prevent overwriting what's in the bookmark interface
