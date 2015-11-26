@@ -14,9 +14,10 @@ var OpenNoteController = Composer.Controller.extend({
 	create_sub: function(params)
 	{
 		var edit_container = this.edit_container;
-		var params = Object.merge({
-			title: 'Note',
-			modal_opts: (function() {
+		if(!params.title) params.title = 'Note';
+		if(!params.modal_opts)
+		{
+			params.modal_opts = (function() {
 				var ran = false;
 				return function() {
 					var obj = {
@@ -31,7 +32,7 @@ var OpenNoteController = Composer.Controller.extend({
 					return obj;
 				};
 			})()
-		}, params);
+		}
 		return new NotesEditController(params);
 	},
 
