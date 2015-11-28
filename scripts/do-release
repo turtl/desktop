@@ -8,7 +8,7 @@ TMP=`realpath $RELEASE/../tmp`
 
 if [ "$PLATFORM" == "" ]; then
 	echo "Usage:"
-	echo "  $0 [windows|linux32|linux64|macos]"
+	echo "  $0 [windows|linux32|linux64|osx]"
 	exit 1
 fi
 
@@ -41,11 +41,11 @@ elif [ "$PLATFORM" == "windows" ]; then
 	fi
 	zip -qr -9 -X \
 		$RELEASE_DIR/turtl-windows.zip .
-elif [ "$PLATFORM" == "macos" ]; then
+elif [ "$PLATFORM" == "osx" ]; then
 	cp $RELEASE_DIR/package.nw .
 	cp $APP/scripts/resources/favicon.128.icns nwjs.app/Contents/Resources/nw.icns
 	mv nwjs.app turtl.app
-	zip -qr -9 -X $RELEASE_DIR/turtl-macos.zip .
+	zip -qr -9 -X $RELEASE_DIR/turtl-osx.zip .
 	mv turtl.app nwjs.app
 	rm -f package.nw
 fi

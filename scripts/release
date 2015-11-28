@@ -15,8 +15,8 @@ echo -n "Packaging linux64..."
 ./scripts/do-release linux64
 echo "done."
 
-echo -n "Packaging macos..."
-./scripts/do-release macos
+echo -n "Packaging osx..."
+./scripts/do-release osx
 echo "done."
 
 echo "All done!"
