@@ -166,6 +166,21 @@ function bind_login_to_menu()
 		// Window.hide() hides the tray menu, so we just remove it and re-add it
 		make_tray();
 	});
+
+	var menu = new gui.Menu({ type: "menubar" });
+	try
+	{
+		if(menu.createMacBuiltin)
+		{
+			menu.createMacBuiltin('Turtl');
+			win.menu = menu;
+		}
+	}
+	catch(err)
+	{
+		log.error('init: create mac menu: ', err);
+	}
+
 })();
 
 window.addEvent('domready', function() {
