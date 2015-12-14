@@ -27,6 +27,7 @@ data/app/index.html: $(alljs) $(allcss) ../js/index.html
 			--exclude=node_modules \
 			--exclude=.git \
 			--exclude=.build \
+			--exclude=tests \
 			--delete \
 			--delete-excluded \
 			--checksum \
