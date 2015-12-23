@@ -10,6 +10,7 @@ if(typeof(config) == 'undefined') config = {};
 		client: 'desktop',
 		version: gui.App.manifest.version,
 		cookie_login: false,
+		catch_global_errors: true,
 		base_url: window.location.toString().replace(/^(.*)\/.*?$/, '$1/app')
 	});
 })();
