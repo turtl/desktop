@@ -52,12 +52,12 @@ for x in $(find $pwd/../data/controllers -name "*.js" | sort); do
 	js="${js}$(print_js "../controllers/$x")"
 done
 js="${js}\n<script src=\"app://turtl/config.js\"></script>"
-js="${js}\n<script src=\"app://turtl/tools.js\"></script>"
-js="${js}\n<script src=\"app://turtl/comm.js\"></script>"
-js="${js}\n<script src=\"app://turtl/popup.js\"></script>"
-js="${js}\n<script src=\"app://turtl/notifications.js\"></script>"
-js="${js}\n<script src=\"app://turtl/pairing.js\"></script>"
-js="${js}\n<script src=\"app://turtl/dispatch.js\"></script>"
+js="${js}\n<script src=\"app://turtl/lib/tools.js\"></script>"
+js="${js}\n<script src=\"app://turtl/lib/comm.js\"></script>"
+js="${js}\n<script src=\"app://turtl/lib/popup.js\"></script>"
+js="${js}\n<script src=\"app://turtl/lib/notifications.js\"></script>"
+js="${js}\n<script src=\"app://turtl/lib/pairing.js\"></script>"
+js="${js}\n<script src=\"app://turtl/lib/dispatch.js\"></script>"
 js="${js}\n<script src=\"app://turtl/main.js\"></script>"
 
 
