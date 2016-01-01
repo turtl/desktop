@@ -39,8 +39,7 @@ elif [ "$PLATFORM" == "windows" ]; then
 	if [ -f nw.exe ]; then
 		mv nw.exe turtl.exe
 	fi
-	zip -qr -9 -X \
-		$RELEASE_DIR/turtl-windows.zip .
+	makensis /NOCD ../../../scripts/installers/windows.nsi
 elif [ "$PLATFORM" == "osx" ]; then
 	cp $RELEASE_DIR/package.nw .
 	cp $APP/scripts/resources/favicon.128.icns nwjs.app/Contents/Resources/nw.icns
