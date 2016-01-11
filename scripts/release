@@ -3,20 +3,31 @@
 echo "Did you run ./scripts/package first??"
 sleep 2
 
+# get app version
+VERSION=$(
+	cat package.json \
+		| grep '"version"' \
+		| sed 's|.*: \+"\([^"]\+\)".*|\1|'
+)
+
+echo "----"
+echo "Version is ${VERSION}"
+echo "----"
+
 echo -n "Packaging windows..."
-./scripts/do-release windows
+./scripts/do-release windows ${VERSION} > /dev/null
 echo "done."
 
 echo -n "Packaging linux32..."
-./scripts/do-release linux32
+./scripts/do-release linux32 ${VERSION} > /dev/null
 echo "done."
 
 echo -n "Packaging linux64..."
-./scripts/do-release linux64
+./scripts/do-release linux64 ${VERSION} > /dev/null
 echo "done."
 
 echo -n "Packaging osx..."
-./scripts/do-release osx
+./scripts/do-release osx ${VERSION} > /dev/null
 echo "done."
 
 echo "All done!"

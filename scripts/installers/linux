@@ -1,0 +1,106 @@
+#!/bin/bash
+
+LOCATION=$1
+
+HERE="`dirname $(realpath $0)`"
+
+if [ "${LOCATION}" == "" ] && [ "$(whoami)" != "root" ]; then
+	echo
+	echo "Hi! Looks like you're trying to install Turtl without root privs. Try this:"
+	echo "  sudo $0"
+	echo
+	echo "-OR- you can install into a local dir like so:"
+	echo "  $0 ~/apps/turtl"
+	echo
+	exit 1
+fi
+
+GLOBAL_PATH=/opt/turtl
+GLOBAL_SHARE=/usr/share
+LOCAL_PATH=~/turtl
+LOCAL_SHARE=~/.local/share
+ROOT=${GLOBAL_PATH}
+SHARE=${GLOBAL_SHARE}
+if [ "${LOCATION}" != "uninstall" ] && [ "${LOCATION}" != "" ]; then
+	LOCAL_PATH=${LOCATION}
+	if [ "$(realpath ${LOCAL_PATH})" == "$(realpath ~)" ]; then
+		LOCAL_PATH=~/turtl
+	fi
+	ROOT=${LOCAL_PATH}
+	SHARE=${LOCAL_SHARE}
+
+	mkdir -p ~/.config/turtl/
+	echo "${LOCAL_PATH}" > ~/.config/turtl/install_location
+fi
+
+DESKTOP_FILE=${SHARE}/applications/turtl.desktop
+ICON_DIR=${SHARE}/icons/hicolor/128x128/apps
+ICON_FILE=${ICON_DIR}/turtl.png
+
+if [ "${LOCATION}" == "uninstall" ]; then
+	LOCAL_PATH="$(cat ~/.config/turtl/install_location 2>/dev/null)"
+	if [ "$LOCAL_PATH" == "" ]; then
+		LOCAL_PATH=~/turtl
+	fi
+
+	echo "Uninstalling Turtl..."
+	if [ -d ${GLOBAL_PATH} ]; then
+		echo "Going to rm -rf ${GLOBAL_PATH} ...is this ok? Press any key to continue, ctrl+c to cancel."
+		read
+		rm -rf ${GLOBAL_PATH} ||
+			{ echo "Problem removing ${GLOBAL_PATH}. Try running with sudo."; exit 1; }
+		rm -f ${DESKTOP_FILE} ||
+			{ echo "Problem removing ${DESKTOP_FILE}. Try running with sudo."; exit 1; }
+		rm -f ${ICON_FILE} ||
+			{ echo "Problem removing ${ICON_FILE}. Try running with sudo."; exit 1; }
+	fi
+	if [ -d ${LOCAL_PATH} ]; then
+		echo "Going to rm -rf ${LOCAL_PATH} ...is this ok? Press any key to continue, ctrl+c to cancel."
+		read
+		rm -rf ${LOCAL_PATH}
+		rm -f ${LOCAL_SHARE}/applications/turtl.desktop
+		rm -f ${LOCAL_SHARE}/icons/hicolor/128x128/apps/turtl.png
+	fi
+	rm -rf ~/.config/turtl/
+	echo "Done."
+	exit
+fi
+
+read -r -d '' DESKTOP <<EOF
+[Desktop Entry]
+Type=Application
+Name=Turtl
+GenericName=Secture notes
+Comment=Private notes and bookmarks with collaboration.
+Exec=${ROOT}/turtl
+Path=${ROOT}
+Icon=turtl.png
+Terminal=false
+Categories=Office;Utility;
+Keywords=secure;security;privacy;private;notes;bookmarks;collaborate;research;
+StartupNotify=true
+EOF
+
+pushd ${HERE}/turtl > /dev/null
+
+echo "Copying Turtl to install directory (${ROOT})..."
+mkdir -p ${ROOT} ||
+	{ echo "Error creating install directory ${ROOT}"; exit 1; }
+cp -R . ${ROOT} ||
+		{ echo "Error copying Turtl."; exit 1; }
+
+echo "${DESKTOP}" > ${DESKTOP_FILE} ||
+	{ echo "Error installing turtl.desktop file to ${DESKTOP_FILE}"; exit 1; }
+
+mkdir -p ${ICON_DIR} ||
+	{ echo "Error initializing icon dir ${ICON_DIR}"; exit 1; }
+cp ${HERE}/turtl/icon.png ${ICON_FILE} ||
+	{ echo "Error installing icon to ${ICON_FILE}"; exit 1; }
+
+echo "All done! Turtl has been installed in ${ROOT}/. To run:"
+echo "  ${ROOT}/turtl"
+echo
+echo "To uninstall, run:"
+echo "  $0 uninstall"
+echo
+

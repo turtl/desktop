@@ -1,54 +1,63 @@
 #!/bin/bash
 
 PLATFORM=$1
-APP=`realpath .`
-RELEASE=$APP/release/nwjs/$PLATFORM
-RELEASE_DIR=$APP/release
-TMP=`realpath $RELEASE/../tmp`
+VERSION=$2
 
-if [ "$PLATFORM" == "" ]; then
+APP=`realpath .`
+RELEASE="$(realpath ${APP}/release/nwjs/${PLATFORM})"
+RELEASE_DIR=${APP}/release
+TMP=${RELEASE}/../tmp
+
+if [ "${PLATFORM}" == "" ]; then
 	echo "Usage:"
 	echo "  $0 [windows|linux32|linux64|osx]"
 	exit 1
 fi
 
-if [ ! -d $RELEASE ]; then
-	echo "Error: $RELEASE not present"
+if [ ! -d ${RELEASE} ]; then
+	echo "Error: ${RELEASE} not present"
 	exit 1
 fi
 
-pushd $RELEASE > /dev/null || {
-	echo "Error entering directory $RELEASE."
+pushd ${RELEASE} > /dev/null || {
+	echo "Error entering directory ${RELEASE}."
 	exit 1
 }
 
-if [ "$PLATFORM" == "linux32" ] || [ "$PLATFORM" == "linux64" ]; then
+if [ "${PLATFORM}" == "linux32" ] || [ "${PLATFORM}" == "linux64" ]; then
 	RELNAME=turtl-${PLATFORM}
-	SUBDIR=$TMP/$RELNAME
-	mkdir -p $SUBDIR
-	cp -R * $SUBDIR
-	cp $RELEASE_DIR/package.nw $SUBDIR
-	mv $SUBDIR/nw $SUBDIR/turtl-bin
-	cp $APP/scripts/resources/turtl-linux-init.sh $SUBDIR/turtl
-	chmod 755 $SUBDIR/turtl
-	pushd $TMP > /dev/null
-	tar -cjf $RELEASE_DIR/turtl-${PLATFORM}.tar.bz2 $RELNAME
+	SUBDIR=${TMP}/${RELNAME}/turtl
+	mkdir -p ${SUBDIR}
+	cp -R . ${SUBDIR}
+	cp ${RELEASE_DIR}/package.nw ${SUBDIR}
+	mv ${SUBDIR}/nw ${SUBDIR}/turtl-bin
+
+	cp ${APP}/scripts/resources/favicon.128.png ${SUBDIR}/icon.png
+	cp ${APP}/scripts/resources/turtl-linux-init.sh ${SUBDIR}/turtl
+	chmod 755 ${SUBDIR}/turtl
+
+	cp ${APP}/scripts/installers/linux ${SUBDIR}/../install.sh
+	sed -i "s|{{platform}}|${PLATFORM}|g" ${SUBDIR}/../install.sh
+	pushd ${TMP} > /dev/null
+	tar -cjf ${RELEASE_DIR}/turtl-${PLATFORM}.tar.bz2 ${RELNAME}
 	popd > /dev/null
-elif [ "$PLATFORM" == "windows" ]; then
-	cp $RELEASE_DIR/package.nw .
+elif [ "${PLATFORM}" == "windows" ]; then
+	cp ${RELEASE_DIR}/package.nw .
 	if [ -f nw.exe ]; then
 		mv nw.exe turtl.exe
 	fi
 	makensis /NOCD ../../../scripts/installers/windows.nsi
-elif [ "$PLATFORM" == "osx" ]; then
-	cp $RELEASE_DIR/package.nw .
-	cp $APP/scripts/resources/favicon.128.icns nwjs.app/Contents/Resources/nw.icns
-	mv nwjs.app turtl.app
-	zip -qr -9 -X $RELEASE_DIR/turtl-osx.zip .
-	mv turtl.app nwjs.app
-	rm -f package.nw
+elif [ "${PLATFORM}" == "osx" ]; then
+	cp ${RELEASE_DIR}/package.nw nwjs.app/Contents/Resources/app.nw
+	cp ${APP}/scripts/resources/favicon.128.icns nwjs.app/Contents/Resources/nw.icns
+	mv nwjs.app Turtl.app
+	../../../scripts/installers/osx ${TMP} ${VERSION}
+	#zip -qr -9 -X ${RELEASE_DIR}/turtl-osx.zip .
+	mv Turtl.app nwjs.app
+	rm -f nwjs.app/Contents/Resources/app.nw
+	rm -rf ${APP}/release/tmp
 fi
 
-rm -rf $TMP
+#rm -rf ${TMP}
 
 popd > /dev/null
