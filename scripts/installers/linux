@@ -2,9 +2,16 @@
 
 LOCATION=$1
 
-HERE="`dirname $(realpath $0)`"
+PATHRES="$(readlink -e . >/dev/null 2>&1 ; echo $?)"
+DIRRES="$(dirname . >/dev/null 2>&1 ; echo $?)"
+if [ "$PATHRES" != "0" ] || [ "$DIRRES" != "0" ]; then
+	echo "This installer requires the readlink and dirname utilities. Please install them."
+	exit 1
+fi
 
-if [ "${LOCATION}" == "" ] && [ "$(whoami)" != "root" ]; then
+HERE="`dirname $(readlink -e $0)`"
+
+if [ "${LOCATION}" == "" ] && [ "$(echo $UID)" != "0" ]; then
 	echo
 	echo "Hi! Looks like you're trying to install Turtl without root privs. Try this:"
 	echo "  sudo $0"
@@ -23,7 +30,7 @@ ROOT=${GLOBAL_PATH}
 SHARE=${GLOBAL_SHARE}
 if [ "${LOCATION}" != "uninstall" ] && [ "${LOCATION}" != "" ]; then
 	LOCAL_PATH=${LOCATION}
-	if [ "$(realpath ${LOCAL_PATH})" == "$(realpath ~)" ]; then
+	if [ "$(readlink -e ${LOCAL_PATH})" == "$(readlink -e ~)" ]; then
 		LOCAL_PATH=~/turtl
 	fi
 	ROOT=${LOCAL_PATH}
