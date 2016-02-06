@@ -8,7 +8,8 @@ of Turtl for desktop platforms.
 ## Setup
 
 Let's assume you have Node.js/NPM install already. Make sure you have [NWJS](https://github.com/nwjs/nw.js)
-installed on your machine and in your PATH.
+installed on your machine and in your PATH. Also the `rsync` utility is used
+throughout the Turtl build processes, so please make sure you have it installed.
 
 ```bash
 mkdir turtl
