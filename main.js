@@ -38,7 +38,7 @@ var min_to_tray = JSON.parse(localStorage['minimize_to_tray'] || 'false') || fal
  */
 function set_tray_min(bool)
 {
-	localStorage['minimize_to_tray'] = JSON.encode(bool);
+	localStorage['minimize_to_tray'] = JSON.stringify(bool);
 	min_to_tray = bool;
 }
 
