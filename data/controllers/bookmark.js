@@ -91,14 +91,19 @@ var BookmarkController = OpenNoteController.extend({
 			this.with_bind(con.clone.get('tags'), 'change', this.track_note_changes.bind(this))
 
 			var check = setInterval(this.track_note_changes.bind(this), 500);
-			this.with_bind(con, 'release', function() {
+			var done = function()
+			{
 				if(check)
 				{
 					clearInterval(check);
 					check = null;
 				}
+			}.bind(this);
+			this.with_bind(con, 'release', function() {
+				done();
 				this.release();
-			});
+			}.bind(this));
+			this.bind('release', done);
 			this.with_bind(con, 'saved', function() {
 				// remove the cache entry for this note
 				delete turtl.bookmark_data;
