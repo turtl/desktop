@@ -5,10 +5,10 @@
 		<meta http-equiv="Content-Language" content="en">
 {{extra}}
 {{vendorjs}}
-		<script src="app://turtl/data/app/library/keyboard.js"></script>
-		<script src="app://turtl/data/popup/main.js"></script>
+		<script src="/data/app/library/keyboard.js"></script>
+		<script src="/data/popup/main.js"></script>
 {{gencss}}
-		<link rel="stylesheet" href="app://turtl/data/background.css">
+		<link rel="stylesheet" href="/data/background.css">
 	</head>
 	<body class="bare">
 		<div id="wrap">

@@ -14,18 +14,21 @@
 // it doesn't matter though, because turtl doesn't do anything that doesn't run
 // in a normal browser, and anything that falls under such a category will
 // eventually put into the core native app.
-process.on('uncaughtException', function(e) { });
+process.on('uncaughtException', function(e) {
+	log.error('desktop: main: uncaught: ', e);
+});
 
 var gui = require('nw.gui');
 
 // node finds it necessary to cache DNS FOREVER. wow. say goodbye to switching
 // servers, i guess. but not anymore!
 gui.App.clearCache();
-gui.App.setCrashDumpDir('/tmp');
+//gui.App.setCrashDumpDir('/tmp');
 
 var _desktop_tray = null;
 var comm = new Comm();
 var min_to_tray = JSON.parse(localStorage['minimize_to_tray'] || 'false') || false;
+min_to_tray = false;
 
 (function() {
 	var win = gui.Window.get();
@@ -76,7 +79,7 @@ function update_tray_menu()
 		menu.append(new gui.MenuItem({ label: lbl('Logout'), click: function() { turtl.user.logout() } }));
 		menu.append(new gui.MenuItem({ type: 'separator' }));
 	}
-	menu.append(new gui.MenuItem({ type: 'checkbox', checked: min_to_tray, label: lbl('Minimize to tray'), click: function() { set_tray_min(this.checked); } }));
+	//menu.append(new gui.MenuItem({ type: 'checkbox', checked: min_to_tray, label: lbl('Minimize to tray'), click: function() { set_tray_min(this.checked); } }));
 	menu.append(new gui.MenuItem({ type: 'separator' }));
 	menu.append(new gui.MenuItem({ label: lbl('Quit'), click: function() {
 		Notifications.close();
@@ -178,7 +181,7 @@ function bind_login_to_menu()
 	}
 	catch(err)
 	{
-		log.error('init: create mac menu: ', err);
+		log.warn('init: create mac menu: ', err);
 	}
 
 })();

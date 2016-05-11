@@ -41,7 +41,7 @@ data/app/index.html: $(alljs) $(allcss) ../js/index.html
 
 # if the app's index changed, we know to change this one
 data/index.html: data/app/index.html $(allcontrollers) ./scripts/gen-index
-	@echo "- index.html: " $?
+	@echo "- data/index.html: " $?
 	@./scripts/gen-index
 
 data/popup/index.html: data/popup/index.html.tpl $(allcontrollers) ./scripts/gen-index

@@ -12,7 +12,7 @@ fi
 pwd=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 cd $pwd/../data/app
 
-ASSET_ROOT="app://turtl/data/app/"
+ASSET_ROOT="/data/app/"
 SEARCH_PATH=""
 source "$pwd/../data/app/scripts/include.sh"
 
@@ -20,7 +20,7 @@ source "$pwd/../data/app/scripts/include.sh"
 ## generate extra
 ## -----------------------------------------------------------------------------
 extra=""
-extra="${extra}\n<link rel=\"shortcut icon\" href=\"app://turtl/data/app/images/favicon.png\" type=\"image/png\">"
+extra="${extra}\n<link rel=\"shortcut icon\" href=\"/data/app/images/favicon.png\" type=\"image/png\">"
 
 ## -----------------------------------------------------------------------------
 ## generate CSS links
@@ -43,7 +43,7 @@ js="$(
 vendorjs="$(
 	echo "$(vendor_js)" \
 		| sed 's|___| |g' \
-		| sed 's|^|<script src="app://turtl/data/app/|' \
+		| sed 's|^|<script src="/data/app/|' \
 		| sed 's|$|"></script>|'
 )"
 
@@ -51,21 +51,21 @@ for x in $(find $pwd/../data/controllers -name "*.js" | sort); do
 	x=$(basename $x)
 	js="${js}$(print_js "../controllers/$x")"
 done
-js="${js}\n<script src=\"app://turtl/config.js\"></script>"
-js="${js}\n<script src=\"app://turtl/lib/tools.js\"></script>"
-js="${js}\n<script src=\"app://turtl/lib/comm.js\"></script>"
-js="${js}\n<script src=\"app://turtl/lib/popup.js\"></script>"
-js="${js}\n<script src=\"app://turtl/lib/notifications.js\"></script>"
-js="${js}\n<script src=\"app://turtl/lib/pairing.js\"></script>"
-js="${js}\n<script src=\"app://turtl/lib/dispatch.js\"></script>"
-js="${js}\n<script src=\"app://turtl/main.js\"></script>"
+js="${js}\n<script src=\"/config.js\"></script>"
+js="${js}\n<script src=\"/lib/tools.js\"></script>"
+js="${js}\n<script src=\"/lib/comm.js\"></script>"
+js="${js}\n<script src=\"/lib/popup.js\"></script>"
+js="${js}\n<script src=\"/lib/notifications.js\"></script>"
+js="${js}\n<script src=\"/lib/pairing.js\"></script>"
+js="${js}\n<script src=\"/lib/dispatch.js\"></script>"
+js="${js}\n<script src=\"/main.js\"></script>"
 
 
 ## -----------------------------------------------------------------------------
 ## put it all together
 ## -----------------------------------------------------------------------------
 if [ "$TEMPLATE" == "main" ]; then
-	extra="${extra}\n<base href=\"app/\">"
+	extra="${extra}\n<base href=\"/data/app/\">"
 	index="$(cat $pwd/../data/app/views/layouts/default.html)"
 	index="$(do_replace "$index" '{{extra}}' "$extra")"
 	index="$(do_replace "$index" '{{gencss}}' "$css")"
