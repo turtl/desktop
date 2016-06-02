@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="windows-1252"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<Product
+		Name="Turtl {{VERSION}}" Manufacturer="Lyon Bros. Enterprises, LLC"
+        Id="51089b82-2e0a-4f5a-911d-5604c839443c" 
+        UpgradeCode="f2f90601-ff42-4e24-b3bf-bf71cff59fa0"
+		Language="1033" Codepage="1252" Version="{{VERSION}}">
+		<Package
+			Id="*"
+			Description="LyonBros Turtl installer"
+			Comments="Turtl &copy; Lyon Bros. Enterprises, LLC"
+			Manufacturer="Lyon Bros. Enterprises, LLC"
+			InstallerVersion="300"
+			Compressed="yes" />
+
+		<UIRef Id="WixUI_Advanced" />
+		<WixVariable Id="WixUIBannerBmp" Value="installer_banner.bmp" />
+		<WixVariable Id="WixUILicenseRtf" Value="license.rtf" />
+
+		<Property Id="ApplicationFolderName" Value="Turtl" />
+		<Property Id="WixAppFolder" Value="WixPerUserFolder" />
+
+		<Directory Id="TARGETDIR" Name="SourceDir">
+			<Directory Id="ProgramFiles64Folder" Name="PFiles">
+				<Directory Id="APPLICATIONFOLDER" Name="Turtl">
+				</Directory>
+			</Directory>
+
+			<Directory Id="ProgramMenuFolder">
+				<Directory Id="ApplicationProgramsFolder" Name="Turtl" />
+			</Directory>
+		</Directory>
+
+
+		<DirectoryRef Id="ApplicationProgramsFolder">
+			<Component Id="ApplicationShortcut" Guid="286f6995-e4f3-47ac-bdc2-e36388379841">
+				<Shortcut
+					Id="ApplicationStartMenuShortcut"
+					Name="Turtl"
+					Target="[APPLICATIONFOLDER]turtl.exe"
+					Icon="TurtlICO"
+					WorkingDirectory="APPLICATIONFOLDER" />
+				<RemoveFolder Id="ApplicationProgramsFolder" On="uninstall" />
+				<RegistryValue Root="HKCU" Key="Software\Microsoft\Turtl" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+			</Component>
+		</DirectoryRef>
+
+		<Feature Id="Turtl" Title="Turtl" Level="1">
+			<ComponentGroupRef Id="TurtlFileGroup" />
+			<ComponentRef Id="ApplicationShortcut" />
+		</Feature>
+
+		<Icon Id="TurtlICO" SourceFile="turtl.ico" />
+
+		<Media Id="1" Cabinet="Turtl.cab" EmbedCab="yes" CompressionLevel="low" />
+	</Product>
+</Wix>

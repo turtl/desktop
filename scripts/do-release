@@ -24,11 +24,18 @@ pushd ${RELEASE} > /dev/null || {
 	exit 1
 }
 
+mkdir -p ${TMP}
+
 if [ "${PLATFORM}" == "linux32" ] || [ "${PLATFORM}" == "linux64" ]; then
 	RELNAME=turtl-${PLATFORM}
 	SUBDIR=${TMP}/${RELNAME}/turtl
 	mkdir -p ${SUBDIR}
-	cp -R . ${SUBDIR}
+	rsync -avz \
+		--delete \
+		--delete-excluded \
+		./ \
+		${SUBDIR}
+	pushd ${TMP}
 	cp ${RELEASE_DIR}/package.nw ${SUBDIR}
 	mv ${SUBDIR}/nw ${SUBDIR}/turtl-bin
 
@@ -38,26 +45,59 @@ if [ "${PLATFORM}" == "linux32" ] || [ "${PLATFORM}" == "linux64" ]; then
 
 	cp ${APP}/scripts/installers/linux ${SUBDIR}/../install.sh
 	sed -i "s|{{platform}}|${PLATFORM}|g" ${SUBDIR}/../install.sh
-	pushd ${TMP} > /dev/null
 	tar -cjf ${RELEASE_DIR}/turtl-${PLATFORM}.tar.bz2 ${RELNAME}
 	popd > /dev/null
 elif [ "${PLATFORM}" == "windows" ]; then
-	cp ${RELEASE_DIR}/package.nw .
-	if [ -f nw.exe ]; then
-		mv nw.exe turtl.exe
-	fi
-	makensis /NOCD ../../../scripts/installers/windows.nsi
+	export PATH="$PATH:/d/dev/wix"
+	SUBDIR=${TMP}/windows
+	rsync -avz \
+		--delete \
+		--delete-excluded \
+		./ \
+		${SUBDIR}
+	pushd ${TMP}
+	cp ${RELEASE_DIR}/package.nw ${SUBDIR}
+	cp ${APP}/scripts/resources/favicon.ico ${SUBDIR}/turtl.ico
+	cp ${APP}/scripts/resources/installer_banner.bmp .
+	${APP}/scripts/to-rtf.sh ${APP}/LICENSE > license.rtf
+	cat ${APP}/scripts/installers/windows.wxs \
+		| sed "s/{{VERSION}}/${VERSION}/g" \
+		> turtl.wxs
+	mv ${SUBDIR}/nw.exe ${SUBDIR}/turtl.exe
+	heat \
+		dir \
+		windows \
+		-o turtl-files.wxs \
+		-scom -frag -srd -sreg -gg \
+		-cg TurtlFileGroup \
+		-dr APPLICATIONFOLDER
+	candle -arch x64 turtl.wxs turtl-files.wxs
+	light turtl.wixobj turtl-files.wixobj -ext WixUIExtension -b windows -o turtl-windows.msi
+	mv turtl-windows.msi ${RELEASE_DIR}/
+	popd > /dev/null
 elif [ "${PLATFORM}" == "osx" ]; then
-	cp ${RELEASE_DIR}/package.nw nwjs.app/Contents/Resources/app.nw
-	cp ${APP}/scripts/resources/favicon.128.icns nwjs.app/Contents/Resources/nw.icns
+	rsync -avz \
+		--exclude='nwjc' \
+		--delete \
+		--delete-excluded \
+		./ \
+		${TMP}
+	pushd ${TMP}
 	mv nwjs.app Turtl.app
-	../../../scripts/installers/osx ${TMP} ${VERSION}
-	#zip -qr -9 -X ${RELEASE_DIR}/turtl-osx.zip .
-	mv Turtl.app nwjs.app
-	rm -f nwjs.app/Contents/Resources/app.nw
-	rm -rf ${APP}/release/tmp
+	mv Turtl.app/Contents/MacOS/nwjs Turtl.app/Contents/MacOS/turtl
+	sed -i '/<key>CFBundleIdentifier<\/key>/!b;n;c<string>com.lyonbros.turtl</string>' Turtl.app/Contents/Info.plist
+	sed -i '/<key>CFBundleDisplayName<\/key>/!b;n;c<string>Turtl</string>' Turtl.app/Contents/Info.plist
+	sed -i '/<key>CFBundleName<\/key>/!b;n;c<string>Turtl</string>' Turtl.app/Contents/Info.plist
+	sed -i '/<key>CFBundleIdentifier<\/key>/!b;n;c<string>com.lyonbros.turtl</string>' Turtl.app/Contents/Info.plist
+	sed -i '/<key>CFBundleExecutable<\/key>/!b;n;c<string>turtl</string>' Turtl.app/Contents/Info.plist
+	sed -i "/<key>CFBundleShortVersionString<\/key>/!b;n;c<string>${VERSION}</string>" Turtl.app/Contents/Info.plist
+	cp ${RELEASE_DIR}/package.nw Turtl.app/Contents/Resources/app.nw
+	cp ${APP}/scripts/resources/favicon.128.icns Turtl.app/Contents/Resources/app.icns
+	genisoimage.exe -V "Turtl-${VERSION}" -D -R -apple -no-pad -o ${RELEASE_DIR}/turtl-${PLATFORM}.dmg Turtl.app/
+	popd > /dev/null
 fi
 
+# DEBUG: remove
 #rm -rf ${TMP}
 
 popd > /dev/null
