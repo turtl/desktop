@@ -1,24 +1,43 @@
 <?xml version="1.0" encoding="windows-1252"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
 	<Product
-		Name="Turtl {{VERSION}}" Manufacturer="Lyon Bros. Enterprises, LLC"
-        Id="51089b82-2e0a-4f5a-911d-5604c839443c" 
+		Id="*"
         UpgradeCode="f2f90601-ff42-4e24-b3bf-bf71cff59fa0"
-		Language="1033" Codepage="1252" Version="{{VERSION}}">
+		Name="Turtl v{{VERSION}}"
+		Manufacturer="Lyon Bros. Enterprises, LLC"
+		Language="1033"
+		Version="{{VERSION}}">
+
 		<Package
 			Id="*"
 			Description="LyonBros Turtl installer"
-			Comments="Turtl &copy; Lyon Bros. Enterprises, LLC"
+			Keywords="Installer"
 			Manufacturer="Lyon Bros. Enterprises, LLC"
 			InstallerVersion="300"
 			Compressed="yes" />
+
+		<MajorUpgrade
+			Schedule="afterInstallInitialize"
+			DowngradeErrorMessage="A later version of [ProductName] is already installed"
+			AllowDowngrades="no"
+			AllowSameVersionUpgrades="no" />
+
+		<!--
+		<Property Id="PREVIOUSVERSIONSINSTALLED" Secure="yes" />
+		<Upgrade Id="f7c658ae-6a16-45ad-9ba4-3d40fdbfa88b">
+			<UpgradeVersion
+				Minimum="0.6.0" Maximum="99.0.0"
+				Property="PREVIOUSVERSIONSINSTALLED"
+				IncludeMinimum="yes" IncludeMaximum="no" />
+		</Upgrade>
+		-->
 
 		<UIRef Id="WixUI_Advanced" />
 		<WixVariable Id="WixUIBannerBmp" Value="installer_banner.bmp" />
 		<WixVariable Id="WixUILicenseRtf" Value="license.rtf" />
 
 		<Property Id="ApplicationFolderName" Value="Turtl" />
-		<Property Id="WixAppFolder" Value="WixPerUserFolder" />
+		<Property Id="WixAppFolder" Value="WixPerMachineFolder" />
 
 		<Directory Id="TARGETDIR" Name="SourceDir">
 			<Directory Id="ProgramFiles64Folder" Name="PFiles">
@@ -45,13 +64,18 @@
 			</Component>
 		</DirectoryRef>
 
+		<Icon Id="TurtlICO" SourceFile="turtl.ico" />
+		<Media Id="1" Cabinet="Turtl.cab" EmbedCab="yes" CompressionLevel="low" />
+
 		<Feature Id="Turtl" Title="Turtl" Level="1">
 			<ComponentGroupRef Id="TurtlFileGroup" />
 			<ComponentRef Id="ApplicationShortcut" />
 		</Feature>
 
-		<Icon Id="TurtlICO" SourceFile="turtl.ico" />
-
-		<Media Id="1" Cabinet="Turtl.cab" EmbedCab="yes" CompressionLevel="low" />
+		<!--
+		<InstallExecuteSequence>
+			<RemoveExistingProducts Before="InstallInitialize" />
+		</InstallExecuteSequence>
+		-->
 	</Product>
 </Wix>

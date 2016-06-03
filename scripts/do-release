@@ -3,6 +3,8 @@
 PLATFORM=$1
 VERSION=$2
 
+YEAR=$(date +'%Y')
+
 APP=`realpath .`
 RELEASE="$(realpath ${APP}/release/nwjs/${PLATFORM})"
 RELEASE_DIR=${APP}/release
@@ -85,19 +87,30 @@ elif [ "${PLATFORM}" == "osx" ]; then
 	pushd ${TMP}
 	mv nwjs.app Turtl.app
 	mv Turtl.app/Contents/MacOS/nwjs Turtl.app/Contents/MacOS/turtl
-	sed -i '/<key>CFBundleIdentifier<\/key>/!b;n;c<string>com.lyonbros.turtl</string>' Turtl.app/Contents/Info.plist
-	sed -i '/<key>CFBundleDisplayName<\/key>/!b;n;c<string>Turtl</string>' Turtl.app/Contents/Info.plist
-	sed -i '/<key>CFBundleName<\/key>/!b;n;c<string>Turtl</string>' Turtl.app/Contents/Info.plist
-	sed -i '/<key>CFBundleIdentifier<\/key>/!b;n;c<string>com.lyonbros.turtl</string>' Turtl.app/Contents/Info.plist
-	sed -i '/<key>CFBundleExecutable<\/key>/!b;n;c<string>turtl</string>' Turtl.app/Contents/Info.plist
-	sed -i "/<key>CFBundleShortVersionString<\/key>/!b;n;c<string>${VERSION}</string>" Turtl.app/Contents/Info.plist
-	cp ${RELEASE_DIR}/package.nw Turtl.app/Contents/Resources/app.nw
-	cp ${APP}/scripts/resources/favicon.128.icns Turtl.app/Contents/Resources/app.icns
-	genisoimage.exe -V "Turtl-${VERSION}" -D -R -apple -no-pad -o ${RELEASE_DIR}/turtl-${PLATFORM}.dmg Turtl.app/
+	plist=Turtl.app/Contents/Info.plist
+	sed -i '/<key>CFBundleIdentifier<\/key>/!b;n;c<string>com.lyonbros.turtl</string>' ${plist}
+	sed -i '/<key>CFBundleDisplayName<\/key>/!b;n;c<string>Turtl</string>' ${plist}
+	sed -i '/<key>CFBundleName<\/key>/!b;n;c<string>Turtl</string>' ${plist}
+	sed -i '/<key>CFBundleIdentifier<\/key>/!b;n;c<string>com.lyonbros.turtl</string>' ${plist}
+	sed -i '/<key>CFBundleExecutable<\/key>/!b;n;c<string>turtl</string>' ${plist}
+	sed -i "/<key>CFBundleShortVersionString<\/key>/!b;n;c<string>${VERSION}</string>" ${plist}
+
+	en_plist=Turtl.app/Contents/Resources/en.lproj/InfoPlist.strings
+	cp ${en_plist} ${en_plist}.tmp
+	cat ${en_plist}.tmp \
+		| tr -cd "[:print:]\n" \
+		| sed 's/^CFBundleDisplayName.*/CFBundleDisplayName = "Turtl";/' \
+		| sed "s/^CFBundleGetInfoString.*/CFBundleGetInfoString = "'"'"Turtl ${VERSION}, Copyright ${YEAR} Lyon Bros. Enterprises, LLC"'"'";/" \
+		| sed 's/^CFBundleName.*/CFBundleName = "Turtl";/' \
+		| sed "s/^NSHumanReadableCopyright.*/NSHumanReadableCopyright = "'"'"Copyright ${YEAR} Lyon Bros. Enterprises, LLC."'"'";/" \
+		> ${en_plist}
+
+	cp ${RELEASE_DIR}/package.nw turtl.app/Contents/Resources/app.nw
+	cp ${APP}/scripts/resources/favicon.128.icns turtl.app/Contents/Resources/app.icns
+	genisoimage.exe -V "turtl-${VERSION}" -D -R -apple -no-pad -o ${RELEASE_DIR}/turtl-${PLATFORM}.dmg .
 	popd > /dev/null
 fi
 
-# DEBUG: remove
 #rm -rf ${TMP}
 
 popd > /dev/null
