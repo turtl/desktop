@@ -32,6 +32,8 @@
 		</Upgrade>
 		-->
 
+		<Property Id="ALLUSERS" Value="1"/>
+
 		<UIRef Id="WixUI_Advanced" />
 		<WixVariable Id="WixUIBannerBmp" Value="installer_banner.bmp" />
 		<WixVariable Id="WixUILicenseRtf" Value="license.rtf" />
