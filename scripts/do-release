@@ -50,7 +50,7 @@ if [ "${PLATFORM}" == "linux32" ] || [ "${PLATFORM}" == "linux64" ]; then
 	tar -cjf ${RELEASE_DIR}/turtl-${PLATFORM}.tar.bz2 ${RELNAME}
 	popd > /dev/null
 elif [ "${PLATFORM}" == "windows" ]; then
-	export PATH="$PATH:/d/dev/wix"
+	export PATH="$PATH:/d/dev/wix:/c/tools/Resource Hacker"
 	SUBDIR=${TMP}/windows
 	rsync -avz \
 		--delete \
@@ -60,12 +60,19 @@ elif [ "${PLATFORM}" == "windows" ]; then
 	pushd ${TMP}
 	cp ${RELEASE_DIR}/package.nw ${SUBDIR}
 	cp ${APP}/scripts/resources/favicon.ico ${SUBDIR}/turtl.ico
+	pushd ${SUBDIR} > /dev/null
+	ResHacker.exe -addoverwrite nw.exe, nw.new.exe, turtl.ico, ICONGROUP,IDR_MAINFRAME,0
+	mv nw.new.exe nw.exe
+	popd > /dev/null
 	cp ${APP}/scripts/resources/installer_banner.bmp .
 	${APP}/scripts/to-rtf.sh ${APP}/LICENSE > license.rtf
 	cat ${APP}/scripts/installers/windows.wxs \
 		| sed "s/{{VERSION}}/${VERSION}/g" \
 		> turtl.wxs
 	mv ${SUBDIR}/nw.exe ${SUBDIR}/turtl.exe
+	# recursively add the nwjs files so i don't have to keep a hand-updated list.
+	# if we ever want to remove files from the build, we can do so in the sync
+	# command via --exclude
 	heat \
 		dir \
 		windows \
@@ -111,6 +118,6 @@ elif [ "${PLATFORM}" == "osx" ]; then
 	popd > /dev/null
 fi
 
-#rm -rf ${TMP}
+rm -rf ${TMP}
 
 popd > /dev/null
