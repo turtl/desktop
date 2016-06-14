@@ -20,7 +20,6 @@ var BookmarkController = OpenNoteController.extend({
 		text: ''
 	},
 
-	edit_controller: null,
 	last_url: null,
 
 	init: function()
@@ -83,7 +82,8 @@ var BookmarkController = OpenNoteController.extend({
 			var con = this.create_sub({
 				model: this.note,
 				title: 'Bookmark',
-				confirm_unsaved: false
+				confirm_unsaved: false,
+				skip_resize_text: true
 			});
 
 			// save the note in case bookmarker is clooooseeed

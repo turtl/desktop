@@ -68,6 +68,27 @@ var popup = {
 				inject: bg_inject,
 				linkdata: linkdata
 			});
+			// NOTE: we hack this. the resizer in the note editor will operate
+			// via the `window` object in the main window, not our popup window,
+			// which royally screws things up when resizing. this is a hack that
+			// lets us listen to the popup's events and modify the text box
+			// directly via this window object, but the cost is we have to
+			// duplicate the resizing code between here and the note editor.
+			var resizer = function()
+			{
+				var el_form = bg_inject.getElement('form');
+				var inp_text = el_form.getElement('textarea[name=text]');
+				var el_buttons = el_form.getElement('.button-row');
+
+				var form_bottom = el_form.getCoordinates().bottom;
+				var btn_top = el_buttons.getCoordinates().top;
+				var diff = btn_top - form_bottom;
+				var txt_height = inp_text.getCoordinates().height;
+				var height = txt_height + diff;
+				if(height < 80) height = 80;
+				inp_text.setStyles({ height: height+'px' });
+			};
+			window.addEvent('resize', resizer);
 			break;
 		}
 	},
