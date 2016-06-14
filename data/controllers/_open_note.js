@@ -17,6 +17,10 @@ var OpenNoteController = Composer.Controller.extend({
 		if(!params.title) params.title = 'Note';
 		if(!params.modal_opts)
 		{
+			// would be nice if this was commented. thanks, past self.
+			// looks like we wrap it to only show the back button once, then
+			// never again after that. kinda jenky, but seems to work for hiding
+			// the back link in the bookmarker
 			params.modal_opts = (function() {
 				var ran = false;
 				return function() {
