@@ -96,6 +96,14 @@ mkdir -p ${ROOT} ||
 cp -R . ${ROOT} ||
 		{ echo "Error copying Turtl."; exit 1; }
 
+# set/fix permissions
+chmod 755 ${ROOT}
+pushd ${ROOT} >/dev/null
+find . -type d chmod 755 {} \;
+find . -type f chmod 644 {} \;
+chmod 755 turtl turtl-bin lib/* chromedriver nw payload nacl* pnacl/*nexe
+popd >/dev/null
+
 echo "${DESKTOP}" > ${DESKTOP_FILE} ||
 	{ echo "Error installing turtl.desktop file to ${DESKTOP_FILE}"; exit 1; }
 
