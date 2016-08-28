@@ -40,6 +40,7 @@ if [ "${PLATFORM}" == "linux32" ] || [ "${PLATFORM}" == "linux64" ]; then
 	pushd ${TMP}
 	cp ${RELEASE_DIR}/package.nw ${SUBDIR}
 	mv ${SUBDIR}/nw ${SUBDIR}/turtl-bin
+	chmod 755 ${SUBDIR}/turtl-bin
 
 	cp ${APP}/scripts/resources/favicon.128.png ${SUBDIR}/icon.png
 	cp ${APP}/scripts/resources/turtl-linux-init.sh ${SUBDIR}/turtl
