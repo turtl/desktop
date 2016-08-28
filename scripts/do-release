@@ -6,7 +6,7 @@ VERSION=$2
 YEAR=$(date +'%Y')
 
 APP=`realpath .`
-RELEASE="$(realpath ${APP}/release/nwjs/${PLATFORM})"
+RELEASE=${APP}/release/nwjs/${PLATFORM}
 RELEASE_DIR=${APP}/release
 TMP=${RELEASE}/../tmp
 
