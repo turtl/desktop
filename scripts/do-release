@@ -17,8 +17,8 @@ if [ "${PLATFORM}" == "" ]; then
 fi
 
 if [ ! -d ${RELEASE} ]; then
-	echo "Error: ${RELEASE} not present"
-	exit 1
+        echo "Creating ${RELEASE}..."
+        mkdir -p ${RELEASE}
 fi
 
 pushd ${RELEASE} > /dev/null || {
