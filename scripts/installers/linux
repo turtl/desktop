@@ -29,7 +29,7 @@ LOCAL_SHARE=~/.local/share
 ROOT=${GLOBAL_PATH}
 SHARE=${GLOBAL_SHARE}
 if [ "${LOCATION}" != "uninstall" ] && [ "${LOCATION}" != "" ]; then
-	LOCAL_PATH=${LOCATION}
+        LOCAL_PATH=$(readlink -f ${LOCATION})
 	if [ "$(readlink -e ${LOCAL_PATH})" == "$(readlink -e ~)" ]; then
 		LOCAL_PATH=~/turtl
 	fi
