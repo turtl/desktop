@@ -104,6 +104,11 @@ mkdir -p ${ICON_DIR} ||
 cp ${HERE}/turtl/icon.png ${ICON_FILE} ||
 	{ echo "Error installing icon to ${ICON_FILE}"; exit 1; }
 
+if [ "$(echo $UID)" == "0" ]; then
+	find ${ROOT} -perm 700 -exec chmod 755 '{}' \;
+	find ${ROOT} -perm 600 -exec chmod 644 '{}' \;
+fi
+
 echo "All done! Turtl has been installed in ${ROOT}/. To run:"
 echo "  ${ROOT}/turtl"
 echo
