@@ -26,7 +26,7 @@ jobs:
           key: npm-cache-v1-{{ .Branch }}-{{ checksum "package.json" }}
           paths:
             - node_modules
-      - run: make
+      - run: cd ../desktop && make
       - run: find data/app/ build/ | xargs sha256sum > BUILD.checksum
       - save_cache:
           key: dep-cache-v1-{{ .Branch }}-{{ checksum "BUILD.checksum" }}
