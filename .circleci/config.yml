@@ -12,14 +12,26 @@ jobs:
       - restore_cache:
           key: npm-cache-v1-{{ .Branch }}-{{ checksum "package.json" }}
           key: npm-cache-v1-{{ .Branch }}-
+      # install our apt deps
       - run: sudo apt-get update
       - run: sudo apt-get install --fix-missing rsync libgpg-error0 libgpg-error-dev libgcrypt20-dev
+      # install libsodium
       - run: wget https://download.libsodium.org/libsodium/releases/libsodium-1.0.15.tar.gz -O ~/libsodium.tar.gz
       - run: cd ~ && tar -xvf ./libsodium.tar.gz && cd libsodium-* && ./configure && make && sudo make install
+      # install rust
       - run: wget https://static.rust-lang.org/rustup.sh -O ~/rustup.sh && chmod 0750 ~/rustup.sh
       - run: sudo ~/rustup.sh --revision=1.21.0
+      # grab our supporting projects
       - run: git clone https://github.com/turtl/core-rs ../core
       - run: git clone https://github.com/turtl/js ../js
+      - restore_cache:
+          key: core-v1-{{ .Branch }}-{{ checksum "../core/Cargo.lock" }}
+          key: core-v1-{{ .Branch }}-
+      - run: cd ../core && make release
+      - save_cache:
+          key: core-v1-{{ .Branch }}-{{ checksum "../core/Cargo.lock" }}
+          paths:
+            - ../core
       - run: cd ../js && npm install
       - run: npm install
       - save_cache:
