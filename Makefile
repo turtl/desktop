@@ -14,15 +14,17 @@ alljs = $(shell echo "../js/main.js" \
 			| grep -v '(ignore|\.thread\.)')
 allcontrollers = $(shell find data/controllers/ -name "*.js")
 
+libprefix := lib
 libsuffix := so
 ifneq (,$(findstring NT-,$(OS)))
+	libprefix :=
 	libsuffix := dll
 endif
 ifneq (,$(findstring Darwin,$(OS)))
 	libsuffix := dylib
 endif
 
-all: .build/turtl_core.$(libsuffix) .build/protected_derive.$(libsuffix) .build/make-js data/index.html data/popup/index.html
+all: .build/$(libprefix)turtl_core.$(libsuffix) .build/$(libprefix)protected_derive.$(libsuffix) .build/make-js data/index.html data/popup/index.html
 
 package: all
 	./scripts/package
@@ -51,9 +53,10 @@ data/app/index.html: $(alljs) $(allcss) ../js/index.html
 			data/app
 	@touch data/app/index.html
 
-.build/turtl_core.$(libsuffix) .build/protected_derive.$(libsuffix): $(allrs)
+.build/$(libprefix)turtl_core.$(libsuffix) .build/$(libprefix)protected_derive.$(libsuffix): $(allrs)
 	@cd ../core && make release
-	cp ../core/target/release/turtl_core.$(libsuffix) ../core/target/release/protected_derive.$(libsuffix) .build/
+	cp ../core/target/release/$(libprefix)turtl_core.$(libsuffix) .build/
+	cp ../core/target/release/$(libprefix)protected_derive.$(libsuffix) .build/
 
 .build/make-js: $(alljs) $(allcss)
 	@cd ../js && make
