@@ -29,7 +29,7 @@ test: all
 data/app/index.html: $(alljs) $(allcss) ../js/index.html
 	@echo "- rsync project: " $?
 	@rsync \
-			-az \
+			-azz \
 			--exclude=node_modules \
 			--exclude=.git \
 			--exclude=.build \

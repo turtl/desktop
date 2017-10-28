@@ -9,35 +9,18 @@ jobs:
     <<: *defaults
     steps:
       - checkout
-
-      - run:
-          name: grab core-rs
-          command: git clone https://github.com/turtl/core-rs ../core-rs
-
-      - run:
-          name: grab js
-          command: git clone https://github.com/turtl/js ../js
-
       - restore_cache:
-          key: npm-cache-v1-{{ .Branch }}-{{ checksum "package.json" }}
-          key: npm-cache-v1-{{ .Branch }}
-          key: npm-cache-v1
-
-      - run:
-          name: npm install
-          command: npm install
-
+          key: cache-v1-{{ .Branch }}-{{ checksum "package.json" }}-{{ checksum "../SHA256.core-rs" }}-{{ checksum "../SHA256.js"}}
+      - run: git clone https://github.com/turtl/core-rs ../core-rs
+      - run: git clone https://github.com/turtl/js ../js
+      - run: npm install
+      - make
+      - run: find package.json data/app/ build/ | xargs sha256sum > BUILD.checksum
       - save_cache:
-          key: npm-cache-v1-{{ .Branch }}-{{ checksum "package.json" }}
+          key: cache-v1-{{ .Branch }}-{{ checksum "BUILD.checksum" }}
           paths:
-            - node_modules
-      - save_cache:
-          key: npm-cache-v1-{{ .Branch }}
-          paths:
-            - node_modules
-      - save_cache:
-          key: npm-cache-v1
-          paths:
+            - data/app/
+            - build/
             - node_modules
 
   test:
@@ -45,9 +28,9 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: npm-cache-v1-{{ .Branch }}-{{ checksum "package.json" }}
-          key: npm-cache-v1-{{ .Branch }}
-          key: npm-cache-v1
+          key: cache-v1-{{ .Branch }}-{{ checksum "BUILD.checksum" }}
+          key: cache-v1-{{ .Branch }}-
+          key: cache-v1-
 
       - run:
           name: Run tests
