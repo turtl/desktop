@@ -61,7 +61,7 @@ jobs:
             - node_modules
       - restore_cache:
           key: desktop-build-v3-{{ .Branch }}-{{ checksum "../SHA256.core-rs" }}-{{ checksum "../SHA256.js" }}
-      - run: cp config.live.js config/config.js
+      - run: mkdir -p config && cp config.live.js config/config.js
       - run: make
       - save_cache:
           key: desktop-build-v3-{{ .Branch }}-{{ checksum "../SHA256.core-rs" }}-{{ checksum "../SHA256.js" }}
@@ -85,7 +85,7 @@ jobs:
 
       - restore_cache:
           key: desktop-build-v3-{{ .Branch }}-{{ checksum "../SHA256.core-rs" }}-{{ checksum "../SHA256.js" }}
-      - run: cp config.live.js config/config.js
+      - run: mkdir -p config && cp config.live.js config/config.js
       - run: make test
 
 workflows:
