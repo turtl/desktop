@@ -60,11 +60,13 @@ jobs:
           paths:
             - node_modules
       - restore_cache:
-          key: desktop-build-v2-{{ .Branch }}-{{ checksum "../SHA256.core-rs" }}-{{ checksum "../SHA256.js" }}
+          key: desktop-build-v3-{{ .Branch }}-{{ checksum "../SHA256.core-rs" }}-{{ checksum "../SHA256.js" }}
       - run: make
       - save_cache:
-          key: desktop-build-v2-{{ .Branch }}-{{ checksum "../SHA256.core-rs" }}-{{ checksum "../SHA256.js" }}
+          key: desktop-build-v3-{{ .Branch }}-{{ checksum "../SHA256.core-rs" }}-{{ checksum "../SHA256.js" }}
           paths:
+            - ../core
+            - ../js
             - .build
             - data/app
 
@@ -72,16 +74,8 @@ jobs:
     <<: *defaults
     steps:
       - checkout
-      # grab core
-      - run: git clone https://github.com/turtl/core-rs ../core
-      - run: find ../core -name "*.rs" | grep -v target | sort | xargs sha256sum > ../SHA256.core-rs
-
-      # grab js
-      - run: git clone https://github.com/turtl/js ../js
-      - run: find ../js -name "*.js" | grep -v node_modules | sort | xargs sha256sum > ../SHA256.js
-
       - restore_cache:
-          key: desktop-build-v2-{{ .Branch }}-{{ checksum "../SHA256.core-rs" }}-{{ checksum "../SHA256.js" }}
+          key: desktop-build-v3-{{ .Branch }}-{{ checksum "../SHA256.core-rs" }}-{{ checksum "../SHA256.js" }}
       - run: make test
 
 workflows:
