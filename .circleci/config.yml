@@ -36,11 +36,11 @@ jobs:
 
       # grab core
       - run: git clone https://github.com/turtl/core-rs ../core
-      - run: find ../core -name "*.rs" | grep -v target | xargs sha256sum > ../SHA256.core-rs
+      - run: find ../core -name "*.rs" | grep -v target | sort | xargs sha256sum > ../SHA256.core-rs
 
       # grab js
       - run: git clone https://github.com/turtl/js ../js
-      - run: find ../js -name "*.js" | grep -v node_modules | xargs sha256sum > ../SHA256.js
+      - run: find ../js -name "*.js" | grep -v node_modules | sort | xargs sha256sum > ../SHA256.js
       - restore_cache:
           key: js-npm-v2-{{ checksum "../js/package.json" }}
           key: js-npm-v2-
@@ -74,11 +74,11 @@ jobs:
       - checkout
       # grab core
       - run: git clone https://github.com/turtl/core-rs ../core
-      - run: find ../core -name "*.rs" | grep -v target | xargs sha256sum > ../SHA256.core-rs
+      - run: find ../core -name "*.rs" | grep -v target | sort | xargs sha256sum > ../SHA256.core-rs
 
       # grab js
       - run: git clone https://github.com/turtl/js ../js
-      - run: find ../js -name "*.js" | grep -v node_modules | xargs sha256sum > ../SHA256.js
+      - run: find ../js -name "*.js" | grep -v node_modules | sort | xargs sha256sum > ../SHA256.js
 
       - restore_cache:
           key: desktop-build-v2-{{ .Branch }}-{{ checksum "../SHA256.core-rs" }}-{{ checksum "../SHA256.js" }}
