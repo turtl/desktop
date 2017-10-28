@@ -1,5 +1,7 @@
 .PHONY: all clean package release run
 
+export SHELL := /bin/bash
+
 NW := $(shell which nw)
 
 allcss = $(shell find ../js/css/ -name "*.css" \

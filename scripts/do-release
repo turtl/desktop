@@ -6,7 +6,7 @@ VERSION=$2
 YEAR=$(date +'%Y')
 
 APP=`realpath .`
-RELEASE="$(realpath ${APP}/release/nwjs/${PLATFORM})"
+RELEASE=${APP}/release/nwjs/${PLATFORM}
 RELEASE_DIR=${APP}/release
 TMP=${RELEASE}/../tmp
 
@@ -17,8 +17,8 @@ if [ "${PLATFORM}" == "" ]; then
 fi
 
 if [ ! -d ${RELEASE} ]; then
-	echo "Error: ${RELEASE} not present"
-	exit 1
+        echo "Creating ${RELEASE}..."
+        mkdir -p ${RELEASE}
 fi
 
 pushd ${RELEASE} > /dev/null || {
@@ -40,6 +40,7 @@ if [ "${PLATFORM}" == "linux32" ] || [ "${PLATFORM}" == "linux64" ]; then
 	pushd ${TMP}
 	cp ${RELEASE_DIR}/package.nw ${SUBDIR}
 	mv ${SUBDIR}/nw ${SUBDIR}/turtl-bin
+	chmod 755 ${SUBDIR}/turtl-bin
 
 	cp ${APP}/scripts/resources/favicon.128.png ${SUBDIR}/icon.png
 	cp ${APP}/scripts/resources/turtl-linux-init.sh ${SUBDIR}/turtl
