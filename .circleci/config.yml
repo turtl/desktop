@@ -12,6 +12,7 @@ jobs:
       - restore_cache:
           key: npm-cache-v1-{{ .Branch }}-{{ checksum "package.json" }}
           key: npm-cache-v1-{{ .Branch }}-
+      - run: apt-get install rsync
       - run: git clone https://github.com/turtl/core-rs ../core-rs
       - run: git clone https://github.com/turtl/js ../js
       - run: cd ../js && npm install
