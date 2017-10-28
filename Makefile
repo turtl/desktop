@@ -5,6 +5,7 @@ export SHELL := /bin/bash
 NW := $(shell which nw)
 NODE := $(shell which node)
 
+allrs = $(shell find ../core-rs/ -name "*.rs")
 allcss = $(shell find ../js/css/ -name "*.css" \
 			| grep -v 'reset.css')
 alljs = $(shell echo "../js/main.js" \
@@ -12,7 +13,7 @@ alljs = $(shell echo "../js/main.js" \
 			| grep -v '(ignore|\.thread\.)')
 allcontrollers = $(shell find data/controllers/ -name "*.js")
 
-all: .build/make-js data/index.html data/popup/index.html
+all: .build/turtl.dll .build/protected_derive.dll .build/make-js data/index.html data/popup/index.html
 
 package: all
 	./scripts/package
@@ -40,6 +41,10 @@ data/app/index.html: $(alljs) $(allcss) ../js/index.html
 			../js/ \
 			data/app
 	@touch data/app/index.html
+
+.build/turtl.dll .build/protected_derive.dll: $(allrs)
+	@cd ../core && make release
+	cp ../core/target/release/turtl.dll ../core/target/release/protected_derive.dll .build/
 
 .build/make-js: $(alljs) $(allcss)
 	@cd ../js && make

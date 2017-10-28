@@ -13,7 +13,7 @@ jobs:
           key: npm-cache-v1-{{ .Branch }}-{{ checksum "package.json" }}
           key: npm-cache-v1-{{ .Branch }}-
       - run: sudo apt-get install rsync
-      - run: git clone https://github.com/turtl/core-rs ../core-rs
+      - run: git clone https://github.com/turtl/core-rs ../core
       - run: git clone https://github.com/turtl/js ../js
       - run: cd ../js && npm install
       - run: npm install
