@@ -16,6 +16,8 @@ jobs:
       - run: sudo apt-get install libgpg-error0 libgpg-error-dev
       - run: wget https://static.rust-lang.org/rustup.sh -O ~/rustup.sh && chmod 0750 ~/rustup.sh
       - run: sudo ~/rustup.sh --revision=1.21.0
+      - run: wget https://download.libsodium.org/libsodium/releases/libsodium-1.0.15.tar.gz -O ~/libsodium.tar.gz
+      - run: cd ~ && tar -xvf ./libsodium.tar.gz && cd libsodium-* && make && sudo make install
       - run: git clone https://github.com/turtl/core-rs ../core
       - run: git clone https://github.com/turtl/js ../js
       - run: cd ../js && npm install
