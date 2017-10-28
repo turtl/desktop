@@ -14,6 +14,7 @@ jobs:
           key: npm-cache-v1-{{ .Branch }}-
       - run: git clone https://github.com/turtl/core-rs ../core-rs
       - run: git clone https://github.com/turtl/js ../js
+      - run: cd ../js && npm install
       - run: npm install
       - save_cache:
           key: npm-cache-v1-{{ .Branch }}-{{ checksum "package.json" }}
