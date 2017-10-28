@@ -12,8 +12,7 @@ jobs:
       - restore_cache:
           key: npm-cache-v1-{{ .Branch }}-{{ checksum "package.json" }}
           key: npm-cache-v1-{{ .Branch }}-
-      - run: sudo apt-get install rsync
-      - run: sudo apt-get install libgpg-error0 libgpg-error-dev
+      - run: sudo apt-get install rsync libgpg-error0 libgpg-error-dev libgcrypt20-dev
       - run: wget https://download.libsodium.org/libsodium/releases/libsodium-1.0.15.tar.gz -O ~/libsodium.tar.gz
       - run: cd ~ && tar -xvf ./libsodium.tar.gz && cd libsodium-* && ./configure && make && sudo make install
       - run: wget https://static.rust-lang.org/rustup.sh -O ~/rustup.sh && chmod 0750 ~/rustup.sh
