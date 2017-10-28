@@ -38,6 +38,8 @@ jobs:
       - run: git clone https://github.com/turtl/core-rs ../core
       - restore_cache:
           key: core-v3-{{ checksum "../core/Cargo.lock" }}
+      - run: find ../core/target -type f -exec touch {} \;
+      - run: ls ../core/target/release
       - run: cd ../core && make release
       - save_cache:
           key: core-v3-{{ checksum "../core/Cargo.lock" }}
