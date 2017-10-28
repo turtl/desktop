@@ -5,4 +5,5 @@ tmp/
 data/app
 data/index.html
 data/popup/index.html
+node_modules/
 

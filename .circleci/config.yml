@@ -1,0 +1,64 @@
+defaults: &defaults
+  working_directory: ~/turtl/desktop
+  docker:
+    - image: circleci/node:4.8.3
+
+version: 2
+jobs:
+  build:
+    <<: *defaults
+    steps:
+      - checkout
+
+      - run:
+        name: grab core-rs
+        command: git clone https://github.com/turtl/core-rs ../core-rs
+
+      - run:
+        name: grab js
+        command: git clone https://github.com/turtl/js ../js
+
+      - restore_cache:
+          key: npm-cache-v1-{{ .Branch }}-{{ checksum "package.json" }}
+          key: npm-cache-v1-{{ .Branch }}
+          key: npm-cache-v1
+
+      - run:
+          name: npm install
+          command: npm install
+
+      - save_cache:
+          key: npm-cache-v1-{{ .Branch }}-{{ checksum "package.json" }}
+          paths:
+            - node_modules
+      - save_cache:
+          key: npm-cache-v1-{{ .Branch }}
+          paths:
+            - node_modules
+      - save_cache:
+          key: npm-cache-v1
+          paths:
+            - node_modules
+
+  test:
+    <<: *defaults
+    steps:
+      - checkout
+      - restore_cache:
+          key: npm-cache-v1-{{ .Branch }}-{{ checksum "package.json" }}
+          key: npm-cache-v1-{{ .Branch }}
+          key: npm-cache-v1
+
+      - run:
+          name: Run tests
+          command: make test
+
+workflows:
+  version: 2
+  build_test_deploy:
+    jobs:
+      - build
+      - test:
+          requires:
+            - build
+
