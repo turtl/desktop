@@ -10,31 +10,35 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: cache-v1-{{ .Branch }}-{{ checksum "package.json" }}-{{ checksum "../SHA256.core-rs" }}-{{ checksum "../SHA256.js"}}
+          key: npm-cache-v1-{{ .Branch }}-{{ checksum "package.json" }}
+          key: npm-cache-v1-{{ .Branch }}-
       - run: git clone https://github.com/turtl/core-rs ../core-rs
       - run: git clone https://github.com/turtl/js ../js
       - run: npm install
-      - run: make
-      - run: find package.json data/app/ build/ | xargs sha256sum > BUILD.checksum
       - save_cache:
-          key: cache-v1-{{ .Branch }}-{{ checksum "BUILD.checksum" }}
+          key: npm-cache-v1-{{ .Branch }}-{{ checksum "package.json" }}
           paths:
-            - data/app/
-            - build/
             - node_modules
+      - run: make
+      - run: find data/app/ build/ | xargs sha256sum > BUILD.checksum
+      - save_cache:
+          key: dep-cache-v1-{{ .Branch }}-{{ checksum "BUILD.checksum" }}
+          paths:
+            - data/app
+            - build
 
   test:
     <<: *defaults
     steps:
       - checkout
       - restore_cache:
-          key: cache-v1-{{ .Branch }}-{{ checksum "BUILD.checksum" }}
-          key: cache-v1-{{ .Branch }}-
-          key: cache-v1-
+          key: npm-cache-v1-{{ .Branch }}-{{ checksum "package.json" }}
+          key: npm-cache-v1-{{ .Branch }}-
+      - restore_cache:
+          key: dep-cache-v1-{{ .Branch }}-
+          key: dep-cache-v1-
 
-      - run:
-          name: Run tests
-          command: make test
+      - run: make test
 
 workflows:
   version: 2
