@@ -3,6 +3,7 @@
 export SHELL := /bin/bash
 
 NW := $(shell which nw)
+NODE := $(shell which node)
 
 allcss = $(shell find ../js/css/ -name "*.css" \
 			| grep -v 'reset.css')
@@ -21,6 +22,9 @@ release: package
 
 run: all
 	$(NW) .
+
+test: all
+	@$(NODE) ./node_modules/jasmine/bin/jasmine.js
 
 data/app/index.html: $(alljs) $(allcss) ../js/index.html
 	@echo "- rsync project: " $?

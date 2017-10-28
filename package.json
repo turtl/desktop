@@ -25,6 +25,7 @@
     }
   ],
   "dependencies": {
+    "jasmine": "^2.8.0",
     "nan": "^2.7.0"
   }
 }
