@@ -20,7 +20,14 @@ jobs:
       - run: wget https://download.libsodium.org/libsodium/releases/libsodium-1.0.15.tar.gz -O ~/libsodium.tar.gz
       - run: wget https://download.libsodium.org/libsodium/releases/libsodium-1.0.15.tar.gz.sig -O ~/libsodium.tar.gz.sig
       - run: gpg --verify ~/libsodium.tar.gz.sig ~/libsodium.tar.gz
-      - run: cd ~ && tar -xvf ./libsodium.tar.gz && cd libsodium-* && ./configure && make && sudo make install
+      - restore_cache:
+          key: sodium-v1-{{ checksum "~/libsodium-1.0.15.tar.gz" }}
+      - run: cd ~ && tar -xvf ./libsodium.tar.gz && cd libsodium-1.0.15 && ./configure && make
+      - save_cache:
+          key: sodium-v1-{{ checksum "~/libsodium-1.0.15.tar.gz" }}
+          paths:
+            - ../core
+      - run: cd ~/libsodium-1.0.15 && sudo make install
       # install rust
       - run: wget https://static.rust-lang.org/rustup.sh -O ~/rustup.sh && chmod 0750 ~/rustup.sh
       - run: sudo ~/rustup.sh --revision=1.21.0
