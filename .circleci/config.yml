@@ -9,52 +9,55 @@ jobs:
     <<: *defaults
     steps:
       - checkout
-      - restore_cache:
-          key: npm-cache-v1-{{ .Branch }}-{{ checksum "package.json" }}
-          key: npm-cache-v1-{{ .Branch }}-
+
       # install our apt deps
       - run: sudo apt-get update
       - run: sudo apt-get install --fix-missing rsync gpgv2 libgpg-error0 libgpg-error-dev libgcrypt20-dev
-      - run: gpg --import scripts/libsodium.gpg.pub
+
       # install libsodium
       - run: wget https://download.libsodium.org/libsodium/releases/libsodium-1.0.15.tar.gz -O ~/libsodium.tar.gz
       - run: wget https://download.libsodium.org/libsodium/releases/libsodium-1.0.15.tar.gz.sig -O ~/libsodium.tar.gz.sig
+
+      # verify sodium
+      - run: gpg --import scripts/libsodium.gpg.pub
       - run: gpg --verify ~/libsodium.tar.gz.sig ~/libsodium.tar.gz
       - restore_cache:
-          key: sodium-v1-{{ checksum "~/libsodium-1.0.15.tar.gz" }}
+          key: sodium-v1-{{ checksum "~/libsodium.tar.gz" }}
       - run: cd ~ && tar -xvf ./libsodium.tar.gz && cd libsodium-1.0.15 && ./configure && make
       - save_cache:
-          key: sodium-v1-{{ checksum "~/libsodium-1.0.15.tar.gz" }}
+          key: sodium-v1-{{ checksum "~/libsodium.tar.gz" }}
           paths:
             - ../core
       - run: cd ~/libsodium-1.0.15 && sudo make install
+
       # install rust
       - run: wget https://static.rust-lang.org/rustup.sh -O ~/rustup.sh && chmod 0750 ~/rustup.sh
       - run: sudo ~/rustup.sh --revision=1.21.0
-      # grab our supporting projects
+
+      # grab/build core
       - run: git clone https://github.com/turtl/core-rs ../core
-      - run: git clone https://github.com/turtl/js ../js
       - restore_cache:
-          key: core-v1-{{ .Branch }}-{{ checksum "../core/Cargo.lock" }}
-          key: core-v1-{{ .Branch }}-
+          key: core-v1-{{ checksum "../core/Cargo.lock" }}
+          key: core-v1-
       - run: cd ../core && make release
       - save_cache:
-          key: core-v1-{{ .Branch }}-{{ checksum "../core/Cargo.lock" }}
+          key: core-v1-{{ checksum "../core/Cargo.lock" }}
           paths:
             - ../core
+      # grab/build js
+      - run: git clone https://github.com/turtl/js ../js
       - run: cd ../js && npm install
+
+      # build desktop
+      - restore_cache:
+          key: npm-cache-v1-{{ .Branch }}-{{ checksum "package.json" }}
+          key: npm-cache-v1-{{ .Branch }}-
       - run: npm install
       - save_cache:
-          key: npm-cache-v1-{{ .Branch }}-{{ checksum "package.json" }}
+          key: npm-cache-v1-{{ checksum "package.json" }}
           paths:
             - node_modules
-      - run: cd ../desktop && make
-      - run: find data/app/ build/ | xargs sha256sum > BUILD.checksum
-      - save_cache:
-          key: dep-cache-v1-{{ .Branch }}-{{ checksum "BUILD.checksum" }}
-          paths:
-            - data/app
-            - build
+      - run: make
 
   test:
     <<: *defaults
