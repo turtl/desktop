@@ -34,21 +34,21 @@ jobs:
       - run: wget https://static.rust-lang.org/rustup.sh -O ~/rustup.sh && chmod 0750 ~/rustup.sh
       - run: sudo ~/rustup.sh --revision=1.21.0
 
-      # grab/build core
+      # grab core
       - run: git clone https://github.com/turtl/core-rs ../core
-      - restore_cache:
-          key: core-v3-{{ checksum "../core/Cargo.lock" }}
-      - run: find ../core/ -type f -exec touch {} \;
-      - run: ls ../core/target/release
-      - run: cd ../core && make release
-      - save_cache:
-          key: core-v3-{{ checksum "../core/Cargo.lock" }}
-          paths:
-            - ../core
-            - ~/.cargo
-      # grab/build js
+      - run: find ../core -name "*.rs" | grep -v target | xargs sha256sum > ../SHA256.core-rs
+
+      # grab js
       - run: git clone https://github.com/turtl/js ../js
+      - run: find ../js -name "*.js" | grep -v node_modules | xargs sha256sum > ../SHA256.js
+      - restore_cache:
+          key: js-npm-v2-{{ checksum "../js/package.json" }}
+          key: js-npm-v2-
       - run: cd ../js && npm install
+      - save_cache:
+          key: js-npm-v2-{{ checksum "../js/package.json" }}
+          paths:
+            - ../js/node_modules
 
       # build desktop
       - restore_cache:
@@ -59,18 +59,29 @@ jobs:
           key: npm-v2-{{ checksum "package.json" }}
           paths:
             - node_modules
+      - restore_cache:
+          key: desktop-build-v2-{{ .Branch }}-{{ checksum "../SHA256.core-rs" }}-{{ checksum "../SHA256.js" }}
       - run: make
       - save_cache:
-          key: desktop-build-v2-{{ checksum "package.json" }}
+          key: desktop-build-v2-{{ .Branch }}-{{ checksum "../SHA256.core-rs" }}-{{ checksum "../SHA256.js" }}
           paths:
             - .build
+            - data/app
 
   test:
     <<: *defaults
     steps:
       - checkout
+      # grab core
+      - run: git clone https://github.com/turtl/core-rs ../core
+      - run: find ../core -name "*.rs" | grep -v target | xargs sha256sum > ../SHA256.core-rs
+
+      # grab js
+      - run: git clone https://github.com/turtl/js ../js
+      - run: find ../js -name "*.js" | grep -v node_modules | xargs sha256sum > ../SHA256.js
+
       - restore_cache:
-          key: desktop-build-v2-{{ .Branch }}-{{ checksum "package.json" }}
+          key: desktop-build-v2-{{ .Branch }}-{{ checksum "../SHA256.core-rs" }}-{{ checksum "../SHA256.js" }}
       - run: make test
 
 workflows:
