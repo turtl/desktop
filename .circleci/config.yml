@@ -22,12 +22,12 @@ jobs:
       - run: gpg --import scripts/libsodium.gpg.pub
       - run: gpg --verify ~/libsodium.tar.gz.sig ~/libsodium.tar.gz
       - restore_cache:
-          key: sodium-v1-{{ checksum "~/libsodium.tar.gz" }}
+          key: sodium-v2-{{ checksum "~/libsodium.tar.gz" }}
       - run: cd ~ && tar -xvf ./libsodium.tar.gz && cd libsodium-1.0.15 && ./configure && make
       - save_cache:
-          key: sodium-v1-{{ checksum "~/libsodium.tar.gz" }}
+          key: sodium-v2-{{ checksum "~/libsodium.tar.gz" }}
           paths:
-            - ../core
+            - ~/libsodium-1.0.15
       - run: cd ~/libsodium-1.0.15 && sudo make install
 
       # install rust
@@ -37,11 +37,10 @@ jobs:
       # grab/build core
       - run: git clone https://github.com/turtl/core-rs ../core
       - restore_cache:
-          key: core-v1-{{ checksum "../core/Cargo.lock" }}
-          key: core-v1-
+          key: core-v2-{{ checksum "../core/Cargo.lock" }}
       - run: cd ../core && make release
       - save_cache:
-          key: core-v1-{{ checksum "../core/Cargo.lock" }}
+          key: core-v2-{{ checksum "../core/Cargo.lock" }}
           paths:
             - ../core
       # grab/build js
@@ -50,26 +49,25 @@ jobs:
 
       # build desktop
       - restore_cache:
-          key: npm-cache-v1-{{ .Branch }}-{{ checksum "package.json" }}
-          key: npm-cache-v1-{{ .Branch }}-
+          key: npm-v2-{{ .Branch }}-{{ checksum "package.json" }}
+          key: npm-v2-{{ .Branch }}-
       - run: npm install
       - save_cache:
-          key: npm-cache-v1-{{ checksum "package.json" }}
+          key: npm-v2-{{ checksum "package.json" }}
           paths:
             - node_modules
       - run: make
+      - save_cache:
+          key: desktop-build-v2-{{ checksum "package.json" }}
+          paths:
+            - .build
 
   test:
     <<: *defaults
     steps:
       - checkout
       - restore_cache:
-          key: npm-cache-v1-{{ .Branch }}-{{ checksum "package.json" }}
-          key: npm-cache-v1-{{ .Branch }}-
-      - restore_cache:
-          key: dep-cache-v1-{{ .Branch }}-
-          key: dep-cache-v1-
-
+          key: desktop-build-v2-{{ .Branch }}-{{ checksum "package.json" }}
       - run: make test
 
 workflows:
