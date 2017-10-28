@@ -14,7 +14,7 @@ jobs:
       - run: git clone https://github.com/turtl/core-rs ../core-rs
       - run: git clone https://github.com/turtl/js ../js
       - run: npm install
-      - make
+      - run: make
       - run: find package.json data/app/ build/ | xargs sha256sum > BUILD.checksum
       - save_cache:
           key: cache-v1-{{ .Branch }}-{{ checksum "BUILD.checksum" }}
