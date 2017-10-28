@@ -35,9 +35,9 @@ jobs:
       - run: sudo ~/rustup.sh --revision=1.21.0
 
       # grab/build core
-      - run: git clone https://github.com/turtl/core-rs ../core
       - restore_cache:
           key: core-v3-{{ checksum "../core/Cargo.lock" }}
+      - run: git clone https://github.com/turtl/core-rs ../core || echo "Ehh"
       - run: cd ../core && make release
       - save_cache:
           key: core-v3-{{ checksum "../core/Cargo.lock" }}
