@@ -14,7 +14,7 @@ jobs:
           key: npm-cache-v1-{{ .Branch }}-
       - run: sudo apt-get install rsync
       - run: wget https://static.rust-lang.org/rustup.sh -O ~/rustup.sh && chmod 0750 ~/rustup.sh
-      - run: sudo ~/rustup.sh --channel=stable --revision=1.21.0
+      - run: sudo ~/rustup.sh --revision=1.21.0
       - run: git clone https://github.com/turtl/core-rs ../core
       - run: git clone https://github.com/turtl/js ../js
       - run: cd ../js && npm install
