@@ -11,12 +11,12 @@ jobs:
       - checkout
 
       - run:
-        name: grab core-rs
-        command: git clone https://github.com/turtl/core-rs ../core-rs
+          name: grab core-rs
+          command: git clone https://github.com/turtl/core-rs ../core-rs
 
       - run:
-        name: grab js
-        command: git clone https://github.com/turtl/js ../js
+          name: grab js
+          command: git clone https://github.com/turtl/js ../js
 
       - restore_cache:
           key: npm-cache-v1-{{ .Branch }}-{{ checksum "package.json" }}
