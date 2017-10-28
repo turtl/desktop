@@ -37,10 +37,10 @@ jobs:
       # grab/build core
       - run: git clone https://github.com/turtl/core-rs ../core
       - restore_cache:
-          key: core-v2-{{ checksum "../core/Cargo.lock" }}
+          key: core-v3-{{ checksum "../core/Cargo.lock" }}
       - run: cd ../core && make release
       - save_cache:
-          key: core-v2-{{ checksum "../core/Cargo.lock" }}
+          key: core-v3-{{ checksum "../core/Cargo.lock" }}
           paths:
             - ../core
             - ~/.cargo
