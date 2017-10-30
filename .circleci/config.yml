@@ -1,5 +1,5 @@
 defaults: &defaults
-  working_directory: ~/turtl/desktop
+  working_directory: /tmp/turtl/desktop
   docker:
     - image: circleci/node:4.8.3
 
@@ -16,24 +16,24 @@ jobs:
       - run: sudo apt-get install --fix-missing rsync gpgv2 libgpg-error0 libgpg-error-dev libgcrypt20-dev
 
       # install libsodium
-      - run: wget https://download.libsodium.org/libsodium/releases/libsodium-1.0.15.tar.gz -O ~/libsodium.tar.gz
-      - run: wget https://download.libsodium.org/libsodium/releases/libsodium-1.0.15.tar.gz.sig -O ~/libsodium.tar.gz.sig
+      - run: wget https://download.libsodium.org/libsodium/releases/libsodium-1.0.15.tar.gz -O /tmp/libsodium.tar.gz
+      - run: wget https://download.libsodium.org/libsodium/releases/libsodium-1.0.15.tar.gz.sig -O /tmp/libsodium.tar.gz.sig
 
       # verify sodium
       - run: gpg --import scripts/libsodium.gpg.pub
-      - run: gpg --verify ~/libsodium.tar.gz.sig ~/libsodium.tar.gz
+      - run: gpg --verify /tmp/libsodium.tar.gz.sig /tmp/libsodium.tar.gz
       - restore_cache:
-          key: sodium-v2-{{ checksum "~/libsodium.tar.gz" }}
-      - run: cd ~ && tar -xvf ./libsodium.tar.gz && cd libsodium-1.0.15 && ./configure && make
+          key: sodium-v2-{{ checksum "/tmp/libsodium.tar.gz" }}
+      - run: cd /tmp && tar -xvf ./libsodium.tar.gz && cd libsodium-1.0.15 && ./configure && make
       - save_cache:
-          key: sodium-v2-{{ checksum "~/libsodium.tar.gz" }}
+          key: sodium-v2-{{ checksum "/tmp/libsodium.tar.gz" }}
           paths:
-            - ~/libsodium-1.0.15
-      - run: cd ~/libsodium-1.0.15 && sudo make install
+            - /tmp/libsodium-1.0.15
+      - run: cd /tmp/libsodium-1.0.15 && sudo make install
 
       # install rust
-      - run: wget https://static.rust-lang.org/rustup.sh -O ~/rustup.sh && chmod 0750 ~/rustup.sh
-      - run: sudo ~/rustup.sh --revision=1.21.0
+      - run: wget https://static.rust-lang.org/rustup.sh -O /tmp/rustup.sh && chmod 0750 /tmp/rustup.sh
+      - run: sudo /tmp/rustup.sh --revision=1.21.0
 
       # grab core
       - run: git clone https://github.com/turtl/core-rs ../core
@@ -63,35 +63,16 @@ jobs:
       - restore_cache:
           key: desktop-build-v3-{{ .Branch }}-{{ checksum "../SHA256.core-rs" }}-{{ checksum "../SHA256.js" }}
       - run: make
-      - save_cache:
-          key: desktop-build-v3-{{ .Branch }}-{{ checksum "../SHA256.core-rs" }}-{{ checksum "../SHA256.js" }}
+      - persist_to_workspace:
+          root: /tmp/turtl
           paths:
-            - ../core
-            - ../js
-            - .build
-            - data/app
+            - /tmp/turtl/desktop
 
   test:
     <<: *defaults
     steps:
-      - checkout
-      - run: mkdir -p config && cp config.live.js config/config.js
-      # grab core
-      - run: git clone https://github.com/turtl/core-rs ../core
-      - run: find ../core -name "*.rs" | grep -v target | sort | xargs sha256sum > ../SHA256.core-rs
-
-      # grab js
-      - run: git clone https://github.com/turtl/js ../js
-      - run: find ../js -name "*.js" | grep -v node_modules | sort | xargs sha256sum > ../SHA256.js
-
-      - restore_cache:
-          key: desktop-build-v3-{{ .Branch }}-{{ checksum "../SHA256.core-rs" }}-{{ checksum "../SHA256.js" }}
-      - restore_cache:
-          key: npm-v2-{{ .Branch }}-{{ checksum "package.json" }}
-          key: npm-v2-{{ .Branch }}-
-      - run: npm install
-      - run: ls config/
-      - run: find node_modules/
+      - attach_workspace:
+          at: /tmp/turtl
       - run: make test
 
 workflows:
