@@ -86,6 +86,8 @@ jobs:
       - restore_cache:
           key: desktop-build-v3-{{ .Branch }}-{{ checksum "../SHA256.core-rs" }}-{{ checksum "../SHA256.js" }}
       - run: mkdir -p config && cp config.live.js config/config.js
+      - run: ls config/
+      - run: ls node_modules/jasmine/
       - run: make test
 
 workflows:
