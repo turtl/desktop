@@ -59,7 +59,16 @@ jobs:
           key: npm-v2-{{ checksum "package.json" }}
           paths:
             - node_modules
+      - restore_cache:
+          key: desktop-build-v3-{{ .Branch }}-{{ checksum "../SHA256.core-rs" }}-{{ checksum "../SHA256.js" }}
       - run: make
+      - save_cache:
+          key: desktop-build-v3-{{ .Branch }}-{{ checksum "../SHA256.core-rs" }}-{{ checksum "../SHA256.js" }}
+          paths:
+            - ../core
+            - ../js
+            - .build
+            - data/app
       - persist_to_workspace:
           root: /tmp/turtl
           paths:
