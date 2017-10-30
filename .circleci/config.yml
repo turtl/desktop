@@ -11,30 +11,6 @@ jobs:
       - checkout
       - run: mkdir -p config && cp config.live.js config/config.js
 
-      # install our apt deps
-      - run: sudo apt-get update
-      - run: sudo apt-get install --fix-missing rsync gpgv2 libgpg-error0 libgpg-error-dev libgcrypt20-dev
-
-      # install libsodium
-      - run: wget https://download.libsodium.org/libsodium/releases/libsodium-1.0.15.tar.gz -O /tmp/libsodium.tar.gz
-      - run: wget https://download.libsodium.org/libsodium/releases/libsodium-1.0.15.tar.gz.sig -O /tmp/libsodium.tar.gz.sig
-
-      # verify sodium
-      - run: gpg --import ../core/libsodium.gpg.pub
-      - run: gpg --verify /tmp/libsodium.tar.gz.sig /tmp/libsodium.tar.gz
-      - restore_cache:
-          key: sodium-v2-{{ checksum "/tmp/libsodium.tar.gz" }}
-      - run: cd /tmp && tar -xvf ./libsodium.tar.gz && cd libsodium-1.0.15 && ./configure && make
-      - save_cache:
-          key: sodium-v2-{{ checksum "/tmp/libsodium.tar.gz" }}
-          paths:
-            - /tmp/libsodium-1.0.15
-      - run: cd /tmp/libsodium-1.0.15 && sudo make install
-
-      # install rust
-      - run: wget https://static.rust-lang.org/rustup.sh -O /tmp/rustup.sh && chmod 0750 /tmp/rustup.sh
-      - run: sudo /tmp/rustup.sh --revision=1.21.0
-
       # grab core
       - run: git clone https://github.com/turtl/core-rs ../core
       - run: find ../core -name "*.rs" | grep -v target | sort | xargs sha256sum > ../SHA256.core-rs
@@ -50,6 +26,29 @@ jobs:
           key: js-npm-v2-{{ checksum "../js/package.json" }}
           paths:
             - ../js/node_modules
+
+      # install our apt deps
+      - run: sudo apt-get update
+      - run: sudo apt-get install --fix-missing rsync gpgv2 libgpg-error0 libgpg-error-dev libgcrypt20-dev
+
+      # install libsodium
+      - run: wget https://download.libsodium.org/libsodium/releases/libsodium-1.0.15.tar.gz -O /tmp/libsodium.tar.gz
+      - run: wget https://download.libsodium.org/libsodium/releases/libsodium-1.0.15.tar.gz.sig -O /tmp/libsodium.tar.gz.sig
+      # verify sodium
+      - run: gpg --import ../core/libsodium.gpg.pub
+      - run: gpg --verify /tmp/libsodium.tar.gz.sig /tmp/libsodium.tar.gz
+      - restore_cache:
+          key: sodium-v2-{{ checksum "/tmp/libsodium.tar.gz" }}
+      - run: cd /tmp && tar -xvf ./libsodium.tar.gz && cd libsodium-1.0.15 && ./configure && make
+      - save_cache:
+          key: sodium-v2-{{ checksum "/tmp/libsodium.tar.gz" }}
+          paths:
+            - /tmp/libsodium-1.0.15
+      - run: cd /tmp/libsodium-1.0.15 && sudo make install
+
+      # install rust
+      - run: wget https://static.rust-lang.org/rustup.sh -O /tmp/rustup.sh && chmod 0750 /tmp/rustup.sh
+      - run: sudo /tmp/rustup.sh --revision=1.21.0
 
       # build desktop
       - restore_cache:
