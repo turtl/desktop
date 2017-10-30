@@ -60,10 +60,10 @@ jobs:
           paths:
             - node_modules
       - restore_cache:
-          key: desktop-build-v3-{{ .Branch }}-{{ checksum "../SHA256.core-rs" }}-{{ checksum "../SHA256.js" }}
+          key: desktop-build-v4-{{ .Branch }}-{{ checksum "../SHA256.core-rs" }}-{{ checksum "../SHA256.js" }}
       - run: make
       - save_cache:
-          key: desktop-build-v3-{{ .Branch }}-{{ checksum "../SHA256.core-rs" }}-{{ checksum "../SHA256.js" }}
+          key: desktop-build-v4-{{ .Branch }}-{{ checksum "../SHA256.core-rs" }}-{{ checksum "../SHA256.js" }}
           paths:
             - ../core
             - ../js
