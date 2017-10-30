@@ -20,7 +20,7 @@ jobs:
       - run: wget https://download.libsodium.org/libsodium/releases/libsodium-1.0.15.tar.gz.sig -O /tmp/libsodium.tar.gz.sig
 
       # verify sodium
-      - run: gpg --import scripts/libsodium.gpg.pub
+      - run: gpg --import ../core/libsodium.gpg.pub
       - run: gpg --verify /tmp/libsodium.tar.gz.sig /tmp/libsodium.tar.gz
       - restore_cache:
           key: sodium-v2-{{ checksum "/tmp/libsodium.tar.gz" }}
