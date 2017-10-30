@@ -5,6 +5,7 @@ export SHELL := /bin/bash
 NW := $(shell which nw)
 NODE := $(shell which node)
 OS := $(shell uname)
+JASMINE := node_modules/.bin/jasmine
 
 allrs = $(shell find ../core/ -name "*.rs")
 allcss = $(shell find ../js/css/ -name "*.css" \
@@ -36,7 +37,7 @@ run: all
 	$(NW) .
 
 test: all
-	@$(NODE) ./node_modules/jasmine/bin/jasmine.js
+	$(JASMINE)
 
 data/app/index.html: $(alljs) $(allcss) ../js/index.html
 	@echo "- rsync project: " $?
