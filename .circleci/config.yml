@@ -73,6 +73,8 @@ jobs:
           root: /tmp/turtl
           paths:
             - desktop
+            - js
+            - core
 
   test:
     <<: *defaults
