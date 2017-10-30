@@ -9,6 +9,7 @@ jobs:
     <<: *defaults
     steps:
       - checkout
+      - run: mkdir -p config && cp config.live.js config/config.js
 
       # install our apt deps
       - run: sudo apt-get update
@@ -61,7 +62,6 @@ jobs:
             - node_modules
       - restore_cache:
           key: desktop-build-v3-{{ .Branch }}-{{ checksum "../SHA256.core-rs" }}-{{ checksum "../SHA256.js" }}
-      - run: mkdir -p config && cp config.live.js config/config.js
       - run: make
       - save_cache:
           key: desktop-build-v3-{{ .Branch }}-{{ checksum "../SHA256.core-rs" }}-{{ checksum "../SHA256.js" }}
@@ -75,6 +75,7 @@ jobs:
     <<: *defaults
     steps:
       - checkout
+      - run: mkdir -p config && cp config.live.js config/config.js
       # grab core
       - run: git clone https://github.com/turtl/core-rs ../core
       - run: find ../core -name "*.rs" | grep -v target | sort | xargs sha256sum > ../SHA256.core-rs
@@ -85,7 +86,10 @@ jobs:
 
       - restore_cache:
           key: desktop-build-v3-{{ .Branch }}-{{ checksum "../SHA256.core-rs" }}-{{ checksum "../SHA256.js" }}
-      - run: mkdir -p config && cp config.live.js config/config.js
+      - restore_cache:
+          key: npm-v2-{{ .Branch }}-{{ checksum "package.json" }}
+          key: npm-v2-{{ .Branch }}-
+      - run: npm install
       - run: ls config/
       - run: find node_modules/
       - run: make test
