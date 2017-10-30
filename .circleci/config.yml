@@ -38,10 +38,10 @@ jobs:
       - run: gpg --import ../core/libsodium.gpg.pub
       - run: gpg --verify /tmp/libsodium.tar.gz.sig /tmp/libsodium.tar.gz
       - restore_cache:
-          key: sodium-v2-{{ checksum "/tmp/libsodium.tar.gz" }}
+          key: sodium-v3-{{ checksum "/tmp/libsodium.tar.gz" }}
       - run: cd /tmp && tar -xvf ./libsodium.tar.gz && cd libsodium-1.0.15 && ./configure && make
       - save_cache:
-          key: sodium-v2-{{ checksum "/tmp/libsodium.tar.gz" }}
+          key: sodium-v3-{{ checksum "/tmp/libsodium.tar.gz" }}
           paths:
             - /tmp/libsodium-1.0.15
       - run: cd /tmp/libsodium-1.0.15 && sudo make install
@@ -59,8 +59,6 @@ jobs:
           key: npm-v2-{{ checksum "package.json" }}
           paths:
             - node_modules
-      - restore_cache:
-          key: desktop-build-v3-{{ .Branch }}-{{ checksum "../SHA256.core-rs" }}-{{ checksum "../SHA256.js" }}
       - run: make
       - persist_to_workspace:
           root: /tmp/turtl
