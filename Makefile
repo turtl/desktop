@@ -11,7 +11,17 @@ alljs = $(shell echo "../js/main.js" \
 			| grep -v '(ignore|\.thread\.)')
 allcontrollers = $(shell find data/controllers/ -name "*.js")
 
-all: .build/make-js data/index.html data/popup/index.html
+libprefix := lib
+libsuffix := so
+ifneq (,$(findstring NT-,$(OS)))
+	libprefix :=
+	libsuffix := dll
+endif
+ifneq (,$(findstring Darwin,$(OS)))
+	libsuffix := dylib
+endif
+
+all: .build/$(libprefix)turtl_core.$(libsuffix) .build/make-js data/index.html data/popup/index.html
 
 package: all
 	./scripts/package
@@ -36,6 +46,10 @@ data/app/index.html: $(alljs) $(allcss) ../js/index.html
 			../js/ \
 			data/app
 	@touch data/app/index.html
+
+.build/$(libprefix)turtl_core.$(libsuffix): $(allrs)
+	@cd ../core && make release
+	cp ../core/target/release/$(libprefix)turtl_core.$(libsuffix) .build/
 
 .build/make-js: $(alljs) $(allcss)
 	@cd ../js && make
