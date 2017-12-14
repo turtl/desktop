@@ -2,7 +2,7 @@
 	"name": "Turtl",
 	"description": "The safe way to remember things.",
 	"main": "data/index.html",
-	"version": "0.6.4",
+	"version": "0.6.5",
 	"window": {
 		"width": 1023,
 		"height": 768,

@@ -32,7 +32,7 @@ if [ "${PLATFORM}" == "linux32" ] || [ "${PLATFORM}" == "linux64" ]; then
 	RELNAME=turtl-${PLATFORM}
 	SUBDIR=${TMP}/${RELNAME}/turtl
 	mkdir -p ${SUBDIR}
-	rsync -avz \
+	rsync -avzz \
 		--delete \
 		--delete-excluded \
 		./ \
@@ -53,7 +53,7 @@ if [ "${PLATFORM}" == "linux32" ] || [ "${PLATFORM}" == "linux64" ]; then
 elif [ "${PLATFORM}" == "windows" ]; then
 	export PATH="$PATH:/d/dev/wix:/c/tools/Resource Hacker"
 	SUBDIR=${TMP}/windows
-	rsync -avz \
+	rsync -avzz \
 		--delete \
 		--delete-excluded \
 		./ \
@@ -86,7 +86,7 @@ elif [ "${PLATFORM}" == "windows" ]; then
 	mv turtl-windows.msi ${RELEASE_DIR}/
 	popd > /dev/null
 elif [ "${PLATFORM}" == "osx" ]; then
-	rsync -avz \
+	rsync -avzz \
 		--exclude='nwjc' \
 		--delete \
 		--delete-excluded \

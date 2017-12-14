@@ -6,7 +6,7 @@ if(typeof(config) == 'undefined') config = {};
 (function() {
 	var gui = require('nw.gui');
 	Object.merge(config, {
-		api_url: 'https://api.turtl.it/v2',
+		api_url: 'https://api.turtlapp.com/v2',
 		client: 'desktop',
 		version: gui.App.manifest.version,
 		cookie_login: false,
