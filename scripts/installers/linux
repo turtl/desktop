@@ -1,36 +1,40 @@
 #!/bin/bash
 
-LOCATION=$1
+readonly LOCATION="${1}"
 
-PATHRES="$(readlink -e . >/dev/null 2>&1 ; echo $?)"
-DIRRES="$(dirname . >/dev/null 2>&1 ; echo $?)"
-if [ "$PATHRES" != "0" ] || [ "$DIRRES" != "0" ]; then
+readonly PATHRES="$(readlink -e . > /dev/null 2>&1 ; echo $?)"
+readonly DIRRES="$(dirname . > /dev/null 2>&1 ; echo $?)"
+if [[ "${PATHRES}" != "0" || "${DIRRES}" != "0" ]]; then
 	echo "This installer requires the readlink and dirname utilities. Please install them."
 	exit 1
 fi
 
-HERE="`dirname $(readlink -e $0)`"
+readonly HERE=$(dirname $(readlink -e "${0}"))
 
-if [ "${LOCATION}" == "" ] && [ "$(echo $UID)" != "0" ]; then
-	echo
-	echo "Hi! Looks like you're trying to install Turtl without root privs. Try this:"
-	echo "  sudo $0"
-	echo
-	echo "-OR- you can install into a local dir like so:"
-	echo "  $0 ~/apps/turtl"
-	echo
+if [[ "${LOCATION}" == "" && "${UID}" != "0" ]]; then
+	cat <<-INSTALL_TEXT
+	
+	Hi! Looks like you're trying to install Turtl without root privs. Try this:
+	  sudo ${0}
+	
+	-OR- you can install into a local dir like so:
+	  ${0} ~/apps/turtl
+	
+	INSTALL_TEXT
 	exit 1
 fi
 
-GLOBAL_PATH=/opt/turtl
-GLOBAL_SHARE=/usr/share
+readonly GLOBAL_PATH=/opt/turtl
+readonly GLOBAL_SHARE=/usr/share
 LOCAL_PATH=~/turtl
 LOCAL_SHARE=~/.local/share
 ROOT=${GLOBAL_PATH}
 SHARE=${GLOBAL_SHARE}
-if [ "${LOCATION}" != "uninstall" ] && [ "${LOCATION}" != "" ]; then
-        LOCAL_PATH=$(readlink -f ${LOCATION})
-	if [ "$(readlink -e ${LOCAL_PATH})" == "$(readlink -e ~)" ]; then
+
+if [[ "${LOCATION}" != "uninstall" && "${LOCATION}" != "" ]]; then
+	LOCAL_PATH=$(readlink -f ${LOCATION})
+	if [[ "$(readlink -e ${LOCAL_PATH})" == "$(readlink -e ~)" ]]; then
+
 		LOCAL_PATH=~/turtl
 	fi
 	ROOT=${LOCAL_PATH}
@@ -40,33 +44,33 @@ if [ "${LOCATION}" != "uninstall" ] && [ "${LOCATION}" != "" ]; then
 	echo "${LOCAL_PATH}" > ~/.config/turtl/install_location
 fi
 
-DESKTOP_FILE=${SHARE}/applications/turtl.desktop
-ICON_DIR=${SHARE}/icons/hicolor/128x128/apps
-ICON_FILE=${ICON_DIR}/turtl.png
+readonly DESKTOP_FILE=${SHARE}/applications/turtl.desktop
+readonly ICON_DIR=${SHARE}/icons/hicolor/128x128/apps
+readonly ICON_FILE=${ICON_DIR}/turtl.png
 
-if [ "${LOCATION}" == "uninstall" ]; then
+if [[ "${LOCATION}" == "uninstall" ]]; then
 	LOCAL_PATH="$(cat ~/.config/turtl/install_location 2>/dev/null)"
-	if [ "$LOCAL_PATH" == "" ]; then
+	if [[ "${LOCAL_PATH}" == "" ]]; then
 		LOCAL_PATH=~/turtl
 	fi
 
 	echo "Uninstalling Turtl..."
-	if [ -d ${GLOBAL_PATH} ]; then
+	if [[ -d "${GLOBAL_PATH}" ]]; then
 		echo "Going to rm -rf ${GLOBAL_PATH} ...is this ok? Press any key to continue, ctrl+c to cancel."
 		read
-		rm -rf ${GLOBAL_PATH} ||
+		rm -rf "${GLOBAL_PATH}" ||
 			{ echo "Problem removing ${GLOBAL_PATH}. Try running with sudo."; exit 1; }
-		rm -f ${DESKTOP_FILE} ||
+		rm -f "${DESKTOP_FILE}" ||
 			{ echo "Problem removing ${DESKTOP_FILE}. Try running with sudo."; exit 1; }
-		rm -f ${ICON_FILE} ||
+		rm -f "${ICON_FILE}" ||
 			{ echo "Problem removing ${ICON_FILE}. Try running with sudo."; exit 1; }
 	fi
-	if [ -d ${LOCAL_PATH} ]; then
+	if [[ -d "${LOCAL_PATH}" ]]; then
 		echo "Going to rm -rf ${LOCAL_PATH} ...is this ok? Press any key to continue, ctrl+c to cancel."
 		read
-		rm -rf ${LOCAL_PATH}
-		rm -f ${LOCAL_SHARE}/applications/turtl.desktop
-		rm -f ${LOCAL_SHARE}/icons/hicolor/128x128/apps/turtl.png
+		rm -rf "${LOCAL_PATH}"
+		rm -f "${LOCAL_SHARE}/applications/turtl.desktop"
+		rm -f "${LOCAL_SHARE}/icons/hicolor/128x128/apps/turtl.png"
 	fi
 	rm -rf ~/.config/turtl/
 	echo "Done."
@@ -88,12 +92,12 @@ Keywords=secure;security;privacy;private;notes;bookmarks;collaborate;research;
 StartupNotify=true
 EOF
 
-pushd ${HERE}/turtl > /dev/null
+pushd "${HERE}/turtl" > /dev/null
 
 echo "Copying Turtl to install directory (${ROOT})..."
-mkdir -p ${ROOT} ||
+mkdir -p "${ROOT}" ||
 	{ echo "Error creating install directory ${ROOT}"; exit 1; }
-cp -R . ${ROOT} ||
+cp -R . "${ROOT}" ||
 		{ echo "Error copying Turtl."; exit 1; }
 
 # set/fix permissions
@@ -104,17 +108,17 @@ find . -type f chmod 644 {} \;
 chmod 755 turtl turtl-bin lib/* chromedriver nw payload nacl* pnacl/*nexe
 popd >/dev/null
 
-echo "${DESKTOP}" > ${DESKTOP_FILE} ||
+echo "${DESKTOP}" > "${DESKTOP_FILE}" ||
 	{ echo "Error installing turtl.desktop file to ${DESKTOP_FILE}"; exit 1; }
 
-mkdir -p ${ICON_DIR} ||
+mkdir -p "${ICON_DIR}" ||
 	{ echo "Error initializing icon dir ${ICON_DIR}"; exit 1; }
-cp ${HERE}/turtl/icon.png ${ICON_FILE} ||
+cp "${HERE}/turtl/icon.png" "${ICON_FILE}" ||
 	{ echo "Error installing icon to ${ICON_FILE}"; exit 1; }
 
-if [ "$(echo $UID)" == "0" ]; then
-	find ${ROOT} -perm 700 -exec chmod 755 '{}' \;
-	find ${ROOT} -perm 600 -exec chmod 644 '{}' \;
+if ((UID == 0)); then
+	find "${ROOT}" -perm 700 -exec chmod 755 '{}' \;
+	find "${ROOT}" -perm 600 -exec chmod 644 '{}' \;
 fi
 
 echo "All done! Turtl has been installed in ${ROOT}/. To run:"
@@ -124,3 +128,4 @@ echo "To uninstall, run:"
 echo "  $0 uninstall"
 echo
 
+exit 0
