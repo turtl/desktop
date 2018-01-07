@@ -25,8 +25,7 @@ var gui = require('nw.gui');
 gui.App.clearCache();
 //gui.App.setCrashDumpDir('/tmp');
 
-var _desktop_tray = null;
-var comm = new Comm();
+var desktop_tray = null;
 var min_to_tray = JSON.parse(localStorage['minimize_to_tray'] || 'false') || false;
 min_to_tray = false;
 
@@ -48,23 +47,17 @@ function set_tray_min(bool)
 /**
  * Make sure our tray menu is updated based on the user's login status.
  */
-function update_tray_menu()
-{
-	if(!_desktop_tray) return false;
-
-	if(window.turtl && window.turtl.user && window.turtl.user.logged_in)
-	{
-		_desktop_tray.icon = 'data/app/images/favicon.png';
-	}
-	else
-	{
-		_desktop_tray.icon = 'data/app/images/favicon.gray.png';
-	}
-
+function update_tray_menu() {
+	if(!desktop_tray) return false;
+	desktop_tray.icon = 'build/app/images/favicon.png';
 	var win = gui.Window.get();
 	var menu = new gui.Menu();
 	var lbl = function(str) { return '  '+str; };
-	menu.append(new gui.MenuItem({ label: lbl('Open Turtl'), icon: 'data/app/images/favicon.png', click: function() { win.show(); } }));
+	menu.append(new gui.MenuItem({
+		label: lbl('Open Turtl'),
+		icon: 'build/app/images/favicon.png',
+		click: function() { win.show(); }
+	}));
 	menu.append(new gui.MenuItem({ type: 'separator' }));
 
 	// login-specific menu items
@@ -88,9 +81,30 @@ function update_tray_menu()
 	} }));
 
 	// track our global tray object
-	_desktop_tray.menu = menu;
+	desktop_tray.menu = menu;
 	return menu;
 }
+
+/**
+ * create a new tray icon. if we have an old one, remove it.
+ */
+function make_tray(options) {
+	options || (options = {});
+	var win = gui.Window.get();
+	if(desktop_tray) desktop_tray.remove();
+	icon = 'build/app/images/favicon.png';
+	if(options.notify) {
+		icon = 'build/app/images/favicon.notify.png';
+	}
+	var tray = new nw.Tray({ title: 'Turtl', icon: icon });
+	tray.on('click', function() {
+		win.show();
+		win.focus();
+	});
+	desktop_tray = tray;
+	update_tray_menu();
+	return tray;
+};
 
 /**
  * abstraction function to insert text into an HTML element (generally an input
@@ -98,8 +112,7 @@ function update_tray_menu()
  * (replacing it) or if there's no selection, just inserted at the cursor
  * position.
  */
-function insert_text_at(element, text)
-{
+function insert_text_at(element, text) {
 	var value = element.get('value');
 	var start = element.selectionStart;
 	var begin = value.substr(0, start);
@@ -110,43 +123,9 @@ function insert_text_at(element, text)
 }
 
 /**
- * create a new tray icon. if we have an old one, remove it.
- */
-function make_tray(options)
-{
-	options || (options = {});
-
-	var win = gui.Window.get();
-
-	if(_desktop_tray) _desktop_tray.remove();
-
-	var icon = 'data/app/images/favicon.gray.png';
-	if(window.turtl && window.turtl.user && window.turtl.user.logged_in)
-	{
-		icon = 'data/app/images/favicon.png';
-	}
-	if(options.notify)
-	{
-		icon = 'data/app/images/favicon.notify.png';
-	}
-	var tray = new gui.Tray({ title: 'Turtl', icon: icon });;
-
-	tray.on('click', function() {
-		win.show();
-		win.focus();
-	});
-
-	_desktop_tray = tray;
-	update_tray_menu();
-
-	return tray;
-};
-
-/**
  * make sure our tray menu is up to date
  */
-function bind_login_to_menu()
-{
+function bind_login_to_menu() {
 	update_tray_menu();
 	turtl.user.bind('login', update_tray_menu, 'desktop:user:update-menu');
 };
@@ -167,33 +146,13 @@ function bind_login_to_menu()
 		if(!min_to_tray) return false;
 		win.hide();
 		// Window.hide() hides the tray menu, so we just remove it and re-add it
-		make_tray();
+		//make_tray();
 	});
 
 	var menu = new gui.Menu({ type: "menubar" });
-	try
-	{
-		if(menu.createMacBuiltin)
-		{
-			menu.createMacBuiltin('Turtl');
-			win.menu = menu;
-		}
-	}
-	catch(err)
-	{
-		log.warn('init: create mac menu: ', err);
-	}
-
 })();
 
 window.addEvent('domready', function() {
-	window.port = new DesktopAddonPort({comm: comm});
-
-	// when turtl loads, make sure we keep our tray menu up to date
-	window.port.bind('loaded', bind_login_to_menu);
-	// when this is triggered, we already have a new user obj.
-	window.port.bind('logout', bind_login_to_menu);
-
 	// add context menus for downloading images
 	tools.attach_image_context_menu(window);
 

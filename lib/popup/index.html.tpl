@@ -5,10 +5,10 @@
 		<meta http-equiv="Content-Language" content="en">
 {{extra}}
 {{vendorjs}}
-		<script src="/data/app/library/keyboard.js"></script>
-		<script src="/data/popup/main.js"></script>
+		<script src="lib/app/keyboard.js"></script>
+		<script src="../../lib/popup/main.js"></script>
 {{gencss}}
-		<link rel="stylesheet" href="/data/background.css">
+		<link rel="stylesheet" href="../../css/background.css">
 	</head>
 	<body class="bare">
 		<div id="wrap">

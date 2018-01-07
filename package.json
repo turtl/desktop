@@ -1,25 +1,27 @@
 {
-	"name": "Turtl",
-	"description": "The safe way to remember things.",
-	"main": "data/index.html",
-	"version": "0.6.5",
-	"window": {
-		"width": 1023,
-		"height": 768,
-		"show": false,
-		"icon": "data/app/images/favicon.png"
-	},
-
-	"dom_storage_quota": 4096,
-	"js-flags": "--harmony_proxies --harmony_collections",
-
-	"maintainers":[{
-		"name": "Andrew Lyon",
-		"email": "andrew@turtl.it",
-		"web": "https://github.com/orthecreedence"
-	}],
-	"licenses": [
-		{"type": "GPLv3", "url": "https://raw.github.com/turtl/desktop/master/LICENSE"}
-	]
+  "name": "Turtl-dev",
+  "description": "The safe way to remember things.",
+  "main": "build/index.html",
+  "version": "0.7.0",
+  "window": {
+    "width": 1023,
+    "height": 768,
+    "show": false,
+    "icon": "build/app/images/favicon.png"
+  },
+  "dom_storage_quota": 10,
+  "js-flags": "",
+  "maintainers": [{
+    "name": "Andrew Lyon",
+    "email": "andrew@lyonbros.com",
+    "web": "https://github.com/orthecreedence"
+  }],
+  "licenses": [{
+    "type": "GPLv3",
+    "url": "https://raw.github.com/turtl/desktop/master/LICENSE"
+  }],
+  "dependencies": {
+    "ffi": "^2.2.0"
+  }
 }
 

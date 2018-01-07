@@ -2,9 +2,7 @@ Cache/
 cookies
 cookies-journal
 tmp/
-data/app
-data/index.html
-data/popup/index.html
 node_modules/
 /vars.mk
+build/*
 
