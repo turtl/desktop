@@ -15,6 +15,7 @@ allcss = $(shell find ../js/css/ -name "*.css" \
 alljs = $(shell echo "../js/main.js" \
 			&& find ../js/{config,controllers,handlers,lib,models,turtl} -name "*.js" \
 			| grep -v '(ignore|\.thread\.)')
+alljsassets = $(shell find ../js -type f | grep -v '\.git' | grep -v 'node_modules' | grep -v 'build')
 alllibs = $(shell find lib/ -name "*.js")
 allrs = $(shell find ../core/ -name "*.rs")
 
@@ -40,9 +41,9 @@ release: package
 	./scripts/release
 
 run: all
-	$(ELECTRON) --user-data-dir=$(TMP)/userdata .
+	$(ELECTRON) .
 
-$(BUILD)/app/index.html: $(alljs) $(allcss) ../js/index.html
+$(BUILD)/app/index.html: $(alljsassets) $(allcss) ../js/index.html
 	@echo "- rsync project: " $?
 	@rsync \
 			-azz \
