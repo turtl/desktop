@@ -8,7 +8,7 @@ export BUILD := build
 export RELEASE := release
 CONFIG_FILE := config.js
 
-NW := $(shell which nw)
+ELECTRON := ./node_modules/.bin/electron
 
 allcss = $(shell find ../js/css/ -name "*.css" \
 			| grep -v 'reset.css')
@@ -16,6 +16,7 @@ alljs = $(shell echo "../js/main.js" \
 			&& find ../js/{config,controllers,handlers,lib,models,turtl} -name "*.js" \
 			| grep -v '(ignore|\.thread\.)')
 alllibs = $(shell find lib/ -name "*.js")
+allrs = $(shell find ../core/ -name "*.rs")
 
 libprefix := lib
 libsuffix := so
@@ -27,7 +28,7 @@ ifneq (,$(findstring Darwin, $(OS)))
 	libsuffix := dylib
 endif
 
-all: $(BUILD)/$(libprefix)turtl_core.$(libsuffix) $(BUILD)/make-js $(BUILD)/config.js $(BUILD)/index.html $(BUILD)/popup/index.html
+all: $(BUILD)/$(libprefix)turtl_core.$(libsuffix) $(BUILD)/config.yaml $(BUILD)/make-js $(BUILD)/config.js $(BUILD)/index.html $(BUILD)/popup/index.html
 
 $(RELEASE)/package.nw: all
 	./scripts/package $@
@@ -39,7 +40,7 @@ release: package
 	./scripts/release
 
 run: all
-	$(NW) --user-data-dir=$(TMP)/userdata .
+	$(ELECTRON) --user-data-dir=$(TMP)/userdata .
 
 $(BUILD)/app/index.html: $(alljs) $(allcss) ../js/index.html
 	@echo "- rsync project: " $?
@@ -55,8 +56,13 @@ $(BUILD)/app/index.html: $(alljs) $(allcss) ../js/index.html
 			$(BUILD)/app
 	@touch $@
 
+$(BUILD)/config.yaml: ../core/config.yaml
+	@echo "- core config: " $?
+	@cp $? $@
+
 $(BUILD)/$(libprefix)turtl_core.$(libsuffix): $(allrs)
 	@test -d "$(@D)" || mkdir -p "$(@D)"
+	@echo "- core build: " $?
 	@cd ../core && make CARGO_BUILD_ARGS=$(CARGO_BUILD_ARGS) release
 	cp ../core/target/release/$(libprefix)turtl_core.$(libsuffix) $(BUILD)/
 
@@ -71,12 +77,12 @@ $(BUILD)/make-js: $(alljs) $(allcss)
 
 # if the app's index changed, we know to change this one
 $(BUILD)/index.html: $(BUILD)/make-js $(BUILD)/app/index.html $(alllibs) ./scripts/gen-index
-	@echo "- $(BUILD)/index.html: " $?
+	@echo "- $@: " $?
 	@./scripts/gen-index > $@
 
 $(BUILD)/popup/index.html: lib/popup/index.html.tpl $(alllibs) ./scripts/gen-index
 	@test -d "$(@D)" || mkdir -p "$(@D)"
-	@echo "- popup/index.html: " $?
+	@echo "- $@: " $?
 	@./scripts/gen-index popup > $@
 
 clean:

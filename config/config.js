@@ -4,11 +4,11 @@
 
 if(typeof(config) == 'undefined') config = {};
 (function() {
-	var gui = require('nw.gui');
+	var app = require('electron').remote.app
 	Object.merge(config, {
 		api_url: 'https://turtl.dev:8181',
 		client: 'desktop',
-		version: gui.App.manifest.version,
+		version: app.getVersion(),
 		cookie_login: false,
 		base_url: window.location.toString().replace(/^(.*)\/.*?$/, '$1/app'),
 		dispatch_port: 7777,
