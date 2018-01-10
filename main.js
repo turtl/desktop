@@ -6,6 +6,8 @@ const BrowserWindow = electron.BrowserWindow;
 const url = require('url');
 const path = require('path');
 const context = require('electron-context-menu');
+const config = require('./build/config');
+const dispatch = require('./lib/node/dispatch');
 
 // add build/ to our PATH so any libraries dropped in there will be found
 process.env['PATH'] = process.env['PATH']+path.delimiter+path.join(__dirname, 'build');
@@ -55,6 +57,7 @@ function create_main_window() {
 	}));
 	fix_window(main_window);
 	main_window.on('close', function() { main_window = null; });
+	// this is called the Accelerator for future ref
 	electron.globalShortcut.register('CommandOrControl+q', function() {
 		app.quit();
 	});
@@ -91,69 +94,5 @@ function update_tray() {
 }
 app.on('ready', update_tray);
 
-
-/*
-// init our environment
-(function() {
-	var win = gui.Window.get();
-
-	// handle <a> tags properly. if it's a blob/file URL, we open an in-app
-	// window. if it's an external URL we open an OS browser window. otherwise
-	// just return business as usual (probably an in-app link)
-	tools.hijack_external_links(win);
-
-	make_tray();
-	win.on('minimize', function() {
-		if(!min_to_tray) return false;
-		win.hide();
-		// Window.hide() hides the tray menu, so we just remove it and re-add it
-		make_tray();
-	});
-
-	var menu = new gui.Menu({ type: "menubar" });
-	try
-	{
-		if(menu.createMacBuiltin)
-		{
-			menu.createMacBuiltin('Turtl');
-			win.menu = menu;
-		}
-	}
-	catch(err)
-	{
-		log.warn('init: create mac menu: ', err);
-	}
-
-})();
-
-window.addEvent('domready', function() {
-	window.port = new DesktopAddonPort({comm: comm});
-
-	// when turtl loads, make sure we keep our tray menu up to date
-	window.port.bind('loaded', bind_login_to_menu);
-	// when this is triggered, we already have a new user obj.
-	window.port.bind('logout', bind_login_to_menu);
-
-	// add context menus for downloading images
-	tools.attach_image_context_menu(window);
-
-	// add copy/paste context menus
-	tools.attach_copy_paste_context_menu(window);
-
-	// add copy url context menu to links
-	tools.attach_copy_url_context_menu(window);
-
-	var keyboard = new TurtlKeyboard().attach();
-	// Ctrl+Shift+k is open console (if enabled in config). note we use 'raw'
-	// here instead of ctrl+shift+k because we want this to work even if
-	// TRIGGERED from an input field
-	keyboard.bind('raw', function(obj) {
-		if(!(obj.key == 'k' && obj.control && obj.shift && !obj.meta && !obj.alt)) return;
-		gui.Window.get().showDevTools();
-	});
-});
-
-var dispatch = new Dispatch();
-dispatch.start();
-*/
+dispatch.start({dispatch_port: config.dispatch_port});
 

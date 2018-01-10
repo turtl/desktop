@@ -46,9 +46,9 @@ vendorjs="$(
 		| sed 's|$|"></script>|'
 )"
 
-for x in $(find $pwd/../lib/ -name "*.js" | sort | grep -v 'popup/' | grep -v '\.thread\.'); do
-	x=$(echo $x | sed 's|.*/lib/||')
-	ASSET_ROOT= js="${js}$(print_js "../../lib/$x")"
+for x in $(find $pwd/../lib/app/ -name "*.js" | sort | grep -v 'popup/'); do
+	x=$(echo $x | sed 's|.*/lib/app/||')
+	ASSET_ROOT= js="${js}$(print_js "../../lib/app/$x")"
 done
 js="${js}\n<script src=\"../config.js\"></script>"
 
@@ -65,7 +65,7 @@ if [ "$TEMPLATE" == "main" ]; then
 fi
 
 if [ "$TEMPLATE" == "popup" ]; then
-	index="$(cat $pwd/../lib/popup/index.html.tpl)"
+	index="$(cat $pwd/../lib/app/popup/index.html.tpl)"
 	index="$(do_replace "$index" '{{extra}}' "$extra")"
 	index="$(do_replace "$index" '{{gencss}}' "$css")"
 	index="$(do_replace "$index" '{{genjs}}' "$js")"

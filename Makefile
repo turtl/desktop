@@ -81,7 +81,7 @@ $(BUILD)/index.html: $(BUILD)/make-js $(BUILD)/app/index.html $(alllibs) ./scrip
 	@echo "- $@: " $?
 	@./scripts/gen-index > $@
 
-$(BUILD)/popup/index.html: lib/popup/index.html.tpl $(alllibs) ./scripts/gen-index
+$(BUILD)/popup/index.html: lib/app/popup/index.html.tpl $(alllibs) ./scripts/gen-index
 	@test -d "$(@D)" || mkdir -p "$(@D)"
 	@echo "- $@: " $?
 	@./scripts/gen-index popup > $@
