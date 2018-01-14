@@ -42,7 +42,6 @@ function fix_window(win) {
 	}
 	win.webContents.on('new-window', handle_external);
 	win.webContents.on('will-navigate', handle_external);
-
 }
 
 function create_main_window() {
@@ -56,21 +55,21 @@ function create_main_window() {
 		slashes: true,
 	}));
 	fix_window(main_window);
-	main_window.on('close', function() { main_window = null; });
-	// this is called the Accelerator for future ref
-	electron.globalShortcut.register('CommandOrControl+q', function() {
-		app.quit();
-	});
-	electron.globalShortcut.register('CommandOrControl+Shift+i', function() {
-		if(!main_window) return;
-		main_window.webContents.toggleDevTools();
-	});
+	main_window.on('close', app.quit);
 }
 
 function show_window() {
 	if(main_window) main_window.show();
 }
 
+app.on('ready', function() {
+	// this is called the Accelerator for future ref
+	electron.globalShortcut.register('CommandOrControl+q', app.quit);
+	electron.globalShortcut.register('CommandOrControl+Shift+k', function() {
+		var win = BrowserWindow.getFocusedWindow()
+		win.webContents.toggleDevTools();
+	});
+});
 app.on('ready', create_main_window);
 app.on('windows-all-closed', function() {
 	if(process.platform == 'darwin') return;

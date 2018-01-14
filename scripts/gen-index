@@ -42,7 +42,7 @@ js="$(
 vendorjs="$(
 	echo "$(vendor_js)" \
 		| sed 's|___| |g' \
-		| sed "s|^|<script src="'"'"/${BUILD}/app/|" \
+		| sed "s|^|<script src="'"'"|" \
 		| sed 's|$|"></script>|'
 )"
 

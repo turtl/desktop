@@ -6,7 +6,7 @@
 {{extra}}
 {{vendorjs}}
 		<script src="lib/app/keyboard.js"></script>
-		<script src="../../lib/popup/main.js"></script>
+		<script src="../../lib/app/popup/main.js"></script>
 {{gencss}}
 		<link rel="stylesheet" href="../../css/background.css">
 	</head>

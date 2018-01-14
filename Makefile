@@ -18,6 +18,7 @@ alljs = $(shell echo "../js/main.js" \
 alljsassets = $(shell find ../js -type f | grep -v '\.git' | grep -v 'node_modules' | grep -v 'build')
 alllibs = $(shell find lib/ -name "*.js")
 allrs = $(shell find ../core/ -name "*.rs")
+rustbin = $(shell ./scripts/rustbin.sh)
 
 libprefix := lib
 libsuffix := so
@@ -29,7 +30,7 @@ ifneq (,$(findstring Darwin, $(OS)))
 	libsuffix := dylib
 endif
 
-all: $(BUILD)/$(libprefix)turtl_core.$(libsuffix) $(BUILD)/config.yaml $(BUILD)/make-js $(BUILD)/config.js $(BUILD)/index.html $(BUILD)/popup/index.html
+all: $(BUILD)/$(libprefix)turtl_core.$(libsuffix) $(BUILD)/config.yaml $(BUILD)/make-js $(BUILD)/config.js $(BUILD)/index.html $(BUILD)/popup.html
 
 $(RELEASE)/package.nw: all
 	./scripts/package $@
@@ -65,7 +66,10 @@ $(BUILD)/$(libprefix)turtl_core.$(libsuffix): $(allrs)
 	@test -d "$(@D)" || mkdir -p "$(@D)"
 	@echo "- core build: " $?
 	@cd ../core && make CARGO_BUILD_ARGS=$(CARGO_BUILD_ARGS) release
+	cp $(rustbin)/$(libprefix)std-*.$(libsuffix) $(BUILD)/
 	cp ../core/target/release/$(libprefix)turtl_core.$(libsuffix) $(BUILD)/
+
+$(BUILD)/$(libprefix)std-*.$(libprefix): 
 
 $(BUILD)/config.js: config/$(CONFIG_FILE)
 	@echo "- Config: " $?
@@ -81,7 +85,7 @@ $(BUILD)/index.html: $(BUILD)/make-js $(BUILD)/app/index.html $(alllibs) ./scrip
 	@echo "- $@: " $?
 	@./scripts/gen-index > $@
 
-$(BUILD)/popup/index.html: lib/app/popup/index.html.tpl $(alllibs) ./scripts/gen-index
+$(BUILD)/popup.html: lib/app/popup/index.html.tpl $(alllibs) ./scripts/gen-index
 	@test -d "$(@D)" || mkdir -p "$(@D)"
 	@echo "- $@: " $?
 	@./scripts/gen-index popup > $@
