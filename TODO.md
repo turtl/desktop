@@ -1,4 +1,5 @@
 # v0.7
+- run turtl core recv in webworker so we can ditch polling?
 - popup
   - find quick way to init turtl/load profile. need:
     - turtl.profile
