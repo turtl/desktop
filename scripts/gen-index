@@ -46,7 +46,7 @@ vendorjs="$(
 		| sed 's|$|"></script>|'
 )"
 
-for x in $(find $pwd/../lib/app/ -name "*.js" | sort | grep -v 'popup/' | grep -v 'ipc.js'); do
+for x in $(find $pwd/../lib/app/ -name "*.js" | sort | grep -v 'popup/' | grep -v 'ipc.js' | grep -v 'thread.js'); do
 	x=$(echo $x | sed 's|.*/lib/app/||')
 	ASSET_ROOT= js="${js}$(print_js "../../lib/app/$x")"
 done

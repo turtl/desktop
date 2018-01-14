@@ -36,7 +36,9 @@ function create_main_window() {
 		y: 10,
 		icon: tools.ticon(32),
 		webPreferences: {
+			// suckerrrs
 			nodeIntegration: false,
+			// loads turtl core/ipc so we don't need node
 			preload: path.join(__dirname, 'lib', 'node', 'preload', 'ipc_core.js'),
 		},
 	});
