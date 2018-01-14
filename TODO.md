@@ -1,12 +1,15 @@
 # v0.7
-- find a way to grab std.dll from the rust install (and put in build/)
-  - we could just script this as part of CI, but would rather have it in the
-    build system
+- popup
+  - find quick way to init turtl/load profile. need:
+    - turtl.profile
+    - param router?
+    - ...
 - bookmarker
   - dispatch?
   - pairing
   - ff extension
   - chrome extension
+- crypto in comms (don't trust IPC)
 
 # later
 - tray menu

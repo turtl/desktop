@@ -46,7 +46,7 @@ vendorjs="$(
 		| sed 's|$|"></script>|'
 )"
 
-for x in $(find $pwd/../lib/app/ -name "*.js" | sort | grep -v 'popup/'); do
+for x in $(find $pwd/../lib/app/ -name "*.js" | sort | grep -v 'popup/' | grep -v 'ipc.js'); do
 	x=$(echo $x | sed 's|.*/lib/app/||')
 	ASSET_ROOT= js="${js}$(print_js "../../lib/app/$x")"
 done
@@ -56,6 +56,7 @@ js="${js}\n<script src=\"../config.js\"></script>"
 ## put it all together
 ## -----------------------------------------------------------------------------
 if [ "$TEMPLATE" == "main" ]; then
+	js="${js}\n<script src=\"../../lib/app/ipc.js\"></script>"
 	index="$(cat $pwd/../${BUILD}/app/views/layouts/default.html)"
 	index="$(do_replace "$index" '{{extra}}' "$extra")"
 	index="$(do_replace "$index" '{{gencss}}' "$css")"

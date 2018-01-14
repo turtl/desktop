@@ -13,7 +13,7 @@ ELECTRON := ./node_modules/.bin/electron
 allcss = $(shell find ../js/css/ -name "*.css" \
 			| grep -v 'reset.css')
 alljs = $(shell echo "../js/main.js" \
-			&& find ../js/{config,controllers,handlers,lib,models,turtl} -name "*.js" \
+			&& find ../js/{config,controllers,handlers,lib,models} -name "*.js" \
 			| grep -v '(ignore|\.thread\.)')
 alljsassets = $(shell find ../js -type f | grep -v '\.git' | grep -v 'node_modules' | grep -v 'build')
 alllibs = $(shell find lib/ -name "*.js")
