@@ -9,7 +9,7 @@ const context = require('electron-context-menu');
 const config = require('./build/config');
 const comm = require('./lib/node/comm');
 const dispatch = require('./lib/node/dispatch');
-const popup = require('./lib/node/popup');
+const Popup = require('./lib/node/popup');
 const tools = require('./lib/node/tools');
 
 // add build/ to our PATH so any libraries dropped in there will be found
@@ -36,7 +36,8 @@ function create_main_window() {
 		y: 10,
 		icon: tools.ticon(32),
 		webPreferences: {
-			// suckerrrs
+			// suckerrrs. note we don't use sandbox since we need path support
+			// as well as ffi
 			nodeIntegration: false,
 			// loads turtl core/ipc so we don't need node
 			preload: path.join(__dirname, 'lib', 'node', 'preload', 'ipc_core.js'),
@@ -66,8 +67,15 @@ app.on('ready', function() {
 	// this is called the Accelerator for future ref
 	electron.globalShortcut.register('CommandOrControl+q', app.quit);
 	electron.globalShortcut.register('CommandOrControl+Shift+k', function() {
-		var win = BrowserWindow.getFocusedWindow()
+		var win = BrowserWindow.getFocusedWindow();
 		win.webContents.toggleDevTools();
+	});
+	electron.globalShortcut.register('CommandOrControl+w', function() {
+		var win = BrowserWindow.getFocusedWindow();
+		var popup_win = Popup.get_window();
+		if(popup_win && win == popup_win) {
+			popup_win.close();
+		}
 	});
 });
 app.on('ready', create_main_window);
@@ -94,7 +102,7 @@ function update_tray() {
 app.on('ready', update_tray);
 
 // set up a comm layer between our main and renderer thread(s)
-comm.setup(get_main_window, popup.get_window, function(e, msg) {
+comm.setup(get_main_window, Popup.get_window, function(e, msg) {
 	// TODO: dispatch messages from main window
 });
 

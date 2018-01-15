@@ -44,6 +44,9 @@ release: package
 run: all
 	$(ELECTRON) .
 
+urn: 
+	@echo "Is there a Ralphs around here?"
+
 $(BUILD)/app/index.html: $(alljsassets) $(allcss) ../js/index.html
 	@echo "- rsync project: " $?
 	@rsync \
