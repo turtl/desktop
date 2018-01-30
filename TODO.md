@@ -1,18 +1,19 @@
 # v0.7
-- run turtl core recv in webworker so we can ditch polling?
 - popup
   - find quick way to init turtl/load profile. need:
     - turtl.profile
     - param router?
     - ...
 - bookmarker
+  - space selector
   - dispatch?
   - pairing
   - ff extension
   - chrome extension
-- crypto in comms (don't trust IPC)
 
 # later
+- crypto in comms (don't trust IPC)
+- run turtl core recv in webworker so we can ditch polling?
 - tray menu
   - update state when logged in
     - add note

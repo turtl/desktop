@@ -64,19 +64,6 @@ function show_main_window() {
 }
 
 app.on('ready', function() {
-	// this is called the Accelerator for future ref
-	electron.globalShortcut.register('CommandOrControl+q', app.quit);
-	electron.globalShortcut.register('CommandOrControl+Shift+k', function() {
-		var win = BrowserWindow.getFocusedWindow();
-		win.webContents.toggleDevTools();
-	});
-	electron.globalShortcut.register('CommandOrControl+w', function() {
-		var win = BrowserWindow.getFocusedWindow();
-		var popup_win = Popup.get_window();
-		if(popup_win && win == popup_win) {
-			popup_win.close();
-		}
-	});
 });
 app.on('ready', create_main_window);
 app.on('windows-all-closed', function() {
@@ -95,7 +82,32 @@ function update_tray() {
 	}
 	var menuitems = [];
 	menuitems.push({ label: 'Open', click: show_main_window, icon: tools.ticon(16) });
-	menuitems.push({ label: 'Quit', click: app.quit });
+	menuitems.push({
+		label: 'Quit',
+		click: app.quit,
+		accelerator: 'CommandOrControl+q'
+	});
+	menuitems.push({
+		label: 'Dev tools',
+		click: function() {
+			var win = BrowserWindow.getFocusedWindow();
+			win.webContents.toggleDevTools();
+		},
+		accelerator: 'CommandOrControl+Shift+k',
+		visible: false,
+	});
+	menuitems.push({
+		label: 'Close window',
+		click: function() {
+			var win = BrowserWindow.getFocusedWindow();
+			var popup_win = Popup.get_window();
+			if(popup_win && win == popup_win) {
+				popup_win.close();
+			}
+		},
+		accelerator: 'CommandOrControl+w',
+		visible: false,
+	});
 	var menu = electron.Menu.buildFromTemplate(menuitems);
 	tray_icon.setContextMenu(menu);
 }
