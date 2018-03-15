@@ -9,9 +9,9 @@ if(typeof(config) == 'undefined') var config = {};
 		api_url: 'https://turtl.dev:8181',
 		client: 'desktop',
 		version: app_version,
-		cookie_login: false,
+		cookie_login: true,
 		base_url: typeof(window) != 'undefined' ? window.location.toString().replace(/^(.*)\/.*?$/, '$1/app') : '',
-		dispatch_port: 7777,
+		dispatch_port: 7471,
 		core: {
 			adapter: 'desktop',
 			options: {},

@@ -14,6 +14,7 @@ const tools = require('./lib/node/tools');
 
 // add build/ to our PATH so any libraries dropped in there will be found
 process.env['PATH'] = process.env['PATH']+path.delimiter+path.join(__dirname, 'build');
+process.env['CLIPPO_PARSERS'] = path.join(__dirname, 'build', 'clippo', 'parsers.yaml');
 
 if(process.env['TURTL_USERDATA_DIR']) {
 	app.setPath('userData', process.env['TURTL_USERDATA_DIR']);
@@ -34,7 +35,7 @@ function create_main_window() {
 		height: 768,
 		x: 10,
 		y: 10,
-		icon: tools.ticon(32),
+		icon: tools.ticon(128),
 		webPreferences: {
 			// suckerrrs. note we don't use sandbox since we need path support
 			// as well as ffi
@@ -63,8 +64,6 @@ function show_main_window() {
 	if(main_window) main_window.show();
 }
 
-app.on('ready', function() {
-});
 app.on('ready', create_main_window);
 app.on('windows-all-closed', function() {
 	if(process.platform == 'darwin') return;

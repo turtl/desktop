@@ -12,9 +12,10 @@
 	</head>
 	<body class="bare">
 		<div id="wrap">
+			<header></header>
+			<div id="sidebar"></div>
 			<div id="main" class="maincontent">
-				<div id="background_content" class="modalcontent clear">
-				</div>
+				<div id="background_content" class="modalcontent clear"></div>
 			</div>
 		</div>
 	</body>

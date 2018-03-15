@@ -6,8 +6,10 @@
 export SHELL := /bin/bash
 export BUILD := build
 export RELEASE := release
-CONFIG_FILE := config.js
 
+mkdir = @mkdir -p $(dir $@)
+
+CONFIG_FILE := config.js
 ELECTRON := ./node_modules/.bin/electron
 
 allcss = $(shell find ../js/css/ -name "*.css" \
@@ -30,7 +32,7 @@ ifneq (,$(findstring Darwin, $(OS)))
 	libsuffix := dylib
 endif
 
-all: $(BUILD)/$(libprefix)turtl_core.$(libsuffix) $(BUILD)/config.yaml $(BUILD)/make-js $(BUILD)/config.js $(BUILD)/index.html $(BUILD)/popup.html
+all: $(BUILD)/$(libprefix)turtl_core.$(libsuffix) $(BUILD)/config.yaml $(BUILD)/clippo/parsers.yaml $(BUILD)/make-js $(BUILD)/config.js $(BUILD)/index.html $(BUILD)/popup.html
 
 $(RELEASE)/package.nw: all
 	./scripts/package $@
@@ -44,10 +46,14 @@ release: package
 run: all
 	$(ELECTRON) .
 
+run-bat: all
+	start "scripts\debug-win.bat"
+
 urn: 
 	@echo "Is there a Ralphs around here?"
 
 $(BUILD)/app/index.html: $(alljsassets) $(allcss) ../js/index.html
+	$(mkdir)
 	@echo "- rsync project: " $?
 	@rsync \
 			-azz \
@@ -62,7 +68,13 @@ $(BUILD)/app/index.html: $(alljsassets) $(allcss) ../js/index.html
 	@touch $@
 
 $(BUILD)/config.yaml: ../core/config.yaml
+	$(mkdir)
 	@echo "- core config: " $?
+	@cp $? $@
+
+$(BUILD)/clippo/parsers.yaml: ../core/clippo/parsers.yaml
+	$(mkdir)
+	@echo "- core parsers.yaml: " $?
 	@cp $? $@
 
 $(BUILD)/$(libprefix)turtl_core.$(libsuffix): $(allrs)

@@ -9,7 +9,10 @@ body.minified #main #background_content.modalcontent > a.min {background-image: 
 #main #background_content.modalcontent > a.closelink {position: absolute; top: 8px; right: 8px; width: 14px; height: 15px;}
 
 #wrap {position: fixed; top: 0; bottom: 0; left: 0; right: 0; overflow-y: hidden; overflow-x: hidden;}
-#main {padding: 0rem;}
+body.header {background: #fff;}
+body:not(.header) #wrap > .sidebar {display: none;}
+body:not(.header) #wrap > header {display: none;}
+body:not(.header) #main {padding: 0rem;}
 
 .content {width: auto;}
 
