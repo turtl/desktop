@@ -1,4 +1,4 @@
-.PHONY: all clean release run
+.PHONY: all clean release run urn
 
 # non-versioned include
 -include vars.mk
@@ -91,7 +91,7 @@ $(BUILD)/config.js: config/$(CONFIG_FILE)
 	@cp config/$(CONFIG_FILE) $@
 
 $(BUILD)/make-js: $(alljs) $(allcss)
-	@test -d "$(@D)" || mkdir -p "$(@D)"
+	$(mkdir)
 	@cd ../js && make
 	@touch $@
 
