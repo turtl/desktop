@@ -78,14 +78,15 @@ $(BUILD)/clippo/parsers.yaml: ../core/clippo/parsers.yaml
 	@echo "- core parsers.yaml: " $?
 	@cp $? $@
 
-$(BUILD)/$(libprefix)turtl_core.$(libsuffix): $(allrs)
-	@test -d "$(@D)" || mkdir -p "$(@D)"
+$(BUILD)/$(libprefix)std-*.$(libprefix): $(rustbin)/$(libprefix)std-*.$(libsuffix)
+	$(mkdir)
+	cp $? $(BUILD)/
+
+$(BUILD)/turtl_core.$(libsuffix): $(BUILD)/$(libprefix)std-*.$(libprefix) $(allrs)
+	$(mkdir)
 	@echo "- core build: " $?
 	cd ../core && make CARGO_BUILD_ARGS=$(CARGO_BUILD_ARGS) release
-	cp $(rustbin)/$(libprefix)std-*.$(libsuffix) $(BUILD)/
-	cp ../core/target/release/$(libprefix)turtl_core.$(libsuffix) $(BUILD)/
-
-$(BUILD)/$(libprefix)std-*.$(libprefix): 
+	cp ../core/target/release/$(libprefix)turtl_core.$(libsuffix) $@
 
 $(BUILD)/config.js: config/$(CONFIG_FILE)
 	@echo "- Config: " $?
