@@ -81,7 +81,7 @@ $(BUILD)/clippo/parsers.yaml: ../core/clippo/parsers.yaml
 $(BUILD)/$(libprefix)turtl_core.$(libsuffix): $(allrs)
 	@test -d "$(@D)" || mkdir -p "$(@D)"
 	@echo "- core build: " $?
-	@cd ../core && make CARGO_BUILD_ARGS=$(CARGO_BUILD_ARGS) release
+	cd ../core && make CARGO_BUILD_ARGS=$(CARGO_BUILD_ARGS) release
 	cp $(rustbin)/$(libprefix)std-*.$(libsuffix) $(BUILD)/
 	cp ../core/target/release/$(libprefix)turtl_core.$(libsuffix) $(BUILD)/
 
