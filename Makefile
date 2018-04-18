@@ -1,4 +1,4 @@
-.PHONY: all clean release run urn
+.PHONY: all clean release run urn electron-rebuild
 
 # non-versioned include
 -include vars.mk
@@ -11,6 +11,7 @@ mkdir = @mkdir -p $(dir $@)
 
 CONFIG_FILE := config.js
 ELECTRON := ./node_modules/.bin/electron
+ELECTRON_REBUILD := ./node_modules/.bin/electron-rebuild
 
 allcss = $(shell find ../js/css/ -name "*.css" \
 			| grep -v 'reset.css')
@@ -104,6 +105,9 @@ $(BUILD)/popup.html: lib/app/popup/index.html.tpl $(alllibs) ./scripts/gen-index
 	@test -d "$(@D)" || mkdir -p "$(@D)"
 	@echo "- $@: " $?
 	@./scripts/gen-index popup > $@
+
+electron-rebuild:
+	$(ELECTRON_REBUILD)
 
 clean:
 	rm -rf $(BUILD)
