@@ -78,7 +78,7 @@ $(BUILD)/clippo/parsers.yaml: ../core/clippo/parsers.yaml
 	@echo "- core parsers.yaml: " $?
 	@cp $? $@
 
-$(BUILD)/$(libprefix)std-*.$(libprefix): $(rustbin)/$(libprefix)std-*.$(libsuffix)
+$(BUILD)/$(libprefix)std-*.$(libsuffix): $(rustbin)/$(libprefix)std-*.$(libsuffix)
 	$(mkdir)
 	cp $? $(BUILD)/
 
