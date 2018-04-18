@@ -33,7 +33,7 @@ ifneq (,$(findstring Darwin, $(OS)))
 	libsuffix := dylib
 endif
 
-all: $(BUILD)/$(libprefix)turtl_core.$(libsuffix) $(BUILD)/config.yaml $(BUILD)/clippo/parsers.yaml $(BUILD)/make-js $(BUILD)/config.js $(BUILD)/index.html $(BUILD)/popup.html
+all: $(BUILD)/turtl_core.$(libsuffix) $(BUILD)/config.yaml $(BUILD)/clippo/parsers.yaml $(BUILD)/make-js $(BUILD)/config.js $(BUILD)/index.html $(BUILD)/popup.html
 
 $(RELEASE)/package.nw: all
 	./scripts/package $@
@@ -82,7 +82,7 @@ $(BUILD)/$(libprefix)std-*.$(libsuffix): $(rustbin)/$(libprefix)std-*.$(libsuffi
 	$(mkdir)
 	cp $? $(BUILD)/
 
-$(BUILD)/turtl_core.$(libsuffix): $(BUILD)/$(libprefix)std-*.$(libprefix) $(allrs)
+$(BUILD)/turtl_core.$(libsuffix): $(BUILD)/$(libprefix)std-*.$(libsuffix) $(allrs)
 	$(mkdir)
 	@echo "- core build: " $?
 	cd ../core && make CARGO_BUILD_ARGS=$(CARGO_BUILD_ARGS) release
