@@ -7,6 +7,7 @@ export SHELL := /bin/bash
 export BUILD := build
 export RELEASE := release
 
+OS ?= $(shell uname)
 mkdir = @mkdir -p $(dir $@)
 
 CONFIG_FILE := config.js
@@ -21,7 +22,6 @@ alljs = $(shell echo "../js/main.js" \
 alljsassets = $(shell find ../js -type f | grep -v '\.git' | grep -v 'node_modules' | grep -v 'build')
 alllibs = $(shell find lib/ -name "*.js")
 allrs = $(shell find ../core/ -name "*.rs")
-rustbin = $(shell ./scripts/rustbin.sh)
 
 libprefix := lib
 libsuffix := so
@@ -78,11 +78,7 @@ $(BUILD)/clippo/parsers.yaml: ../core/clippo/parsers.yaml
 	@echo "- core parsers.yaml: " $?
 	@cp $? $@
 
-$(BUILD)/$(libprefix)std-*.$(libsuffix): $(rustbin)/$(libprefix)std-*.$(libsuffix)
-	$(mkdir)
-	cp $? $(BUILD)/
-
-$(BUILD)/turtl_core.$(libsuffix): $(BUILD)/$(libprefix)std-*.$(libsuffix) $(allrs)
+$(BUILD)/turtl_core.$(libsuffix): $(allrs)
 	$(mkdir)
 	@echo "- core build: " $?
 	cd ../core && make CARGO_BUILD_ARGS=$(CARGO_BUILD_ARGS) release
