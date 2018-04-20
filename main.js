@@ -71,7 +71,7 @@ app.on('windows-all-closed', function() {
 	app.quit()
 });
 app.on('activate', function() {
-	if(mainWindow === null) { create_main_window(); }
+	if(main_window === null) { create_main_window(); }
 });
 
 var tray_icon = null;
