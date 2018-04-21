@@ -1,4 +1,4 @@
-.PHONY: all clean release run urn electron-rebuild
+.PHONY: all clean release run urn electron-rebuild package-windows
 
 # non-versioned include
 -include vars.mk
@@ -108,4 +108,7 @@ electron-rebuild:
 
 clean:
 	rm -rf $(BUILD)
+
+package-windows:
+	./node_modules/.bin/electron-packager --prune --executable-name=turtl --icon=scripts/resources/favicon.ico --out=release/ .
 

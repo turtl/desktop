@@ -1,6 +1,7 @@
 {
-  "name": "Turtl-dev",
+  "name": "Turtl",
   "description": "The safe way to remember things.",
+  "author": "Lyon Bros. Enterprises, LLC",
   "main": "main.js",
   "version": "0.7.0",
   "dom_storage_quota": 10,
@@ -26,6 +27,7 @@
   },
   "devDependencies": {
     "electron": "1.8.3",
+    "electron-packager": "^12.0.1",
     "electron-rebuild": "^1.7.3"
   }
 }
