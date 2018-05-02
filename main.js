@@ -30,6 +30,8 @@ var comm = new Comm();
 var min_to_tray = JSON.parse(localStorage['minimize_to_tray'] || 'false') || false;
 min_to_tray = false;
 
+var close_to_tray = JSON.parse(localStorage['close_to_tray'] || 'false') || false;
+
 (function() {
 	var win = gui.Window.get();
 	win.moveTo(10, 10);
@@ -43,6 +45,15 @@ function set_tray_min(bool)
 {
 	localStorage['minimize_to_tray'] = JSON.stringify(bool);
 	min_to_tray = bool;
+}
+
+/**
+ * Saves our close-to-tray value in storage
+ */
+function set_tray_close(bool)
+{
+	localStorage['close_to_tray'] = JSON.stringify(bool);
+	close_to_tray = bool;
 }
 
 /**
@@ -80,11 +91,12 @@ function update_tray_menu()
 		menu.append(new gui.MenuItem({ type: 'separator' }));
 	}
 	//menu.append(new gui.MenuItem({ type: 'checkbox', checked: min_to_tray, label: lbl('Minimize to tray'), click: function() { set_tray_min(this.checked); } }));
+	menu.append(new gui.MenuItem({ type: 'checkbox', checked: close_to_tray, label: lbl('Close to tray'), click: function() { set_tray_close(this.checked); } }));
 	menu.append(new gui.MenuItem({ type: 'separator' }));
 	menu.append(new gui.MenuItem({ label: lbl('Quit'), click: function() {
 		Notifications.close();
 		Popup.close();
-		gui.App.closeAllWindows();
+		gui.App.quit();
 	} }));
 
 	// track our global tray object
@@ -165,6 +177,16 @@ function bind_login_to_menu()
 	make_tray();
 	win.on('minimize', function() {
 		if(!min_to_tray) return false;
+		win.hide();
+		// Window.hide() hides the tray menu, so we just remove it and re-add it
+		make_tray();
+	});
+
+	win.on('close', function() {
+		if(!close_to_tray) {
+			this.close(true);
+			return false;
+		}
 		win.hide();
 		// Window.hide() hides the tray menu, so we just remove it and re-add it
 		make_tray();
