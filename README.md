@@ -1,6 +1,13 @@
 Turtl desktop
 =============
 
+# NOTE: Moving to electron
+
+Please make all future PRs against the `electron` branch until further notice.
+Turtl v0.7 is nigh, and uses Electron.
+
+------
+
 This is the desktop app wrapper around the Turtl [core](https://github.com/turtl/js).
 It provides a native experience for Windows, Linux, and OSx allowing local packaging
 of Turtl for desktop platforms.
