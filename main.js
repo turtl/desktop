@@ -40,6 +40,8 @@ function create_main_window() {
 			// suckerrrs. note we don't use sandbox since we need path support
 			// as well as ffi
 			nodeIntegration: false,
+			// disable <webview> as well
+			webviewTag: false,
 			// loads turtl core/ipc so we don't need node
 			preload: path.join(__dirname, 'lib', 'node', 'preload', 'ipc_core.js'),
 		},
