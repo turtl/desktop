@@ -55,6 +55,7 @@ urn:
 
 $(BUILD)/app/index.html: $(alljsassets) $(allcss) ../js/index.html
 	$(mkdir)
+	cd ../js && make
 	@echo "- rsync project: " $?
 	@rsync \
 			-azz \
@@ -68,7 +69,7 @@ $(BUILD)/app/index.html: $(alljsassets) $(allcss) ../js/index.html
 			$(BUILD)/app
 	@touch $@
 
-$(BUILD)/config.yaml: ../core/config.yaml
+$(BUILD)/config.yaml: ../core/config.yaml.default
 	$(mkdir)
 	@echo "- core config: " $?
 	@cp $? $@
