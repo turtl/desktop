@@ -55,7 +55,7 @@ urn:
 
 $(BUILD)/app/index.html: $(alljsassets) $(allcss) ../js/index.html
 	$(mkdir)
-	cd ../js && make
+	@cd ../js && make
 	@echo "- rsync project: " $?
 	@rsync \
 			-azz \
