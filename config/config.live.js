@@ -1,19 +1,21 @@
-//
 // some desktop-oriented app config overrides
-//
-
-FIXME : copy stuff from config.js
-
-if(typeof(config) == 'undefined') config = {};
+if(typeof(config) == 'undefined') var config = {};
 (function() {
-	var gui = require('nw.gui');
-	Object.merge(config, {
-		api_url: 'https://api.turtlapp.com/v2',
+	var is_in_main = typeof(Node) == 'undefined' && typeof(require) != 'undefined';
+	var app_version = is_in_main ?
+		require('electron').app.getVersion() :
+		Node.config.app_version;
+	Object.assign(config, {
 		client: 'desktop',
-		version: gui.App.manifest.version,
-		cookie_login: false,
-		catch_global_errors: true,
-		base_url: window.location.toString().replace(/^(.*)\/.*?$/, '$1/app')
+		version: app_version,
+		cookie_login: true,
+		base_url: typeof(window) != 'undefined' ? window.location.toString().replace(/^(.*)\/.*?$/, '$1/app') : '',
+		dispatch_port: 7471,
+		core: {
+			adapter: 'desktop',
+			options: {},
+		},
 	});
+	if(is_in_main) module.exports = config;
 })();
 

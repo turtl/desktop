@@ -6,7 +6,6 @@ if(typeof(config) == 'undefined') var config = {};
 		require('electron').app.getVersion() :
 		Node.config.app_version;
 	Object.assign(config, {
-		api_url: 'https://turtl.dev:8181',
 		client: 'desktop',
 		version: app_version,
 		cookie_login: true,
