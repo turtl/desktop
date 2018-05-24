@@ -1,6 +1,8 @@
 Turtl desktop
 =============
 
+_Opening an issue? See the [Turtl project tracker](https://github.com/turtl/project-tracker/issues)_
+
 This is the desktop app wrapper around the Turtl [core](https://github.com/turtl/js).
 It provides a native experience for Windows, Linux, and OSx allowing local packaging
 of Turtl for desktop platforms.
