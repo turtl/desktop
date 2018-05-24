@@ -1,30 +1,32 @@
 #!/bin/bash
 
 # temp dir for packaging
-TMP=/tmp/turtl-package-desktop
-ZIP=release/package.nw
+PKGTMP=${TMP}/package
+ZIP=$1
 
-rm -rf $TMP
-mkdir -p $TMP
-chmod 755 $TMP
+rm -rf $PKGTMP
+mkdir -p $PKGTMP
+chmod 755 $PKGTMP
 
 echo -n "Copying app files to temp directory..."
 rsync \
 	-aL \
-	./ $TMP 2>&1 \
+	./ $PKGTMP 2>&1 \
 	--exclude='.git' \
-	--exclude='release/' \
-	--exclude='node_modules/' \
-	| grep -v '.git'
+	--exclude='Makefile' \
+	--exclude='vars.mk' \
+	--exclude='release/'
 echo "done."
 
 EXTDIR=`pwd -P`
-pushd $TMP/> /dev/null
+pushd $PKGTMP/> /dev/null
 
 echo "Packaging app."
 
 echo "Copying live config over local."
 mv config.live.js config.js
+echo "Rename project from Turtl-dev to Turtl."
+sed -i 's/"name": "Turtl-dev"/"name": "Turtl"/g' package.json
 
 echo -n "Zipping..."
 zip -qr -9 -X \
@@ -36,12 +38,12 @@ zip -qr -9 -X \
 echo "done."
 
 mv turtl.zip $EXTDIR/$ZIP || {
-	echo "Problem moving $TMP/turtl.zip to $EXTDIR/$ZIP. Exiting."
+	echo "Problem moving $PKGTMP/turtl.zip to $EXTDIR/$ZIP. Exiting."
 	exit 1
 }
 popd > /dev/null
 
-echo "Clearing tmp dir ($TMP/)"
-rm -rf $TMP
+echo "Clearing tmp dir ($PKGTMP/)"
+rm -rf $PKGTMP
 
 echo "Complete. Created fully-packaged app: $ZIP"

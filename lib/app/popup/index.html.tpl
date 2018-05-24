@@ -4,17 +4,18 @@
 		<meta http-equiv="Content-Type" content="test/html; charset=utf-8">
 		<meta http-equiv="Content-Language" content="en">
 {{extra}}
-{{vendorjs}}
-		<script src="/data/app/library/keyboard.js"></script>
-		<script src="/data/popup/main.js"></script>
+{{genjs}}
+		<script src="../../lib/app/popup/ipc.js"></script>
+		<script src="../../lib/app/popup/main.js"></script>
 {{gencss}}
-		<link rel="stylesheet" href="/data/background.css">
+		<link rel="stylesheet" href="../../css/background.css">
 	</head>
 	<body class="bare">
 		<div id="wrap">
+			<header></header>
+			<div id="sidebar"></div>
 			<div id="main" class="maincontent">
-				<div id="background_content" class="modalcontent clear">
-				</div>
+				<div id="background_content" class="modalcontent clear"></div>
 			</div>
 		</div>
 	</body>

@@ -1,25 +1,33 @@
 {
-	"name": "Turtl",
-	"description": "The safe way to remember things.",
-	"main": "data/index.html",
-	"version": "0.6.5",
-	"window": {
-		"width": 1023,
-		"height": 768,
-		"show": false,
-		"icon": "data/app/images/favicon.png"
-	},
-
-	"dom_storage_quota": 4096,
-	"js-flags": "--harmony_proxies --harmony_collections",
-
-	"maintainers":[{
-		"name": "Andrew Lyon",
-		"email": "andrew@turtl.it",
-		"web": "https://github.com/orthecreedence"
-	}],
-	"licenses": [
-		{"type": "GPLv3", "url": "https://raw.github.com/turtl/desktop/master/LICENSE"}
-	]
+  "name": "Turtl",
+  "description": "The safe way to remember things.",
+  "author": "Lyon Bros. Enterprises, LLC",
+  "main": "main.js",
+  "version": "0.7.0",
+  "dom_storage_quota": 10,
+  "js-flags": "",
+  "maintainers": [
+    {
+      "name": "Andrew Lyon",
+      "email": "andrew@lyonbros.com",
+      "web": "https://github.com/orthecreedence"
+    }
+  ],
+  "licenses": [
+    {
+      "type": "GPLv3",
+      "url": "https://raw.github.com/turtl/desktop/master/LICENSE"
+    }
+  ],
+  "dependencies": {
+    "electron-context-menu": "^0.9.1",
+    "electron-store": "^1.3.0",
+    "ffi": "^2.2.0",
+    "ref": "^1.3.5"
+  },
+  "devDependencies": {
+    "electron": "1.8.3",
+    "electron-packager": "^12.0.1",
+    "electron-rebuild": "^1.7.3"
+  }
 }
-

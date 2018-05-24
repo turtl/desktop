@@ -1,71 +1,115 @@
-.PHONY: all clean package release run
+.PHONY: all clean release run urn electron-rebuild package-windows
+
+# non-versioned include
+-include vars.mk
 
 export SHELL := /bin/bash
+export BUILD := build
+export RELEASE := release
 
-NW := $(shell which nw)
+OS ?= $(shell uname)
+mkdir = @mkdir -p $(dir $@)
+
+CONFIG_FILE := config.js
+ELECTRON := ./node_modules/.bin/electron
+ELECTRON_REBUILD := ./node_modules/.bin/electron-rebuild
 
 allcss = $(shell find ../js/css/ -name "*.css" \
 			| grep -v 'reset.css')
 alljs = $(shell echo "../js/main.js" \
-			&& find ../js/{config,controllers,handlers,library,models,turtl} -name "*.js" \
+			&& find ../js/{config,controllers,handlers,lib,models} -name "*.js" \
 			| grep -v '(ignore|\.thread\.)')
-allcontrollers = $(shell find data/controllers/ -name "*.js")
+alljsassets = $(shell find ../js -type f | grep -v '\.git' | grep -v 'node_modules' | grep -v 'build')
+alllibs = $(shell find lib/ -name "*.js")
+allrs = $(shell find ../core/ -name "*.rs")
 
 libprefix := lib
 libsuffix := so
-ifneq (,$(findstring NT-,$(OS)))
+ifneq (,$(findstring NT, $(OS)))
 	libprefix :=
 	libsuffix := dll
 endif
-ifneq (,$(findstring Darwin,$(OS)))
+ifneq (,$(findstring Darwin, $(OS)))
 	libsuffix := dylib
 endif
 
-all: .build/$(libprefix)turtl_core.$(libsuffix) .build/make-js data/index.html data/popup/index.html
+all: $(BUILD)/turtl_core.$(libsuffix) $(BUILD)/config.yaml $(BUILD)/clippo/parsers.yaml $(BUILD)/make-js $(BUILD)/config.js $(BUILD)/index.html $(BUILD)/popup.html
 
-package: all
-	./scripts/package
+$(RELEASE)/package.nw: all
+	./scripts/package $@
 
+package: $(RELEASE)/package.nw
+
+release: override CONFIG_FILE := config.live.js
 release: package
 	./scripts/release
 
 run: all
-	$(NW) .
+	$(ELECTRON) .
 
-data/app/index.html: $(alljs) $(allcss) ../js/index.html
+run-bat: all
+	start "scripts\debug-win.bat"
+
+urn: 
+	@echo "Is there a Ralphs around here?"
+
+$(BUILD)/app/index.html: $(alljsassets) $(allcss) ../js/index.html
+	$(mkdir)
+	@cd ../js && make
 	@echo "- rsync project: " $?
 	@rsync \
-			-az \
+			-azz \
 			--exclude=node_modules \
 			--exclude=.git \
-			--exclude=.build \
 			--exclude=tests \
 			--delete \
 			--delete-excluded \
 			--checksum \
 			../js/ \
-			data/app
-	@touch data/app/index.html
+			$(BUILD)/app
+	@touch $@
 
-.build/$(libprefix)turtl_core.$(libsuffix): $(allrs)
-	@cd ../core && make release
-	cp ../core/target/release/$(libprefix)turtl_core.$(libsuffix) .build/
+$(BUILD)/config.yaml: ../core/config.yaml.default
+	$(mkdir)
+	@echo "- core config: " $?
+	@cp $? $@
 
-.build/make-js: $(alljs) $(allcss)
+$(BUILD)/clippo/parsers.yaml: ../core/clippo/parsers.yaml
+	$(mkdir)
+	@echo "- core parsers.yaml: " $?
+	@cp $? $@
+
+$(BUILD)/turtl_core.$(libsuffix): $(allrs)
+	$(mkdir)
+	@echo "- core build: " $?
+	cd ../core && make CARGO_BUILD_ARGS=$(CARGO_BUILD_ARGS) release
+	cp ../core/target/release/$(libprefix)turtl_core.$(libsuffix) $@
+
+$(BUILD)/config.js: config/$(CONFIG_FILE)
+	@echo "- Config: " $?
+	@cp config/$(CONFIG_FILE) $@
+
+$(BUILD)/make-js: $(alljs) $(allcss)
+	$(mkdir)
 	@cd ../js && make
-	@touch .build/make-js
+	@touch $@
 
 # if the app's index changed, we know to change this one
-data/index.html: data/app/index.html $(allcontrollers) ./scripts/gen-index
-	@echo "- data/index.html: " $?
-	@./scripts/gen-index
+$(BUILD)/index.html: $(BUILD)/make-js $(BUILD)/app/index.html $(alllibs) ./scripts/gen-index
+	@echo "- $@: " $?
+	@./scripts/gen-index > $@
 
-data/popup/index.html: data/popup/index.html.tpl $(allcontrollers) ./scripts/gen-index
-	@echo "- popup/index.html: " $?
-	@./scripts/gen-index popup
+$(BUILD)/popup.html: lib/app/popup/index.html.tpl $(alllibs) ./scripts/gen-index
+	@test -d "$(@D)" || mkdir -p "$(@D)"
+	@echo "- $@: " $?
+	@./scripts/gen-index popup > $@
+
+electron-rebuild:
+	$(ELECTRON_REBUILD)
 
 clean:
-	rm -rf data/app
-	rm data/index.html
-	rm data/popup/index.html
+	rm -rf $(BUILD)
+
+package-windows:
+	./node_modules/.bin/electron-packager --prune --executable-name=turtl --icon=scripts/resources/favicon.ico --out=release/ .
 

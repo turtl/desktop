@@ -2,13 +2,17 @@ html {overflow: visible; overflow-y: visible;}
 body {margin: 0; padding: 0;}
 body.minified #wrap-modal {height: 42px !important; overflow: hidden;}
 body.minified #main #background_content.modalcontent > a.min {background-image: url(/data/app/images/site/modal/maximize_dark.png);}
-.barfr {top: 10px; right: 10px;}
-#background_content {padding: 16rem;}
+.barfr {}
+#background_content {padding: 16px;}
+#background_content.no-pad {padding: 0;}
 #main #background_content.modalcontent > a.min {position: absolute; top: 8px; right: 28px; width: 14px; height: 15px; background: url(/data/app/images/site/modal/minimize_dark.png) 0 0 no-repeat;}
 #main #background_content.modalcontent > a.closelink {position: absolute; top: 8px; right: 8px; width: 14px; height: 15px;}
 
 #wrap {position: fixed; top: 0; bottom: 0; left: 0; right: 0; overflow-y: hidden; overflow-x: hidden;}
-#main {padding: 0rem;}
+body.header {background: #fff;}
+body:not(.header) #wrap > .sidebar {display: none;}
+body:not(.header) #wrap > header {display: none;}
+body:not(.header) #main {padding: 0px;}
 
 .content {width: auto;}
 
