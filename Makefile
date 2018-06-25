@@ -115,6 +115,8 @@ release-windows: package-electron
 	./scripts/release/windows $(version) `ls -d release/Turtl-* | head -1`
 
 release-linux: package-electron
+	./scripts/release/linux $(version) `ls -d release/Turtl-* | head -1`
 
 release-osx: package-electron
+	./scripts/release/osx $(version) `ls -d release/Turtl-* | head -1`
 
