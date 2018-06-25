@@ -1,0 +1,56 @@
+#!/bin/bash
+
+VERSION=$1
+RELEASE_DIR=$2
+
+APP="$(realpath .)"
+RELEASE_DIR=$(realpath "${RELEASE_DIR}")
+FINAL=${APP}/release/final
+TMP=${APP}/release/tmp
+
+function cleanup() {
+	rm -rf ${TMP}
+}
+trap cleanup exit
+
+if [ ! -d ${FINAL} ]; then
+	echo "Creating ${FINAL}..."
+	mkdir -p ${FINAL}
+fi
+
+pushd ${FINAL} > /dev/null || {
+	echo "Error entering directory ${FINAL}."
+	exit 1
+}
+
+mkdir -p ${TMP}
+
+rsync -avzz \
+	--delete \
+	--delete-excluded \
+	${RELEASE_DIR}/ \
+	${TMP}/
+
+pushd ${TMP}
+cp ${APP}/scripts/resources/favicon.128.ico turtl.ico
+ResHacker.exe -addoverwrite turtl.exe, turtl.new.exe, turtl.ico, ICONGROUP,IDR_MAINFRAME,0
+mv turtl.new.exe turtl.exe
+cp ${APP}/scripts/resources/installer_banner.bmp .
+${APP}/scripts/to-rtf.sh ${APP}/LICENSE > license.rtf
+cat ${APP}/scripts/installers/windows64.wxs \
+	| sed "s/{{VERSION}}/${VERSION}/g" \
+	> turtl.wxs
+# recursively add the nwjs files so i don't have to keep a hand-updated list.
+# if we ever want to remove files from the build, we can do so in the sync
+# command via --exclude
+heat \
+	dir \
+	${TMP} \
+	-o turtl-files.wxs \
+	-scom -frag -srd -sreg -gg \
+	-cg TurtlFileGroup \
+	-dr APPLICATIONFOLDER
+candle -arch x64 turtl.wxs turtl-files.wxs
+light turtl.wixobj turtl-files.wixobj -ext WixUIExtension -b ${TMP} -o ${FINAL}/turtl-windows.msi
+popd > /dev/null
+

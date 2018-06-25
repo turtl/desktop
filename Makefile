@@ -1,4 +1,4 @@
-.PHONY: all clean release run urn electron-rebuild package-windows
+.PHONY: all clean release run urn electron-rebuild package-electron release-windows release-linux release-osx
 
 # non-versioned include
 -include vars.mk
@@ -22,6 +22,9 @@ alljs = $(shell echo "../js/main.js" \
 alljsassets = $(shell find ../js -type f | grep -v '\.git' | grep -v 'node_modules' | grep -v 'build')
 alllibs = $(shell find lib/ -name "*.js")
 allrs = $(shell find ../core/ -name "*.rs")
+version := $(shell cat package.json \
+		| grep '"version"' \
+		| sed 's|.*: \+"\([^"]\+\)".*|\1|')
 
 libprefix := lib
 libsuffix := so
@@ -34,11 +37,6 @@ ifneq (,$(findstring Darwin, $(OS)))
 endif
 
 all: $(BUILD)/turtl_core.$(libsuffix) $(BUILD)/config.yaml $(BUILD)/clippo/parsers.yaml $(BUILD)/make-js $(BUILD)/config.js $(BUILD)/index.html $(BUILD)/popup.html
-
-$(RELEASE)/package.nw: all
-	./scripts/package $@
-
-package: $(RELEASE)/package.nw
 
 release: override CONFIG_FILE := config.live.js
 release: package
@@ -110,6 +108,13 @@ electron-rebuild:
 clean:
 	rm -rf $(BUILD)
 
-package-windows:
+package-electron: all
 	./node_modules/.bin/electron-packager --prune --executable-name=turtl --icon=scripts/resources/favicon.ico --out=release/ .
+
+release-windows: package-electron
+	./scripts/release/windows $(version) `ls -d release/Turtl-* | head -1`
+
+release-linux: package-electron
+
+release-osx: package-electron
 

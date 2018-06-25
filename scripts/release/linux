@@ -1,0 +1,48 @@
+#!/bin/bash
+
+VERSION=$1
+RELEASE_DIR=$2
+
+APP="$(realpath .)"
+RELEASE_DIR=$(realpath "${RELEASE_DIR}")
+FINAL=${APP}/release/final
+TMP=${APP}/release/tmp
+
+function cleanup() {
+	rm -rf ${TMP}
+}
+trap cleanup exit
+
+if [ ! -d ${FINAL} ]; then
+	echo "Creating ${FINAL}..."
+	mkdir -p ${FINAL}
+fi
+
+pushd ${FINAL} > /dev/null || {
+	echo "Error entering directory ${FINAL}."
+	exit 1
+}
+
+mkdir -p ${TMP}
+
+rsync -avzz \
+	--delete \
+	--delete-excluded \
+	${RELEASE_DIR}/ \
+	${TMP}/
+
+arch="$(lscpu | grep Arch | awk '{print $2}')"
+if [ "${arch}" == "x86_64" ]; then
+	PLATFORM=linux64
+else
+	PLATFORM=linux32
+fi
+
+pushd ${TMP}
+cp ${APP}/scripts/resources/favicon.128.png ${FINAL}/icon.png
+cp ${APP}/scripts/installers/linux ${FINAL}/../install.sh
+sed -i "s|{{platform}}|${PLATFORM}|g" ${FINAL}/../install.sh
+tar -cjf ${RELEASE_DIR}/turtl-${PLATFORM}.tar.bz2 ${RELNAME}
+popd > /dev/null
+rm -rf ${TMP}
+

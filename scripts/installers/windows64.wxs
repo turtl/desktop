@@ -14,7 +14,9 @@
 			Keywords="Installer"
 			Manufacturer="Lyon Bros. Enterprises, LLC"
 			InstallerVersion="300"
-			Compressed="yes" />
+			InstallScope="perMachine"
+			Compressed="yes"
+			Platform="x64" />
 
 		<MajorUpgrade
 			Schedule="afterInstallInitialize"
@@ -32,12 +34,14 @@
 		</Upgrade>
 		-->
 
-		<Property Id="ALLUSERS" Value="1"/>
+		<!--<Property Id="ALLUSERS" Value="1"/>-->
 
-		<UIRef Id="WixUI_Advanced" />
+		<!--<UIRef Id="WixUI_Advanced" />-->
+		<UIRef Id="WixUI_InstallDir" />
 		<WixVariable Id="WixUIBannerBmp" Value="installer_banner.bmp" />
 		<WixVariable Id="WixUILicenseRtf" Value="license.rtf" />
-
+		<WixVariable Id="WixUISupportPerUser" Value="0" />
+		<Property Id="WIXUI_INSTALLDIR" Value="APPLICATIONFOLDER" />
 		<Property Id="ApplicationFolderName" Value="Turtl" />
 		<Property Id="WixAppFolder" Value="WixPerMachineFolder" />
 
