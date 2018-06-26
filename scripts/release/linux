@@ -30,7 +30,7 @@ pushd ${FINAL} > /dev/null || {
 	exit 1
 }
 
-mkdir -p ${TMP}
+mkdir -p ${TMPAPP}
 
 rsync -avzz \
 	--delete \
