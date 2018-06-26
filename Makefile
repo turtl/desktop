@@ -109,14 +109,15 @@ clean:
 	rm -rf $(BUILD)
 
 package-electron: all
-	./node_modules/.bin/electron-packager --prune --executable-name=turtl --icon=scripts/resources/favicon.ico --out=release/ .
+	./node_modules/.bin/electron-packager --prune --executable-name=turtl --icon=scripts/resources/favicon.ico --out=target/ .
+	cp config/config.live.js `ls -d target/Turtl-* | head -1`/resources/app/config/
 
 release-windows: package-electron
-	./scripts/release/windows $(version) `ls -d release/Turtl-* | head -1`
+	./scripts/release/windows $(version) `ls -d target/Turtl-* | head -1`
 
 release-linux: package-electron
-	./scripts/release/linux $(version) `ls -d release/Turtl-* | head -1`
+	./scripts/release/linux $(version) `ls -d target/Turtl-* | head -1`
 
 release-osx: package-electron
-	./scripts/release/osx $(version) `ls -d release/Turtl-* | head -1`
+	./scripts/release/osx $(version) `ls -d target/Turtl-* | head -1`
 

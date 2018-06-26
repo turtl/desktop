@@ -5,8 +5,8 @@ RELEASE_DIR=$2
 
 APP="$(realpath .)"
 RELEASE_DIR=$(realpath "${RELEASE_DIR}")
-FINAL=${APP}/release/final
-TMP=${APP}/release/tmp
+FINAL=${APP}/target/final
+TMP=${APP}/target/tmp
 
 function cleanup() {
 	rm -rf ${TMP}
