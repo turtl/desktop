@@ -36,7 +36,7 @@ rsync -avzz \
 	--delete \
 	--delete-excluded \
 	${RELEASE_DIR}/ \
-	${TMP}/
+	${TMPAPP}/
 
 pushd ${TMP}
 cp ${APP}/scripts/resources/favicon.128.png ${TMPAPP}/icon.png
