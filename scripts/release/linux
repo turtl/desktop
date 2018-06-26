@@ -12,7 +12,8 @@ fi
 APP="$(realpath .)"
 RELEASE_DIR=$(realpath "${RELEASE_DIR}")
 FINAL=${APP}/target/final
-TMP=${APP}/target/tmp/turtl-${PLATFORM}/turtl
+TMP=${APP}/target/tmp
+TMPAPP=${TMP}/turtl-${PLATFORM}/turtl
 
 function cleanup() {
 	rm -rf ${TMP}
@@ -38,9 +39,9 @@ rsync -avzz \
 	${TMP}/
 
 pushd ${TMP}
-cp ${APP}/scripts/resources/favicon.128.png ${TMP}/icon.png
-cp ${APP}/scripts/installers/linux ${TMP}/../install.sh
-sed -i "s|{{platform}}|${PLATFORM}|g" ${TMP}/../install.sh
+cp ${APP}/scripts/resources/favicon.128.png ${TMPAPP}/icon.png
+cp ${APP}/scripts/installers/linux ${TMPAPP}/../install.sh
+sed -i "s|{{platform}}|${PLATFORM}|g" ${TMPAPP}/../install.sh
 pushd ${TMP}/../.. > /dev/null
 tar -czf ${FINAL}/turtl-${PLATFORM}.tar.bz2 .
 popd > /dev/null
