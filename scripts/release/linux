@@ -3,10 +3,16 @@
 VERSION=$1
 RELEASE_DIR=$2
 
+arch="$(lscpu | grep Arch | awk '{print $2}')"
+if [ "${arch}" == "x86_64" ]; then
+	PLATFORM=linux64
+else
+	PLATFORM=linux32
+fi
 APP="$(realpath .)"
 RELEASE_DIR=$(realpath "${RELEASE_DIR}")
 FINAL=${APP}/target/final
-TMP=${APP}/target/tmp
+TMP=${APP}/target/tmp/turtl-${PLATFORM}/turtl
 
 function cleanup() {
 	rm -rf ${TMP}
@@ -31,18 +37,12 @@ rsync -avzz \
 	${RELEASE_DIR}/ \
 	${TMP}/
 
-arch="$(lscpu | grep Arch | awk '{print $2}')"
-if [ "${arch}" == "x86_64" ]; then
-	PLATFORM=linux64
-else
-	PLATFORM=linux32
-fi
-
 pushd ${TMP}
-cp ${APP}/scripts/resources/favicon.128.png ${FINAL}/icon.png
-cp ${APP}/scripts/installers/linux ${FINAL}/../install.sh
-sed -i "s|{{platform}}|${PLATFORM}|g" ${FINAL}/../install.sh
-tar -cjf ${RELEASE_DIR}/turtl-${PLATFORM}.tar.bz2 ${RELNAME}
+cp ${APP}/scripts/resources/favicon.128.png ${TMP}/icon.png
+cp ${APP}/scripts/installers/linux ${TMP}/../install.sh
+sed -i "s|{{platform}}|${PLATFORM}|g" ${TMP}/../install.sh
+pushd ${TMP}/../.. > /dev/null
+tar -czf ${FINAL}/turtl-${PLATFORM}.tar.bz2 .
 popd > /dev/null
 rm -rf ${TMP}
 
