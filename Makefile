@@ -110,7 +110,7 @@ clean:
 
 package-electron: all
 	./node_modules/.bin/electron-packager --prune --executable-name=turtl --icon=scripts/resources/favicon.128.ico --out=target/ .
-	cp config/config.live.js `find target/ -type d | grep 'app/config' | grep -v build`/config.js
+	cp config/config.live.js `find target/ -type d | grep 'app/config' | grep -v '\(build\|final\)'`/config.js
 
 release-windows: package-electron
 	./scripts/release/windows $(version) `ls -d target/Turtl-* | head -1`
@@ -119,5 +119,5 @@ release-linux: package-electron
 	./scripts/release/linux $(version) `ls -d target/Turtl-* | head -1`
 
 release-osx: package-electron
-	./scripts/release/osx $(version) `ls -d target/Turtl-* | head -1`
+	@echo "Nothing further, your honor."
 
