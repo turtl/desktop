@@ -109,7 +109,7 @@ clean:
 	rm -rf $(BUILD)
 
 package-electron: all
-	./node_modules/.bin/electron-packager --prune --executable-name=turtl --icon=scripts/resources/favicon.ico --out=target/ .
+	./node_modules/.bin/electron-packager --prune --executable-name=turtl --icon=scripts/resources/favicon.128.ico --out=target/ .
 	cp config/config.live.js `ls -d target/Turtl-* | head -1`/resources/app/config/
 
 release-windows: package-electron
