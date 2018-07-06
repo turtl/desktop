@@ -1,4 +1,4 @@
-// some desktop-oriented app config overrides
+// some desktop-oriented app config overrides (prod release version)
 if(typeof(config) == 'undefined') var config = {};
 (function() {
 	var is_in_main = typeof(Node) == 'undefined' && typeof(require) != 'undefined';
