@@ -77,6 +77,7 @@ app.on('activate', function() {
 
 var tray_icon = null;
 function update_tray() {
+	if(process.platform == 'darwin') return;
 	if(!tray_icon) {
 		tray_icon = new electron.Tray(tools.ticon(32));
 		tray_icon.on('click', show_main_window);
