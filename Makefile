@@ -119,5 +119,5 @@ release-linux: package-electron
 	./scripts/release/linux $(version) `ls -d target/Turtl-* | head -1`
 
 release-osx: package-electron
-	@echo "Nothing further, your honor."
+	./scripts/release/osx $(version) `ls -d target/Turtl-* | head -1`
 

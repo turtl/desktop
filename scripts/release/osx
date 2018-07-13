@@ -1,123 +1,40 @@
 #!/bin/bash
 
-PLATFORM=$1
-VERSION=$2
+VERSION=$1
+RELEASE_DIR=$2
 
-YEAR=$(date +'%Y')
+APP="$(realpath .)"
+RELEASE_DIR=$(realpath "${RELEASE_DIR}")
+FINAL=${APP}/target/final
+TMP=${APP}/target/tmp
+TMPAPP=${TMP}
 
-APP=`realpath .`
-RELEASE=${APP}/release/nwjs/${PLATFORM}
-RELEASE_DIR=${APP}/release
-TMP=${RELEASE}/../tmp
+function cleanup() {
+	rm -rf ${TMP}
+}
+trap cleanup exit
 
-if [ "${PLATFORM}" == "" ]; then
-	echo "Usage:"
-	echo "  $0 [windows|linux32|linux64|osx]"
-	exit 1
+if [ ! -d ${FINAL} ]; then
+	echo "Creating ${FINAL}..."
+	mkdir -p ${FINAL}
 fi
 
-if [ ! -d ${RELEASE} ]; then
-        echo "Creating ${RELEASE}..."
-        mkdir -p ${RELEASE}
-fi
-
-pushd ${RELEASE} > /dev/null || {
-	echo "Error entering directory ${RELEASE}."
+pushd ${FINAL} > /dev/null || {
+	echo "Error entering directory ${FINAL}."
 	exit 1
 }
 
-mkdir -p ${TMP}
+mkdir -p ${TMPAPP}
 
-if [ "${PLATFORM}" == "linux32" ] || [ "${PLATFORM}" == "linux64" ]; then
-	RELNAME=turtl-${PLATFORM}
-	SUBDIR=${TMP}/${RELNAME}/turtl
-	mkdir -p ${SUBDIR}
-	rsync -avzz \
-		--delete \
-		--delete-excluded \
-		./ \
-		${SUBDIR}
-	pushd ${TMP}
-	cp ${RELEASE_DIR}/package.nw ${SUBDIR}
-	mv ${SUBDIR}/nw ${SUBDIR}/turtl-bin
-	chmod 755 ${SUBDIR}/turtl-bin
+rsync -avzz \
+	--delete \
+	--delete-excluded \
+	${RELEASE_DIR}/ \
+	${TMPAPP}/
 
-	cp ${APP}/scripts/resources/favicon.128.png ${SUBDIR}/icon.png
-	cp ${APP}/scripts/resources/turtl-linux-init.sh ${SUBDIR}/turtl
-	chmod 755 ${SUBDIR}/turtl
-
-	cp ${APP}/scripts/installers/linux ${SUBDIR}/../install.sh
-	sed -i "s|{{platform}}|${PLATFORM}|g" ${SUBDIR}/../install.sh
-	tar -cjf ${RELEASE_DIR}/turtl-${PLATFORM}.tar.bz2 ${RELNAME}
-	popd > /dev/null
-elif [ "${PLATFORM}" == "windows" ]; then
-	SUBDIR=${TMP}/windows
-	rsync -avzz \
-		--delete \
-		--delete-excluded \
-		./ \
-		${SUBDIR}
-	pushd ${TMP}
-	cp ${RELEASE_DIR}/package.nw ${SUBDIR}
-	cp ${APP}/scripts/resources/favicon.ico ${SUBDIR}/turtl.ico
-	pushd ${SUBDIR} > /dev/null
-	ResHacker.exe -addoverwrite nw.exe, nw.new.exe, turtl.ico, ICONGROUP,IDR_MAINFRAME,0
-	mv nw.new.exe nw.exe
-	popd > /dev/null
-	cp ${APP}/scripts/resources/installer_banner.bmp .
-	${APP}/scripts/to-rtf.sh ${APP}/LICENSE > license.rtf
-	cat ${APP}/scripts/installers/windows.wxs \
-		| sed "s/{{VERSION}}/${VERSION}/g" \
-		> turtl.wxs
-	mv ${SUBDIR}/nw.exe ${SUBDIR}/turtl.exe
-	# recursively add the nwjs files so i don't have to keep a hand-updated list.
-	# if we ever want to remove files from the build, we can do so in the sync
-	# command via --exclude
-	heat \
-		dir \
-		windows \
-		-o turtl-files.wxs \
-		-scom -frag -srd -sreg -gg \
-		-cg TurtlFileGroup \
-		-dr APPLICATIONFOLDER
-	candle -arch x64 turtl.wxs turtl-files.wxs
-	light turtl.wixobj turtl-files.wixobj -ext WixUIExtension -b windows -o turtl-windows.msi
-	mv turtl-windows.msi ${RELEASE_DIR}/
-	popd > /dev/null
-elif [ "${PLATFORM}" == "osx" ]; then
-	rsync -avzz \
-		--exclude='nwjc' \
-		--delete \
-		--delete-excluded \
-		./ \
-		${TMP}
-	pushd ${TMP}
-	mv nwjs.app Turtl.app
-	mv Turtl.app/Contents/MacOS/nwjs Turtl.app/Contents/MacOS/turtl
-	plist=Turtl.app/Contents/Info.plist
-	sed -i '/<key>CFBundleIdentifier<\/key>/!b;n;c<string>com.lyonbros.turtl</string>' ${plist}
-	sed -i '/<key>CFBundleDisplayName<\/key>/!b;n;c<string>Turtl</string>' ${plist}
-	sed -i '/<key>CFBundleName<\/key>/!b;n;c<string>Turtl</string>' ${plist}
-	sed -i '/<key>CFBundleIdentifier<\/key>/!b;n;c<string>com.lyonbros.turtl</string>' ${plist}
-	sed -i '/<key>CFBundleExecutable<\/key>/!b;n;c<string>turtl</string>' ${plist}
-	sed -i "/<key>CFBundleShortVersionString<\/key>/!b;n;c<string>${VERSION}</string>" ${plist}
-
-	en_plist=Turtl.app/Contents/Resources/en.lproj/InfoPlist.strings
-	cp ${en_plist} ${en_plist}.tmp
-	cat ${en_plist}.tmp \
-		| tr -cd "[:print:]\n" \
-		| sed 's/^CFBundleDisplayName.*/CFBundleDisplayName = "Turtl";/' \
-		| sed "s/^CFBundleGetInfoString.*/CFBundleGetInfoString = "'"'"Turtl ${VERSION}, Copyright ${YEAR} Lyon Bros. Enterprises, LLC"'"'";/" \
-		| sed 's/^CFBundleName.*/CFBundleName = "Turtl";/' \
-		| sed "s/^NSHumanReadableCopyright.*/NSHumanReadableCopyright = "'"'"Copyright ${YEAR} Lyon Bros. Enterprises, LLC."'"'";/" \
-		> ${en_plist}
-
-	cp ${RELEASE_DIR}/package.nw turtl.app/Contents/Resources/app.nw
-	cp ${APP}/scripts/resources/favicon.128.icns turtl.app/Contents/Resources/app.icns
-	genisoimage.exe -V "turtl-${VERSION}" -D -R -apple -no-pad -o ${RELEASE_DIR}/turtl-${PLATFORM}.dmg .
-	popd > /dev/null
-fi
-
-rm -rf ${TMP}
-
+pushd ${TMP} > /dev/null
+zip -qr -9 -X \
+	${FINAL}/turtl-osx.tar.bz2 \
+	.
 popd > /dev/null
+
