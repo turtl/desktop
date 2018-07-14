@@ -13,7 +13,7 @@ FINAL=${APP}/target/final
 
 if [ ! -d ${FINAL} ]; then
 	echo "Creating ${FINAL}..."
-	mkdir -p ${FINAL} || { echo "Problem creating ${FINAL} dir"; exit 1 }
+	mkdir -p ${FINAL} || exit 1
 fi
 
 pushd ${RELEASE_DIR} > /dev/null
