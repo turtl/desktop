@@ -24,7 +24,7 @@ alllibs = $(shell find lib/ -name "*.js")
 allrs = $(shell find ../core/ -name "*.rs")
 version := $(shell cat package.json \
 		| grep '"version"' \
-		| sed 's|.*: \+"\([^"]\+\)".*|\1|')
+		| sed -E 's|.*: +"([^"]+)".*|\1|')
 
 libprefix := lib
 libsuffix := so

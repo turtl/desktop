@@ -34,7 +34,8 @@ rsync -avzz \
 
 pushd ${TMP} > /dev/null
 zip -qr -9 -X \
-	${FINAL}/turtl-osx.tar.bz2 \
-	.
+	${FINAL}/turtl-osx.zip \
+	. \
+	-i .
 popd > /dev/null
 
