@@ -3,6 +3,10 @@
 VERSION=$1
 RELEASE_DIR=$2
 
+function realpath() {
+	[[ $1 = /* ]] && echo "$1" || echo "$PWD/${1#./}"
+}
+
 APP="$(realpath .)"
 RELEASE_DIR=$(realpath "${RELEASE_DIR}")
 FINAL=${APP}/target/final
