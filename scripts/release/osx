@@ -10,36 +10,15 @@ function realpath() {
 APP="$(realpath .)"
 RELEASE_DIR=$(realpath "${RELEASE_DIR}")
 FINAL=${APP}/target/final
-TMP=${APP}/target/tmp
-TMPAPP=${TMP}
-
-function cleanup() {
-	rm -rf ${TMP}
-}
-trap cleanup exit
 
 if [ ! -d ${FINAL} ]; then
 	echo "Creating ${FINAL}..."
-	mkdir -p ${FINAL}
+	mkdir -p ${FINAL} || { echo "Problem creating ${FINAL} dir"; exit 1 }
 fi
 
-pushd ${FINAL} > /dev/null || {
-	echo "Error entering directory ${FINAL}."
-	exit 1
-}
-
-mkdir -p ${TMPAPP}
-
-rsync -avzz \
-	--delete \
-	--delete-excluded \
-	${RELEASE_DIR}/ \
-	${TMPAPP}/
-
-pushd ${TMP} > /dev/null
+pushd ${RELEASE_DIR} > /dev/null
 zip -qr -9 -X \
 	${FINAL}/turtl-osx.zip \
-	. \
-	-i .
+	.
 popd > /dev/null
 
