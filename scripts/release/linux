@@ -42,6 +42,6 @@ cp ${APP}/scripts/resources/favicon.128.png ${TMPAPP}/icon.png
 cp ${APP}/scripts/installers/linux ${TMPAPP}/../install.sh
 sed -i "s|{{platform}}|${PLATFORM}|g" ${TMPAPP}/../install.sh
 pushd ${TMP} > /dev/null
-tar -czf ${FINAL}/turtl-${PLATFORM}.tar.bz2 .
+tar -cjf ${FINAL}/turtl-${PLATFORM}.tar.bz2 .
 popd > /dev/null
 
