@@ -108,7 +108,7 @@ electron-rebuild:
 clean:
 	rm -rf $(BUILD)
 
-package-electron: all
+package-electron: electron-rebuild all
 	./node_modules/.bin/electron-packager \
 		--overwrite \
 		--prune \
