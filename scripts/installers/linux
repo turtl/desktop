@@ -34,7 +34,6 @@ SHARE=${GLOBAL_SHARE}
 if [[ "${LOCATION}" != "uninstall" && "${LOCATION}" != "" ]]; then
 	LOCAL_PATH=$(readlink -f ${LOCATION})
 	if [[ "$(readlink -e ${LOCAL_PATH})" == "$(readlink -e ~)" ]]; then
-
 		LOCAL_PATH=~/turtl
 	fi
 	ROOT=${LOCAL_PATH}
@@ -85,7 +84,7 @@ GenericName=Secture notes
 Comment=Private notes and bookmarks with collaboration.
 Exec=${ROOT}/turtl
 Path=${ROOT}
-Icon=${ROOT}/turtl.png
+Icon=${ROOT}/icon.png
 Terminal=false
 Categories=Office;Utility;
 Keywords=secure;security;privacy;private;notes;bookmarks;collaborate;research;
@@ -103,11 +102,12 @@ cp -R . "${ROOT}" ||
 # set/fix permissions
 chmod 755 ${ROOT}
 pushd ${ROOT} >/dev/null
-find . -type d chmod 755 {} \;
-find . -type f chmod 644 {} \;
-chmod 755 turtl turtl-bin lib/* chromedriver nw payload nacl* pnacl/*nexe
+find . -type d -exec chmod 755 {} \;
+find . -type f -exec chmod 644 {} \;
+chmod 755 turtl
 popd >/dev/null
 
+mkdir -p "$(dirname "${DESKTOP_FILE}")"
 echo "${DESKTOP}" > "${DESKTOP_FILE}" ||
 	{ echo "Error installing turtl.desktop file to ${DESKTOP_FILE}"; exit 1; }
 

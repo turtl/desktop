@@ -16,6 +16,11 @@ if(typeof(config) == 'undefined') var config = {};
 			adapter: 'desktop',
 			options: {},
 		},
+		remember_me: {
+			enabled: true,
+			adapter: 'localstorage',
+			options: {},
+		},
 	});
 	if(is_in_main) module.exports = config;
 })();

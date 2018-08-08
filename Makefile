@@ -118,7 +118,7 @@ package-electron: all
 		.
 	cp \
 		config/config.live.js \
-		`find target/ -type d | grep 'app/config' | grep -v '\(build\|final\)'`/config.js
+		`find target/ -type f | grep 'app/build/config.js'`
 
 release-windows: package-electron
 	./scripts/release/windows $(version) `ls -d target/Turtl-* | head -1`
