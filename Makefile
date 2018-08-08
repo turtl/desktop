@@ -118,7 +118,7 @@ package-electron: electron-rebuild all
 		.
 	cp \
 		config/config.live.js \
-		`find target/ -type f | grep 'app/build/config.js'`
+		`find target/ -type f | grep -v 'final/' | grep 'app/build/config.js' | head -1`
 
 release-windows: package-electron
 	cp \
