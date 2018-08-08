@@ -121,6 +121,10 @@ package-electron: electron-rebuild all
 		`find target/ -type f | grep 'app/build/config.js'`
 
 release-windows: package-electron
+	cp \
+		$(SSL_LIB_PATH)/libeay32.dll \
+		$(SSL_LIB_PATH)/ssleay32.dll \
+		`ls -d target/Turtl-* | head -1`
 	./scripts/release/windows $(version) `ls -d target/Turtl-* | head -1`
 
 release-linux: package-electron
