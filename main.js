@@ -1,6 +1,7 @@
 "use strict";
 const electron = require('electron');
 const app = electron.app;
+const Menu = electron.Menu;
 const BrowserWindow = electron.BrowserWindow;
 const url = require('url');
 const path = require('path');
@@ -48,6 +49,28 @@ function create_main_window() {
 	});
 	if(process.platform != 'darwin') {
 		main_window.setMenu(null);
+	} else {
+		var template = [
+			{
+				label: "Application",
+				submenu: [
+					{ label: "Quit", accelerator: "Command+Q", click: function() { app.quit(); }}
+				]
+			},
+			{
+				label: "Edit",
+				submenu: [
+					{ label: "Undo", accelerator: "CmdOrCtrl+Z", selector: "undo:" },
+					{ label: "Redo", accelerator: "Shift+CmdOrCtrl+Z", selector: "redo:" },
+					{ type: "separator" },
+					{ label: "Cut", accelerator: "CmdOrCtrl+X", selector: "cut:" },
+					{ label: "Copy", accelerator: "CmdOrCtrl+C", selector: "copy:" },
+					{ label: "Paste", accelerator: "CmdOrCtrl+V", selector: "paste:" },
+					{ label: "Select All", accelerator: "CmdOrCtrl+A", selector: "selectAll:" }
+				]
+			}
+		];
+		Menu.setApplicationMenu(Menu.buildFromTemplate(template));
 	}
 	main_window.loadURL(url.format({
 		pathname: path.join(__dirname, 'build', 'index.html'),
