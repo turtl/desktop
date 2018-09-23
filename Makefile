@@ -56,15 +56,15 @@ $(BUILD)/app/index.html: $(alljsassets) $(allcss) ../js/index.html
 	@cd ../js && make
 	@echo "- rsync project: " $?
 	@rsync \
-			-azz \
-			--exclude=node_modules \
-			--exclude=.git \
-			--exclude=tests \
-			--delete \
-			--delete-excluded \
-			--checksum \
-			../js/ \
-			$(BUILD)/app
+		-azz \
+		--exclude=node_modules \
+		--exclude=.git \
+		--exclude=tests \
+		--delete \
+		--delete-excluded \
+		--checksum \
+		../js/ \
+		$(BUILD)/app
 	@touch $@
 
 $(BUILD)/config.yaml: ../core/config.yaml.default
