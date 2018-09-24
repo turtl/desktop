@@ -18,21 +18,27 @@
 			Compressed="yes"
 			Platform="x64" />
 
+		<!--
 		<MajorUpgrade
 			Schedule="afterInstallInitialize"
 			DowngradeErrorMessage="A later version of [ProductName] is already installed"
 			AllowDowngrades="no"
 			AllowSameVersionUpgrades="no" />
+		-->
 
 		<!--
 		<Property Id="PREVIOUSVERSIONSINSTALLED" Secure="yes" />
-		<Upgrade Id="f7c658ae-6a16-45ad-9ba4-3d40fdbfa88b">
+		-->
+		<Upgrade Id="f2f90601-ff42-4e24-b3bf-bf71cff59fa0">
 			<UpgradeVersion
+				OnlyDetect="no"
 				Minimum="0.6.0" Maximum="99.0.0"
 				Property="PREVIOUSVERSIONSINSTALLED"
 				IncludeMinimum="yes" IncludeMaximum="no" />
 		</Upgrade>
-		-->
+		<InstallExecuteSequence>
+			<RemoveExistingProducts After="InstallInitialize" />
+		</InstallExecuteSequence>
 
 		<!--<Property Id="ALLUSERS" Value="1"/>-->
 
@@ -77,11 +83,5 @@
 			<ComponentGroupRef Id="TurtlFileGroup" />
 			<ComponentRef Id="ApplicationShortcut" />
 		</Feature>
-
-		<!--
-		<InstallExecuteSequence>
-			<RemoveExistingProducts Before="InstallInitialize" />
-		</InstallExecuteSequence>
-		-->
 	</Product>
 </Wix>
