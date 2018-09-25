@@ -89,15 +89,6 @@ function show_main_window() {
 	if(main_window) main_window.show();
 }
 
-app.on('ready', create_main_window);
-app.on('windows-all-closed', function() {
-	if(process.platform == 'darwin') return;
-	app.quit()
-});
-app.on('activate', function() {
-	if(main_window === null) { create_main_window(); }
-});
-
 var tray_icon = null;
 function update_tray() {
 	if(process.platform == 'darwin') return;
@@ -136,6 +127,27 @@ function update_tray() {
 	var menu = electron.Menu.buildFromTemplate(menuitems);
 	tray_icon.setContextMenu(menu);
 }
+
+// -----------------------------------------------------------------------------
+
+// check if we should be running
+var should_quit = app.makeSingleInstance(function(_cmd, _derrr) {
+	if(main_window) {
+		if(main_window.isMinimized()) main_window.restore();
+		main_window.focus();
+	}
+});
+if(should_quit) { return app.quit(); }
+
+app.on('ready', create_main_window);
+app.on('windows-all-closed', function() {
+	if(process.platform == 'darwin') return;
+	app.quit()
+});
+app.on('activate', function() {
+	if(main_window === null) { create_main_window(); }
+});
+
 app.on('ready', update_tray);
 
 // set up a comm layer between our main and renderer thread(s)
@@ -145,4 +157,8 @@ comm.setup(get_main_window, Popup.get_window, function(e, msg) {
 
 // start our HTTP RPC server
 dispatch.start({dispatch_port: config.dispatch_port});
+
+electron.ipcMain.on('app:quit', function(_ev, _arg) {
+	app.quit();
+});
 
