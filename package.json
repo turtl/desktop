@@ -3,7 +3,7 @@
   "description": "The safe way to remember things.",
   "author": "Lyon Bros. Enterprises, LLC",
   "main": "main.js",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "dom_storage_quota": 10,
   "js-flags": "",
   "maintainers": [
