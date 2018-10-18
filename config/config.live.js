@@ -6,11 +6,11 @@ if(typeof(config) == 'undefined') var config = {};
 		require('electron').app.getVersion() :
 		Node.config.app_version;
 	Object.assign(config, {
-		// don't change this without also changing lib/node/preload/ipc_core.js
 		client: 'desktop',
 		version: app_version,
 		base_url: typeof(window) != 'undefined' ? window.location.toString().replace(/^(.*)\/.*?$/, '$1/app') : '',
 		dispatch_port: 7471,
+		proxy: null,
 		core: {
 			adapter: 'desktop',
 			options: {},

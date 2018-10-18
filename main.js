@@ -47,6 +47,16 @@ function create_main_window() {
 			preload: path.join(__dirname, 'lib', 'node', 'preload', 'ipc_core.js'),
 		},
 	});
+	const ses = main_window.webContents.session;
+	ses.resolveProxy('https://apiv3.turtlapp.com', (proxy) => {
+		if(!proxy) return;
+		proxy = proxy.toLowerCase().split(' ')
+		if(proxy[0] == 'proxy') {
+			config.proxy = proxy[1];
+			console.log('Setting proxy: ', config.proxy);
+		}
+	});
+
 	if(process.platform != 'darwin') {
 		main_window.setMenu(null);
 	} else {
@@ -128,6 +138,18 @@ function update_tray() {
 	tray_icon.setContextMenu(menu);
 }
 
+function setup_config_comm() {
+	electron.ipcMain.on('synchronous-message', (event, cmd) => {
+		switch(cmd) {
+			case 'get-config':
+				event.returnValue = JSON.parse(JSON.stringify(config));
+				break;
+			default:
+				event.returnValue = null;
+		}
+	});
+}
+
 // -----------------------------------------------------------------------------
 
 // check if we should be running
@@ -140,6 +162,7 @@ var should_quit = app.makeSingleInstance(function(_cmd, _derrr) {
 if(should_quit) { return app.quit(); }
 
 app.on('ready', create_main_window);
+app.on('ready', setup_config_comm);
 app.on('windows-all-closed', function() {
 	if(process.platform == 'darwin') return;
 	app.quit()
