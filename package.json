@@ -1,7 +1,7 @@
 {
   "name": "Turtl",
   "description": "The safe way to remember things.",
-  "author": "Lyon Bros. Enterprises, LLC",
+  "author": "Lyon Bros LLC",
   "main": "main.js",
   "version": "0.7.2-5",
   "dom_storage_quota": 10,

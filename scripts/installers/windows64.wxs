@@ -4,7 +4,7 @@
 		Id="*"
         UpgradeCode="f2f90601-ff42-4e24-b3bf-bf71cff59fa0"
 		Name="Turtl v{{VERSION}}"
-		Manufacturer="Lyon Bros. Enterprises, LLC"
+		Manufacturer="Lyon Bros LLC"
 		Language="1033"
 		Version="{{VERSION}}">
 
@@ -12,7 +12,7 @@
 			Id="*"
 			Description="LyonBros Turtl installer"
 			Keywords="Installer"
-			Manufacturer="Lyon Bros. Enterprises, LLC"
+			Manufacturer="Lyon Bros LLC"
 			InstallerVersion="300"
 			InstallScope="perMachine"
 			Compressed="yes"
