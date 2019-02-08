@@ -52,7 +52,7 @@ function create_main_window() {
 		if(!proxy) return;
 		proxy = proxy.toLowerCase().split(' ')
 		if(proxy[0] == 'proxy') {
-			config.proxy = proxy[1];
+			config.proxy = 'http://'+proxy[1];
 			console.log('Setting proxy: ', config.proxy);
 		}
 	});
