@@ -1,10 +1,10 @@
 // some desktop-oriented app config overrides (prod release version)
 if(typeof(config) == 'undefined') var config = {};
 (function() {
-	var is_in_main = typeof(Node) == 'undefined' && typeof(require) != 'undefined';
+	var is_in_main = typeof(AppComm) == 'undefined' && typeof(require) != 'undefined';
 	var app_version = is_in_main ?
 		require('electron').app.getVersion() :
-		Node.config.app_version;
+		AppComm.config.app_version;
 	Object.assign(config, {
 		client: 'desktop',
 		version: app_version,

@@ -2,6 +2,7 @@
 const electron = require('electron');
 const app = electron.app;
 const Menu = electron.Menu;
+const ipcMain = electron.ipcMain;
 const BrowserWindow = electron.BrowserWindow;
 const url = require('url');
 const path = require('path');
@@ -41,6 +42,10 @@ function create_main_window() {
 			// suckerrrs. note we don't use sandbox since we need path support
 			// as well as ffi
 			nodeIntegration: false,
+			// disable becaue it breaks turtl. TODO: fix this.
+			contextIsolation: false,
+			// no remote
+			enableRemoteModule: false,
 			// disable <webview> as well
 			webviewTag: false,
 			// loads turtl core/ipc so we don't need node
@@ -144,44 +149,60 @@ function setup_config_comm() {
 			case 'get-config':
 				event.returnValue = JSON.parse(JSON.stringify(config));
 				break;
+			case 'get-user-data':
+				event.returnValue = app.getPath('userData');
+				break;
+			case 'get-version':
+				event.returnValue = app.getVersion();
+				break;
 			default:
 				event.returnValue = null;
+				break;
 		}
 	});
 }
 
 // -----------------------------------------------------------------------------
 
-// check if we should be running
-var should_quit = app.makeSingleInstance(function(_cmd, _derrr) {
-	if(main_window) {
-		if(main_window.isMinimized()) main_window.restore();
-		main_window.focus();
-	}
-});
-if(should_quit) { return app.quit(); }
+async function main() {
+	// check if we should be running
+	var should_quit = !app.requestSingleInstanceLock(function(_cmd, _derrr) {
+		if(main_window) {
+			if(main_window.isMinimized()) main_window.restore();
+			main_window.focus();
+		}
+	});
+	if(should_quit) { return app.quit(); }
 
-app.on('ready', create_main_window);
-app.on('ready', setup_config_comm);
-app.on('windows-all-closed', function() {
-	if(process.platform == 'darwin') return;
-	app.quit()
-});
-app.on('activate', function() {
-	if(main_window === null) { create_main_window(); }
-});
+	app.whenReady().then(create_main_window);
+	app.whenReady().then(setup_config_comm);
+	app.on('windows-all-closed', function() {
+		if(process.platform == 'darwin') return;
+		app.quit()
+	});
+	app.on('activate', function() {
+		if(main_window === null) { create_main_window(); }
+	});
 
-app.on('ready', update_tray);
+	app.on('ready', update_tray);
 
-// set up a comm layer between our main and renderer thread(s)
-comm.setup(get_main_window, Popup.get_window, function(e, msg) {
-	// TODO: dispatch messages from main window
-});
+	// set up a comm layer between our main and renderer thread(s)
+	comm.setup(get_main_window, Popup.get_window, function(e, msg) {
+		// TODO: dispatch messages from main window
+	});
 
-// start our HTTP RPC server
-dispatch.start({dispatch_port: config.dispatch_port});
+	// start our HTTP RPC server
+	dispatch.start({dispatch_port: config.dispatch_port});
 
-electron.ipcMain.on('app:quit', function(_ev, _arg) {
-	app.quit();
-});
+	electron.ipcMain.on('app:quit', function(_ev, _arg) {
+		app.quit();
+	});
+
+}
+
+main()
+	.catch((err) => {
+		console.error('turtl::main() -- err: ', err);
+		throw err;
+	});
 

@@ -55,6 +55,7 @@ if [ "$TEMPLATE" == "main" ]; then
 	js="${js}\n<script src=\"../../lib/app/core-adapter/main.js\"></script>"
 	js="${js}\n<script src=\"../../lib/app/ipc.js\"></script>"
 	index="$(cat $pwd/../${BUILD}/app/views/layouts/default.html)"
+	index="$(do_replace "$index" '{{title}}' "$TITLE")"
 	index="$(do_replace "$index" '{{extra}}' "$extra")"
 	index="$(do_replace "$index" '{{gencss}}' "$css")"
 	index="$(do_replace "$index" '{{genjs}}' "$js")"
