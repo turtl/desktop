@@ -6,4 +6,5 @@ node_modules/
 /vars.mk
 build/*
 /target/*
+/play
 

@@ -13,6 +13,7 @@ mkdir = @mkdir -p $(dir $@)
 CONFIG_FILE := config.js
 ELECTRON := ./node_modules/.bin/electron
 ELECTRON_REBUILD := ./node_modules/.bin/electron-rebuild
+CORE_LOCATION ?= ../core
 
 allcss = $(shell find ../js/css/ -name "*.css" \
 			| grep -v 'reset.css')
@@ -21,7 +22,7 @@ alljs = $(shell echo "../js/main.js" \
 			| grep -v '(ignore|\.thread\.)')
 alljsassets = $(shell find ../js -type f | grep -v '\.git' | grep -v 'node_modules' | grep -v 'build')
 alllibs = $(shell find lib/ -name "*.js")
-allrs = $(shell find ../core/ -name "*.rs")
+allrs = $(shell find $(CORE_LOCATION) -name "*.rs")
 version := $(shell cat package.json \
 		| grep '"version"' \
 		| sed -E 's|.*: +"([^"]+)".*|\1|')
@@ -67,12 +68,12 @@ $(BUILD)/app/index.html: $(alljsassets) $(allcss) ../js/index.html
 		$(BUILD)/app
 	@touch $@
 
-$(BUILD)/config.yaml: ../core/config.yaml.default
+$(BUILD)/config.yaml: $(CORE_LOCATION)/config.yaml.default
 	$(mkdir)
 	@echo "- core config: " $?
 	@cp $? $@
 
-$(BUILD)/clippo/parsers.yaml: ../core/clippo/parsers.yaml
+$(BUILD)/clippo/parsers.yaml: $(CORE_LOCATION)/clippo/parsers.yaml
 	$(mkdir)
 	@echo "- core parsers.yaml: " $?
 	@cp $? $@
@@ -80,8 +81,8 @@ $(BUILD)/clippo/parsers.yaml: ../core/clippo/parsers.yaml
 $(BUILD)/turtl_core.$(libsuffix): $(allrs)
 	$(mkdir)
 	@echo "- core build: " $?
-	cd ../core && make CARGO_BUILD_ARGS=$(CARGO_BUILD_ARGS) release
-	cp ../core/target/release/$(libprefix)turtl_core.$(libsuffix) $@
+	cd $(CORE_LOCATION) && make CARGO_BUILD_ARGS=$(CARGO_BUILD_ARGS) release
+	cp $(CORE_LOCATION)/target/release/$(libprefix)turtl_core.$(libsuffix) $@
 
 $(BUILD)/config.js: config/$(CONFIG_FILE)
 	@echo "- Config: " $?

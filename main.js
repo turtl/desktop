@@ -48,6 +48,8 @@ function create_main_window() {
 			enableRemoteModule: false,
 			// disable <webview> as well
 			webviewTag: false,
+            // i guess this is now needed to run our fabulous preload script
+            sandbox: false,
 			// loads turtl core/ipc so we don't need node
 			preload: path.join(__dirname, 'lib', 'node', 'preload', 'ipc_core.js'),
 		},
@@ -87,11 +89,7 @@ function create_main_window() {
 		];
 		Menu.setApplicationMenu(Menu.buildFromTemplate(template));
 	}
-	main_window.loadURL(url.format({
-		pathname: path.join(__dirname, 'build', 'index.html'),
-		protocol: 'file:',
-		slashes: true,
-	}));
+	main_window.loadFile(`build/index.html`);
 	tools.fix_window(main_window);
 	main_window.on('close', app.quit);
 }
@@ -166,13 +164,16 @@ function setup_config_comm() {
 
 async function main() {
 	// check if we should be running
-	var should_quit = !app.requestSingleInstanceLock(function(_cmd, _derrr) {
-		if(main_window) {
-			if(main_window.isMinimized()) main_window.restore();
-			main_window.focus();
-		}
-	});
+	var should_quit = !app.requestSingleInstanceLock();
 	if(should_quit) { return app.quit(); }
+    else {
+        app.on('second-instance', (_) => {
+            if(main_window) {
+                if(main_window.isMinimized()) main_window.restore();
+                main_window.focus();
+            }
+        });
+    }
 
 	app.whenReady().then(create_main_window);
 	app.whenReady().then(setup_config_comm);
