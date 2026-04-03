@@ -30,6 +30,6 @@
   "devDependencies": {
     "@electron/packager": "^18.3.6",
     "@electron/rebuild": "^3.7.1",
-    "electron": "^35.1.0"
+    "electron": "^39.8.5"
   }
 }
